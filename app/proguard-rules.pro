@@ -50,6 +50,11 @@
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
+-keep class sun.misc.Unsafe { *; }
+-keep class org.conscrypt.Conscrypt { *; }
+-keep class com.google.android.gms.location.LocationRequest { *; }
+
+-dontnote sun.misc.Unsafe
 # --- /Gson ---
 
 # --- Wikipedia ---
