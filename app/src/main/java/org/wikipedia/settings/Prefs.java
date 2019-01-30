@@ -399,6 +399,10 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_collapse_tables, true);
     }
 
+    public static boolean isWikiWalkingEnable() {
+        return getBoolean(R.string.preference_key_Wiki_walkey, false);
+    }
+
     public static int getReadingListSortMode(int defaultValue) {
         return getInt(R.string.preference_key_reading_list_sort_mode, defaultValue);
     }
