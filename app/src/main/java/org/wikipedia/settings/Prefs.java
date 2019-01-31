@@ -399,7 +399,7 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_collapse_tables, true);
     }
 
-    public static boolean isWikiWalkingEnable() {
+    public static boolean isWikiWalkingEnabled() {
         return getBoolean(R.string.preference_key_Wiki_walkey, false);
     }
 
