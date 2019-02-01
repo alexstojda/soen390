@@ -400,7 +400,7 @@ public final class Prefs {
     }
 
     public static boolean isWikiWalkingEnabled() {
-        return getBoolean(R.string.preference_key_Wiki_walkey, false);
+        return getBoolean(R.string.preference_key_wiki_walkey, false);
     }
 
     public static int getReadingListSortMode(int defaultValue) {
