@@ -70,12 +70,31 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
                     getActivity().startActivity(new Intent(getActivity(), AboutActivity.class));
                     return true;
                 });
+
+        // Binding IncognitoMode toggle switch to incognitoListener
+        findPreference(R.string.preference_key_incognito_mode)
+                .setOnPreferenceChangeListener(new IncognitoListener());
     }
 
     void updateLanguagePrefSummary() {
         Preference languagePref = findPreference(R.string.preference_key_language);
         // TODO: resolve RTL vs LTR with multiple languages (e.g. list contains English and Hebrew)
         languagePref.setSummary(WikipediaApp.getInstance().language().getAppLanguageLocalizedNames());
+    }
+
+    // Listener for Incognito Toggle to set isIncognitoEnabled code
+    private final class IncognitoListener implements Preference.OnPreferenceChangeListener {
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (newValue == Boolean.TRUE) {
+                ((SwitchPreferenceCompat) preference).setChecked(true);
+                Prefs.setIncognitoEnabled(true);
+            }
+            else {
+                ((SwitchPreferenceCompat) preference).setChecked(false);
+                Prefs.setIncognitoEnabled(false);
+            }
+            return true;
+        }
     }
 
     private final class SyncReadingListsListener implements Preference.OnPreferenceChangeListener {
