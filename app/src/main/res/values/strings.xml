@@ -290,6 +290,8 @@
     <string name="error_no_maps_app">Could not find any apps that provide directions.</string>
     <string name="preference_title_show_link_previews">Show link previews</string>
     <string name="preference_summary_show_link_previews">Show a quick preview of articles when tapping on links.</string>
+    <string name="preference_title_incognito_mode">Enable Incognito</string>
+    <string name="preference_summary_incognito_mode">Prevents application from registering your search and log history</string>
     <string name="preference_title_collapse_tables">Collapse tables</string>
     <string name="preference_summary_collapse_tables">Automatically collapse tables in articles, such as infoboxes, references, and notes.</string>
     <string name="preference_summary_wiki_walkey">Enables a live feed of what your camera sees to display in background.</string>
