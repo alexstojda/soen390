@@ -88,8 +88,7 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
             if (newValue == Boolean.TRUE) {
                 ((SwitchPreferenceCompat) preference).setChecked(true);
                 Prefs.setIncognitoEnabled(true);
-            }
-            else {
+            } else {
                 ((SwitchPreferenceCompat) preference).setChecked(false);
                 Prefs.setIncognitoEnabled(false);
             }

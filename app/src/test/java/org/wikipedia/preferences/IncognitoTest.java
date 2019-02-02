@@ -5,8 +5,8 @@ package org.wikipedia.preferences;
         import org.robolectric.RobolectricTestRunner;
         import org.wikipedia.settings.Prefs;
 
-        import static org.junit.Assert.assertTrue;
         import static org.junit.Assert.assertFalse;
+        import static org.junit.Assert.assertTrue;
 
 /** Unit tests for Page. */
 @RunWith(RobolectricTestRunner.class)
