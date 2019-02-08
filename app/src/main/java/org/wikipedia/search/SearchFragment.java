@@ -448,8 +448,7 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         }
 
         //This is what adds the query to the search history.
-        //TODO: Philippe L. add the Pref as a condition for Incognito mode
-        if (true) {
+        if (!Prefs.isIncognitoEnabled()) {
             addRecentSearch(query);
         }
     }
