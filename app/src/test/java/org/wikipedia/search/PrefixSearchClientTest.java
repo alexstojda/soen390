@@ -4,10 +4,13 @@ import com.google.gson.stream.MalformedJsonException;
 
 import org.junit.Test;
 import org.wikipedia.dataclient.WikiSite;
+import org.wikipedia.settings.Prefs;
 import org.wikipedia.test.MockRetrofitTest;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
+
+import static org.junit.Assert.assertTrue;
 
 public class PrefixSearchClientTest extends MockRetrofitTest {
     private static final WikiSite TESTWIKI = new WikiSite("test.wikimedia.org");
@@ -65,5 +68,17 @@ public class PrefixSearchClientTest extends MockRetrofitTest {
         getObservable().subscribe(observer);
 
         observer.assertError(MalformedJsonException.class);
+    }
+
+    @Test public void testIncognitoHistoryNotSaved() throws Throwable {
+        Prefs.setIncognitoEnabled(true);
+        assertTrue(Prefs.isIncognitoEnabled());
+
+        enqueueFromFile("prefix_search_results.json");
+        TestObserver<SearchResults> observer = new TestObserver<>();
+        getObservable().subscribe(observer);
+
+
+
     }
 }
