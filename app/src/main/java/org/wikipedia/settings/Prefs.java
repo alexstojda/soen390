@@ -395,8 +395,22 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_show_link_previews, true);
     }
 
+    // Incognito Mode Getter
+    public static boolean isIncognitoEnabled() {
+        return getBoolean(R.string.preference_key_incognito_mode, false);
+    }
+
+    // Incognito Mode Setter
+    public static void setIncognitoEnabled(boolean enabled) {
+        setBoolean(R.string.preference_key_incognito_mode, enabled);
+    }
+
     public static boolean isCollapseTablesEnabled() {
         return getBoolean(R.string.preference_key_collapse_tables, true);
+    }
+
+    public static boolean isWikiWalkingEnabled() {
+        return getBoolean(R.string.preference_key_wiki_walkey, false);
     }
 
     public static int getReadingListSortMode(int defaultValue) {
