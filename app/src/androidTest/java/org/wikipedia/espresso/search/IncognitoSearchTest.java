@@ -42,66 +42,11 @@ public class IncognitoSearchTest {
 
     @Test
     public void incognitoSearchTest() {
-        ViewInteraction linearLayout3 = onView(
-                allOf(withId(R.id.search_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_feed_feed),
-                                        0),
-                                0),
-                        isDisplayed()));
-        linearLayout3.perform(click());
-
-        ViewInteraction searchAutoComplete = onView(
-                allOf(withId(R.id.search_src_text),
-                        childAtPosition(
-                                allOf(withId(R.id.search_plate),
-                                        childAtPosition(
-                                                withId(R.id.search_edit_frame),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete.perform(replaceText("test"), closeSoftKeyboard());
-
-        DataInteraction constraintLayout = onData(anything())
-                .inAdapterView(allOf(withId(R.id.search_results_list),
-                        childAtPosition(
-                                withId(R.id.search_results_container),
-                                1)))
-                .atPosition(0);
-        constraintLayout.perform(click());
-
-        ViewInteraction appCompatImageButton3 = onView(
-                allOf(withContentDescription("Navigate up"),
-                        childAtPosition(
-                                allOf(withId(R.id.page_toolbar),
-                                        childAtPosition(
-                                                withId(R.id.page_toolbar_container),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        appCompatImageButton3.perform(click());
-
-        ViewInteraction linearLayout4 = onView(
-                allOf(withId(R.id.search_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_feed_feed),
-                                        0),
-                                0),
-                        isDisplayed()));
-        linearLayout4.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withText("test"),
-                        childAtPosition(
-                                allOf(withId(R.id.recent_searches_list),
-                                        childAtPosition(
-                                                withId(R.id.recent_searches),
-                                                2)),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("test")));
+        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
+        performSearch("test");
+        clickOnArticle(R.id.page_toolbar, R.id.page_toolbar_container, 0);
+        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
+        checkRecentSearch();
 
         ViewInteraction appCompatImageButton4 = onView(
                 allOf(childAtPosition(
@@ -124,15 +69,7 @@ public class IncognitoSearchTest {
                         isDisplayed()));
         appCompatImageButton5.perform(click());
 
-        ViewInteraction linearLayout5 = onView(
-                allOf(withId(R.id.main_drawer_settings_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.navigation_drawer_view),
-                                        0),
-                                1),
-                        isDisplayed()));
-        linearLayout5.perform(click());
+        clickSearchContainer(R.id.main_drawer_settings_container, R.id.navigation_drawer_view, 1);
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recycler_view),
@@ -140,69 +77,29 @@ public class IncognitoSearchTest {
                                 withId(android.R.id.list_container),
                                 0)));
         recyclerView.perform(actionOnItemAtPosition(2, click()));
+        clickOnArticle(R.id.action_bar, R.id.action_bar_container, 1);
+        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
+        performSearch("android");
+        clickOnArticle(R.id.page_toolbar, R.id.page_toolbar_container, 0);
+        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
+        checkRecentSearch();
+    }
 
-        ViewInteraction appCompatImageButton6 = onView(
+    private void clickOnArticle(int p, int p2, int i) {
+        ViewInteraction appCompatImageButton3 = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
-                                allOf(withId(R.id.action_bar),
+                                allOf(withId(p),
                                         childAtPosition(
-                                                withId(R.id.action_bar_container),
+                                                withId(p2),
                                                 0)),
-                                1),
+                                i),
                         isDisplayed()));
-        appCompatImageButton6.perform(click());
+        appCompatImageButton3.perform(click());
+    }
 
-        ViewInteraction linearLayout6 = onView(
-                allOf(withId(R.id.search_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_feed_feed),
-                                        0),
-                                0),
-                        isDisplayed()));
-        linearLayout6.perform(click());
-
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withId(R.id.search_src_text),
-                        childAtPosition(
-                                allOf(withId(R.id.search_plate),
-                                        childAtPosition(
-                                                withId(R.id.search_edit_frame),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete2.perform(replaceText("android"), closeSoftKeyboard());
-
-        DataInteraction constraintLayout2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.search_results_list),
-                        childAtPosition(
-                                withId(R.id.search_results_container),
-                                1)))
-                .atPosition(0);
-        constraintLayout2.perform(click());
-
-        ViewInteraction appCompatImageButton7 = onView(
-                allOf(withContentDescription("Navigate up"),
-                        childAtPosition(
-                                allOf(withId(R.id.page_toolbar),
-                                        childAtPosition(
-                                                withId(R.id.page_toolbar_container),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        appCompatImageButton7.perform(click());
-
-        ViewInteraction linearLayout7 = onView(
-                allOf(withId(R.id.search_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_feed_feed),
-                                        0),
-                                0),
-                        isDisplayed()));
-        linearLayout7.perform(click());
-
-        ViewInteraction textView2 = onView(
+    private void checkRecentSearch() {
+        ViewInteraction textView = onView(
                 allOf(withText("test"),
                         childAtPosition(
                                 allOf(withId(R.id.recent_searches_list),
@@ -211,7 +108,40 @@ public class IncognitoSearchTest {
                                                 2)),
                                 0),
                         isDisplayed()));
-        textView2.check(matches(withText("test")));
+        textView.check(matches(withText("test")));
+    }
+
+    private void performSearch(String test) {
+        ViewInteraction searchAutoComplete = onView(
+                allOf(withId(R.id.search_src_text),
+                        childAtPosition(
+                                allOf(withId(R.id.search_plate),
+                                        childAtPosition(
+                                                withId(R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete.perform(replaceText(test), closeSoftKeyboard());
+
+        DataInteraction constraintLayout = onData(anything())
+                .inAdapterView(allOf(withId(R.id.search_results_list),
+                        childAtPosition(
+                                withId(R.id.search_results_container),
+                                1)))
+                .atPosition(0);
+        constraintLayout.perform(click());
+    }
+
+    private void clickSearchContainer(int p, int p2, int i) {
+        ViewInteraction linearLayout3 = onView(
+                allOf(withId(p),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(p2),
+                                        0),
+                                i),
+                        isDisplayed()));
+        linearLayout3.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
