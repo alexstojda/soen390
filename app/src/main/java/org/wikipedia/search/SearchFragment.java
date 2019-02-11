@@ -94,12 +94,12 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
     LanguageScrollView languageScrollView;
     @BindView(R.id.language_scroll_container)
     View languageScrollContainer;
-    private Unbinder unbinder;
-    private CompositeDisposable disposables = new CompositeDisposable();
-
-    private WikipediaApp app;
     @BindView(R.id.search_src_text)
     EditText searchEditText;
+
+    private Unbinder unbinder;
+    private CompositeDisposable disposables = new CompositeDisposable();
+    private WikipediaApp app;
     private SearchFunnel funnel;
     private SearchInvokeSource invokeSource;
     private String searchLanguageCode;
@@ -448,6 +448,10 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         }
 
         //This is what adds the query to the search history.
+        verifyIncognito();
+    }
+
+    void verifyIncognito() {
         if (!Prefs.isIncognitoEnabled()) {
             addRecentSearch(query);
         }
@@ -519,7 +523,7 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         return queryText != null && TextUtils.getTrimmedLength(queryText) > 0;
     }
 
-    private void addRecentSearch(String title) {
+    void addRecentSearch(String title) {
         if (isValidQuery(title)) {
             disposables.add(Completable.fromAction(() -> app.getDatabaseClient(RecentSearch.class).upsert(new RecentSearch(title), SearchHistoryContract.Query.SELECTION))
                     .subscribeOn(Schedulers.io())
