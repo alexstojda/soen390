@@ -458,7 +458,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         super.onPause();
 
         activeTimer.pause();
-        if (!Prefs.isIncognitoEnabled()) {
+        if (!Prefs.isIncognitoEnabled()) { //Only record time spent reading if Incognito is Enabled
             addTimeSpentReading(activeTimer.getElapsedSec());
         }
 
@@ -592,6 +592,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         clearActivityActionBarTitle();
 
         // update the time spent reading of the current page, before loading the new one
+        //Only record time spent reading if Incognito is Enabled
         if (!Prefs.isIncognitoEnabled()) {
             addTimeSpentReading(activeTimer.getElapsedSec());
         }
