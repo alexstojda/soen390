@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -81,6 +84,7 @@ import org.wikipedia.util.log.L;
 import org.wikipedia.views.ObservableWebView;
 import org.wikipedia.views.SwipeRefreshLayoutWithScroll;
 import org.wikipedia.views.WikiPageErrorView;
+import org.wikipedia.wikiwalki.CameraPreview;
 
 import java.util.Date;
 import java.util.List;
@@ -160,6 +164,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private ActiveTimer activeTimer = new ActiveTimer();
     @Nullable private AvPlayer avPlayer;
     @Nullable private AvCallback avCallback;
+
+    private Camera camera;
+    private CameraPreview cameraview;
 
     private WikipediaApp app;
 
@@ -280,6 +287,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         webView = rootView.findViewById(R.id.page_web_view);
         initWebViewListeners();
 
+        if(Prefs.isWikiWalkingEnabled()) {
+            FrameLayout camera_preview = (FrameLayout) rootView.findViewById(R.id.camera_view);
+            camera = Camera.open();
+            cameraview = new CameraPreview(getContext(), camera);
+            camera_preview.addView(cameraview);
+        }
+
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
         int swipeOffset = getContentTopOffsetPx(requireActivity()) + REFRESH_SPINNER_ADDITIONAL_OFFSET;
@@ -343,7 +357,12 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         // Explicitly set background color of the WebView (independently of CSS, because
         // the background may be shown momentarily while the WebView loads content,
         // creating a seizure-inducing effect, or at the very least, a migraine with aura).
-        webView.setBackgroundColor(getThemedColor(requireActivity(), R.attr.paper_color));
+
+        //Changing background if user enabled Camera View
+        //setBackgroundColor paints behind CSS in CommunicationBridge.java
+        int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.TRANSPARENT : getThemedColor(requireActivity(), R.attr.paper_color));
+
+        webView.setBackgroundColor(webViewBackground);
 
         bridge = new CommunicationBridge(webView);
         setupMessageHandlers();
