@@ -10,9 +10,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
@@ -165,9 +167,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     @Nullable private AvPlayer avPlayer;
     @Nullable private AvCallback avCallback;
 
-    private Camera camera;
-    private CameraPreview cameraview;
-
     private WikipediaApp app;
 
     @NonNull
@@ -289,8 +288,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         if(Prefs.isWikiWalkingEnabled()) {
             FrameLayout camera_preview = (FrameLayout) rootView.findViewById(R.id.camera_view);
-            camera = Camera.open();
-            cameraview = new CameraPreview(getContext(), camera);
+            Camera camera = Camera.open();
+            CameraPreview cameraview = new CameraPreview(getContext(), camera);
             camera_preview.addView(cameraview);
         }
 
@@ -343,6 +342,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         app.getRefWatcher().watch(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -360,7 +360,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         //Changing background if user enabled Camera View
         //setBackgroundColor paints behind CSS in CommunicationBridge.java
-        int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.TRANSPARENT : getThemedColor(requireActivity(), R.attr.paper_color));
+
+        int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
+
+
 
         webView.setBackgroundColor(webViewBackground);
 
