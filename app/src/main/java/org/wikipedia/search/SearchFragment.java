@@ -59,11 +59,16 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
 
     public interface Callback {
         void onSearchSelectPage(@NonNull HistoryEntry entry, boolean inNewTab);
+
         void onSearchOpen();
+
         void onSearchClose(boolean launchedFromIntent);
+
         void onSearchResultCopyLink(@NonNull PageTitle title);
+
         void onSearchResultAddToList(@NonNull PageTitle title,
                                      @NonNull AddToReadingListDialog.InvokeSource source);
+
         void onSearchResultShareLink(@NonNull PageTitle title);
     }
 
@@ -73,19 +78,28 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
     private static final int PANEL_RECENT_SEARCHES = 0;
     private static final int PANEL_SEARCH_RESULTS = 1;
 
-    @BindView(R.id.search_container) View searchContainer;
-    @BindView(R.id.search_toolbar) Toolbar toolbar;
-    @BindView(R.id.search_cab_view) CabSearchView searchView;
-    @BindView(R.id.search_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.search_lang_button_container) View langButtonContainer;
-    @BindView(R.id.search_lang_button) TextView langButton;
-    @BindView(R.id.lang_scroll) LanguageScrollView languageScrollView;
-    @BindView(R.id.language_scroll_container) View languageScrollContainer;
+    @BindView(R.id.search_container)
+    View searchContainer;
+    @BindView(R.id.search_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.search_cab_view)
+    CabSearchView searchView;
+    @BindView(R.id.search_progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.search_lang_button_container)
+    View langButtonContainer;
+    @BindView(R.id.search_lang_button)
+    TextView langButton;
+    @BindView(R.id.lang_scroll)
+    LanguageScrollView languageScrollView;
+    @BindView(R.id.language_scroll_container)
+    View languageScrollContainer;
+    @BindView(R.id.search_src_text)
+    EditText searchEditText;
+
     private Unbinder unbinder;
     private CompositeDisposable disposables = new CompositeDisposable();
-
     private WikipediaApp app;
-    @BindView(android.support.v7.appcompat.R.id.search_src_text) EditText searchEditText;
     private SearchFunnel funnel;
     private SearchInvokeSource invokeSource;
     private String searchLanguageCode;
@@ -103,7 +117,8 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
      * The last search term that the user entered. This will be passed into
      * the TitleSearch and FullSearch sub-fragments.
      */
-    @Nullable private String query;
+    @Nullable
+    private String query;
 
     private RecentSearchesFragment recentSearchesFragment;
     private SearchResultsFragment searchResultsFragment;
@@ -138,8 +153,9 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         }
     };
 
-    @NonNull public static SearchFragment newInstance(@NonNull SearchInvokeSource source,
-                                                      @Nullable String query) {
+    @NonNull
+    public static SearchFragment newInstance(@NonNull SearchInvokeSource source,
+                                             @Nullable String query) {
         SearchFragment fragment = new SearchFragment();
 
         Bundle args = new Bundle();
@@ -174,10 +190,10 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         unbinder = ButterKnife.bind(this, view);
 
         FragmentManager childFragmentManager = getChildFragmentManager();
-        recentSearchesFragment = (RecentSearchesFragment)childFragmentManager.findFragmentById(
+        recentSearchesFragment = (RecentSearchesFragment) childFragmentManager.findFragmentById(
                 R.id.search_panel_recent);
         recentSearchesFragment.setCallback(this);
-        searchResultsFragment = (SearchResultsFragment)childFragmentManager.findFragmentById(
+        searchResultsFragment = (SearchResultsFragment) childFragmentManager.findFragmentById(
                 R.id.fragment_search_results);
 
         toolbar.setNavigationOnClickListener((v) -> onBackPressed());
@@ -273,6 +289,7 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
 
     /**
      * Changes the search text box to contain a different string.
+     *
      * @param text The text you want to make the search box display.
      */
     @Override
@@ -282,6 +299,7 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
 
     /**
      * Determine whether the Search fragment is currently active.
+     *
      * @return Whether the Search fragment is active.
      */
     public boolean isSearchActive() {
@@ -347,7 +365,8 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         progressBar.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
-    @OnClick(R.id.search_container) void onSearchContainerClick() {
+    @OnClick(R.id.search_container)
+    void onSearchContainerClick() {
         // Give the root container view an empty click handler, so that click events won't
         // get passed down to any underlying views (e.g. a PageFragment on top of which
         // this fragment is shown)
@@ -365,7 +384,8 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
      * Kick off a search, based on a given search term. Will automatically pass the search to
      * Title search or Full search, based on which one is currently displayed.
      * If the search term is empty, the "recent searches" view will be shown.
-     * @param term Phrase to search for.
+     *
+     * @param term  Phrase to search for.
      * @param force Whether to "force" starting this search. If the search is not forced, the
      *              search may be delayed by a small time, so that network requests are not sent
      *              too often.  If the search is forced, the network request is sent immediately.
@@ -426,7 +446,15 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         if (callback != null) {
             callback.onSearchClose(invokeSource.fromIntent());
         }
-        addRecentSearch(query);
+
+        //This is what adds the query to the search history.
+        verifyIncognito();
+    }
+
+    void verifyIncognito() {
+        if (!Prefs.isIncognitoEnabled()) {
+            addRecentSearch(query);
+        }
     }
 
     /**
@@ -495,7 +523,7 @@ public class SearchFragment extends Fragment implements BackPressedHandler,
         return queryText != null && TextUtils.getTrimmedLength(queryText) > 0;
     }
 
-    private void addRecentSearch(String title) {
+    void addRecentSearch(String title) {
         if (isValidQuery(title)) {
             disposables.add(Completable.fromAction(() -> app.getDatabaseClient(RecentSearch.class).upsert(new RecentSearch(title), SearchHistoryContract.Query.SELECTION))
                     .subscribeOn(Schedulers.io())
