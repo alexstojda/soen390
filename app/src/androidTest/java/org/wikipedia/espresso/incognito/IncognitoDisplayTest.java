@@ -36,20 +36,89 @@ import static org.hamcrest.Matchers.is;
 @RunWith(AndroidJUnit4.class)
 public class IncognitoDisplayTest {
 
+    private final int twoSeconds = 2000;
+    private final int pointSevenSeconds = 700;
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void incognitoDisplayTest() {
+
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(twoSeconds);
+
+        skipOnboarding();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(pointSevenSeconds);
+
+        tapOnHamburgerMenu();
+        tapOnSettingsMenu();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(twoSeconds);
+
+        toggleIncognitoModePreference();
+        navigateOutOfSettingsMenu();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(pointSevenSeconds);
+
+        ensureIncognitoDisplayIsPresent();
+        navigateToAnArticle();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(twoSeconds);
+
+        ensureIncognitoDisplayIsPresent();
+        navigateOutOfArticle();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(pointSevenSeconds);
+
+        tapOnHamburgerMenu();
+        tapOnSettingsMenu();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(twoSeconds);
+
+        toggleIncognitoModePreference();
+        navigateOutOfSettingsMenu();
+        ensureIncognitoDisplayIsAbsent();
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        sleep(pointSevenSeconds);
+
+        navigateBackToPreviousArticle();
+        ensureIncognitoDisplayIsAbsent();
+    }
+
+    private static void sleep(int milliseconds) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
+    private void skipOnboarding() {
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.fragment_onboarding_skip_button), withText("Skip"),
                         childAtPosition(
@@ -59,16 +128,9 @@ public class IncognitoDisplayTest {
                                 0),
                         isDisplayed()));
         appCompatTextView.perform(click());
+    }
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+    private void tapOnHamburgerMenu() {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open"),
                         childAtPosition(
@@ -79,7 +141,9 @@ public class IncognitoDisplayTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
+    }
 
+    private void tapOnSettingsMenu() {
         ViewInteraction linearLayout = onView(
                 allOf(withId(R.id.main_drawer_settings_container),
                         childAtPosition(
@@ -89,24 +153,10 @@ public class IncognitoDisplayTest {
                                 1),
                         isDisplayed()));
         linearLayout.perform(click());
+    }
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.recycler_view),
-                        childAtPosition(
-                                withId(android.R.id.list_container),
-                                0)));
-        recyclerView.perform(actionOnItemAtPosition(2, click()));
-
-        ViewInteraction appCompatImageButton2 = onView(
+    private void navigateOutOfSettingsMenu() {
+        ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
                                 allOf(withId(R.id.action_bar),
@@ -115,72 +165,41 @@ public class IncognitoDisplayTest {
                                                 0)),
                                 1),
                         isDisplayed()));
-        appCompatImageButton2.perform(click());
+        appCompatImageButton.perform(click());
+    }
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+    private void toggleIncognitoModePreference() {
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.recycler_view),
                         childAtPosition(
-                                allOf(withId(R.id.main_incognito_display),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
+                                withId(android.R.id.list_container),
+                                0)));
+        recyclerView.perform(actionOnItemAtPosition(2, click()));
+    }
 
-        ViewInteraction recyclerView2 = onView(
+    private void navigateToAnArticle() {
+        ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.view_list_card_list),
                         childAtPosition(
                                 withClassName(is("android.support.constraint.ConstraintLayout")),
                                 2)));
-        recyclerView2.perform(actionOnItemAtPosition(0, click()));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep(twoSeconds);
 
-        ViewInteraction recyclerView3 = onView(
+        recyclerView = onView(
                 allOf(withId(R.id.view_news_fullscreen_link_card_list),
                         childAtPosition(
                                 withClassName(is("android.widget.LinearLayout")),
                                 1)));
-        recyclerView3.perform(actionOnItemAtPosition(0, click()));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+    }
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
-                        childAtPosition(
-                                allOf(withId(R.id.main_incognito_display),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(isDisplayed()));
-
-        ViewInteraction appCompatImageButton3 = onView(
+    private void navigateOutOfArticle() {
+        ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
                                 allOf(withId(R.id.page_toolbar),
@@ -189,86 +208,10 @@ public class IncognitoDisplayTest {
                                                 0)),
                                 0),
                         isDisplayed()));
-        appCompatImageButton3.perform(click());
+        appCompatImageButton.perform(click());
+    }
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction appCompatImageButton4 = onView(
-                allOf(withContentDescription("Open"),
-                        childAtPosition(
-                                allOf(withId(R.id.single_fragment_toolbar),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                1)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton4.perform(click());
-
-        ViewInteraction linearLayout2 = onView(
-                allOf(withId(R.id.main_drawer_settings_container),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.navigation_drawer_view),
-                                        0),
-                                1),
-                        isDisplayed()));
-        linearLayout2.perform(click());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction recyclerView4 = onView(
-                allOf(withId(R.id.recycler_view),
-                        childAtPosition(
-                                withId(android.R.id.list_container),
-                                0)));
-        recyclerView4.perform(actionOnItemAtPosition(2, click()));
-
-        ViewInteraction appCompatImageButton5 = onView(
-                allOf(withContentDescription("Navigate up"),
-                        childAtPosition(
-                                allOf(withId(R.id.action_bar),
-                                        childAtPosition(
-                                                withId(R.id.action_bar_container),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton5.perform(click());
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
-                        childAtPosition(
-                                allOf(withId(R.id.main_incognito_display),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        textView3.check(doesNotExist());
-
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+    private void navigateBackToPreviousArticle() {
         ViewInteraction floatingQueueView = onView(
                 allOf(withId(R.id.floating_queue_view),
                         childAtPosition(
@@ -279,8 +222,10 @@ public class IncognitoDisplayTest {
                                 1),
                         isDisplayed()));
         floatingQueueView.perform(click());
+    }
 
-        ViewInteraction textView4 = onView(
+    private void ensureIncognitoDisplayIsPresent() {
+        ViewInteraction textView = onView(
                 allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
                         childAtPosition(
                                 allOf(withId(R.id.main_incognito_display),
@@ -289,7 +234,20 @@ public class IncognitoDisplayTest {
                                                 0)),
                                 0),
                         isDisplayed()));
-        textView4.check(doesNotExist());
+        textView.check(matches(isDisplayed()));
+    }
+
+    private void ensureIncognitoDisplayIsAbsent() {
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+                        childAtPosition(
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView.check(doesNotExist());
     }
 
     private static Matcher<View> childAtPosition(
