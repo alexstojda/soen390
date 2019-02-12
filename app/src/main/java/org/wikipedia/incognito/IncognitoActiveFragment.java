@@ -12,8 +12,14 @@ import android.view.ViewGroup;
 
 import org.wikipedia.R;
 
+/**
+ * The IncognitoActiveFragment class contains the logic behind the Incognito active display.
+ */
 public class IncognitoActiveFragment extends Fragment {
 
+    /**
+     * Simply inflates the layout for the incognito active bar.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -21,6 +27,9 @@ public class IncognitoActiveFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_incognito_active, container, false);
     }
 
+    /**
+     * Checks whether incognito mode is active and sets the visibility of the fragment accordingly.
+     */
     @Override
     public void onResume() {
         super.onResume();
