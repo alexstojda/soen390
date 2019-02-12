@@ -12,6 +12,7 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,8 @@ import org.wikipedia.main.MainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -123,6 +126,17 @@ public class IncognitoDisplayTest {
             e.printStackTrace();
         }
 
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+                        childAtPosition(
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView.check(matches(isDisplayed()));
+
         ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.view_list_card_list),
                         childAtPosition(
@@ -154,6 +168,17 @@ public class IncognitoDisplayTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+                        childAtPosition(
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView2.check(matches(isDisplayed()));
 
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withContentDescription("Navigate up"),
@@ -223,6 +248,18 @@ public class IncognitoDisplayTest {
                         isDisplayed()));
         appCompatImageButton5.perform(click());
 
+        ViewInteraction textView3 = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+                        childAtPosition(
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView3.check(doesNotExist());
+
+
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -242,6 +279,17 @@ public class IncognitoDisplayTest {
                                 1),
                         isDisplayed()));
         floatingQueueView.perform(click());
+
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
+                        childAtPosition(
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView4.check(doesNotExist());
     }
 
     private static Matcher<View> childAtPosition(
