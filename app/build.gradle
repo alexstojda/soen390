@@ -38,6 +38,7 @@ def computeVersionName(label) {
 }
 
 final JavaVersion JAVA_VERSION = JavaVersion.VERSION_1_8
+
 android {
     // Keep version in sync with /project.properties
     compileSdkVersion 28
@@ -198,7 +199,7 @@ dependencies {
     String retrofitVersion = '2.4.0'
     String espressoVersion = '3.0.1'
     String butterKnifeVersion = '8.8.1'
-    String frescoVersion = '1.11.0' // When updating this version, resync file copies under app/src/main/java/com/facebook
+    String frescoVersion = '1.12.1' // When updating this version, resync file copies under app/src/main/java/com/facebook
     String testingSupportVersion = '1.0.2'
     String mockitoCore = 'org.mockito:mockito-core:1.9.5'
     String leakCanaryVersion = '1.6.2'
