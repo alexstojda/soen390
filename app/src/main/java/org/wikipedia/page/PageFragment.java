@@ -480,7 +480,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         super.onPause();
 
         activeTimer.pause();
-        addTimeSpentReading(activeTimer.getElapsedSec());
+        if (!Prefs.isIncognitoEnabled()) { //Only record time spent reading if Incognito is Enabled
+            addTimeSpentReading(activeTimer.getElapsedSec());
+        }
 
         pageFragmentLoadState.updateCurrentBackStackItem();
         app.commitTabState();
@@ -612,7 +614,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         clearActivityActionBarTitle();
 
         // update the time spent reading of the current page, before loading the new one
-        addTimeSpentReading(activeTimer.getElapsedSec());
+        //Only record time spent reading if Incognito is Enabled
+        if (!Prefs.isIncognitoEnabled()) {
+            addTimeSpentReading(activeTimer.getElapsedSec());
+        }
         activeTimer.reset();
 
         // disable sliding of the ToC while sections are loading
