@@ -37,7 +37,7 @@ import static org.hamcrest.core.AllOf.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class IncognitoViewHistoryDisabled {
+public class IncognitoViewHistoryEnabledTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
