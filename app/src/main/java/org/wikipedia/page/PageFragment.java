@@ -286,11 +286,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         webView = rootView.findViewById(R.id.page_web_view);
         initWebViewListeners();
 
-        if(Prefs.isWikiWalkingEnabled()) {
-            FrameLayout camera_preview = (FrameLayout) rootView.findViewById(R.id.camera_view);
+        if (Prefs.isWikiWalkingEnabled()) {
+            FrameLayout cameraPreview = (FrameLayout) rootView.findViewById(R.id.camera_view);
             Camera camera = Camera.open();
             CameraPreview cameraview = new CameraPreview(getContext(), camera);
-            camera_preview.addView(cameraview);
+            cameraPreview.addView(cameraview);
         }
 
         containerView = rootView.findViewById(R.id.page_contents_container);
