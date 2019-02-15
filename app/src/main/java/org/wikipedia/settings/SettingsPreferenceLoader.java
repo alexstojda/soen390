@@ -1,8 +1,12 @@
 package org.wikipedia.settings;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -74,6 +78,10 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         // Binding IncognitoMode toggle switch to incognitoListener
         findPreference(R.string.preference_key_incognito_mode)
                 .setOnPreferenceChangeListener(new IncognitoListener());
+
+        // Binding WikiWalkey toggle switch to wikiWalkeyListener
+        findPreference(R.string.preference_key_wiki_walkey)
+                .setOnPreferenceChangeListener(new WikiWalkeyListener());
     }
 
     void updateLanguagePrefSummary() {
@@ -91,6 +99,24 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
             } else {
                 ((SwitchPreferenceCompat) preference).setChecked(false);
                 Prefs.setIncognitoEnabled(false);
+            }
+            return true;
+        }
+    }
+
+    private final class WikiWalkeyListener implements Preference.OnPreferenceChangeListener {
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (newValue == Boolean.TRUE) {
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 100);
+                }
+                ((SwitchPreferenceCompat) preference).setChecked(true);
+                Prefs.setWikiWalkeyEnabled(true);
+            } else {
+                ((SwitchPreferenceCompat) preference).setChecked(false);
+                Prefs.setWikiWalkeyEnabled(false);
             }
             return true;
         }

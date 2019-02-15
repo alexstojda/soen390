@@ -1,10 +1,12 @@
 package org.wikipedia.page;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -20,6 +22,7 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -33,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -287,10 +291,17 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         initWebViewListeners();
 
         if (Prefs.isWikiWalkingEnabled()) {
-            FrameLayout cameraPreview = (FrameLayout) rootView.findViewById(R.id.camera_view);
-            Camera camera = Camera.open();
-            CameraPreview cameraview = new CameraPreview(getContext(), camera);
-            cameraPreview.addView(cameraview);
+
+            if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(getContext(),"Please enable camera permission in phone settings", Toast.LENGTH_LONG).show();
+            }
+            else {
+                FrameLayout cameraPreview = (FrameLayout) rootView.findViewById(R.id.camera_view);
+                Camera camera = Camera.open();
+                CameraPreview cameraview = new CameraPreview(getContext(), camera);
+                cameraPreview.addView(cameraview);
+            }
         }
 
         containerView = rootView.findViewById(R.id.page_contents_container);
