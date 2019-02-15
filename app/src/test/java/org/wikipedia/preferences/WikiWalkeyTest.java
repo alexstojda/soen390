@@ -20,13 +20,13 @@ public class WikiWalkeyTest {
     @Test
     public void testIncognitoSetFalse() throws Throwable {
         Prefs.setWikiWalkeyEnabled(false);
-        assertFalse(Prefs.isIncognitoEnabled());
+        assertFalse(Prefs.isWikiWalkingEnabled());
     }
 
     // Tests WikiWalkey's setter
     @Test
     public void testIncognitoSetTrue() throws Throwable {
         Prefs.setWikiWalkeyEnabled(true);
-        assertTrue(Prefs.isIncognitoEnabled());
+        assertTrue(Prefs.isWikiWalkingEnabled());
     }
 }
