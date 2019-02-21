@@ -24,7 +24,9 @@ import org.wikipedia.theme.ThemeFittingRoomActivity;
 
 import static org.wikipedia.Constants.ACTIVITY_REQUEST_ADD_A_LANGUAGE;
 
-/** UI code for app settings used by PreferenceFragment. */
+/**
+ * UI code for app settings used by PreferenceFragment.
+ */
 class SettingsPreferenceLoader extends BasePreferenceLoader {
 
     /*package*/ SettingsPreferenceLoader(@NonNull PreferenceFragmentCompat fragment) {
@@ -92,7 +94,8 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
 
     // Listener for Incognito Toggle to set isIncognitoEnabled code
     private final class IncognitoListener implements Preference.OnPreferenceChangeListener {
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (newValue == Boolean.TRUE) {
                 ((SwitchPreferenceCompat) preference).setChecked(true);
                 Prefs.setIncognitoEnabled(true);
@@ -105,12 +108,12 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
     }
 
     private final class WikiWalkeyListener implements Preference.OnPreferenceChangeListener {
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (newValue == Boolean.TRUE) {
 
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 100);
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 100);
                 }
                 ((SwitchPreferenceCompat) preference).setChecked(true);
                 Prefs.setWikiWalkeyEnabled(true);
@@ -123,7 +126,8 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
     }
 
     private final class SyncReadingListsListener implements Preference.OnPreferenceChangeListener {
-        @Override public boolean onPreferenceChange(final Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(final Preference preference, Object newValue) {
             if (AccountUtil.isLoggedIn()) {
                 if (newValue == Boolean.TRUE) {
                     ((SwitchPreferenceCompat) preference).setChecked(true);
@@ -171,7 +175,8 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
             this.preference = preference;
         }
 
-        @Override public void onClick(DialogInterface dialog, int which) {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
             ((SwitchPreferenceCompat) preference).setChecked(false);
             Prefs.setReadingListSyncEnabled(false);
             Prefs.setReadingListsRemoteSetupPending(false);
