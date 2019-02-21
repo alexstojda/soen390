@@ -119,24 +119,42 @@ import static org.wikipedia.util.UriUtil.visitInExternalBrowser;
 public class PageFragment extends Fragment implements BackPressedHandler {
     public interface Callback {
         void onPageShowBottomSheet(@NonNull BottomSheetDialog dialog);
+
         void onPageShowBottomSheet(@NonNull BottomSheetDialogFragment dialog);
+
         void onPageDismissBottomSheet();
+
         void onPageLoadPage(@NonNull PageTitle title, @NonNull HistoryEntry entry);
+
         void onPageInitWebView(@NonNull ObservableWebView v);
+
         void onPageShowLinkPreview(@NonNull HistoryEntry entry);
+
         void onPageLoadMainPageInForegroundTab();
+
         void onPageUpdateProgressBar(boolean visible, boolean indeterminate, int value);
+
         void onPageShowThemeChooser();
+
         void onPageStartSupportActionMode(@NonNull ActionMode.Callback callback);
+
         void onPageShowToolbar();
+
         void onPageHideSoftKeyboard();
+
         void onPageAddToReadingList(@NonNull PageTitle title,
                                     @NonNull AddToReadingListDialog.InvokeSource source);
+
         void onPageRemoveFromReadingLists(@NonNull PageTitle title);
+
         void onPageLoadError(@NonNull PageTitle title);
+
         void onPageLoadErrorBackPressed();
+
         void onPageHideAllContent();
+
         void onPageSetToolbarFadeEnabled(boolean enabled);
+
         void onPageSetToolbarElevationEnabled(boolean enabled);
     }
 
@@ -148,7 +166,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
 
-    @NonNull private TabFunnel tabFunnel = new TabFunnel();
+    @NonNull
+    private TabFunnel tabFunnel = new TabFunnel();
 
     private PageScrollFunnel pageScrollFunnel;
     private LeadImagesHandler leadImagesHandler;
@@ -168,8 +187,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private ShareHandler shareHandler;
     private CompositeDisposable disposables = new CompositeDisposable();
     private ActiveTimer activeTimer = new ActiveTimer();
-    @Nullable private AvPlayer avPlayer;
-    @Nullable private AvCallback avCallback;
+    @Nullable
+    private AvPlayer avPlayer;
+    @Nullable
+    private AvCallback avCallback;
 
     private WikipediaApp app;
 
@@ -243,15 +264,18 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return model.getTitle();
     }
 
-    @Nullable public PageTitle getTitleOriginal() {
+    @Nullable
+    public PageTitle getTitleOriginal() {
         return model.getTitleOriginal();
     }
 
-    @NonNull public ShareHandler getShareHandler() {
+    @NonNull
+    public ShareHandler getShareHandler() {
         return shareHandler;
     }
 
-    @Nullable public Page getPage() {
+    @Nullable
+    public Page getPage() {
         return model.getPage();
     }
 
@@ -292,11 +316,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         if (Prefs.isWikiWalkingEnabled()) {
 
-            if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(getContext(),"Please enable camera permission in phone settings", Toast.LENGTH_LONG).show();
-            }
-            else {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), "Please enable camera permission in phone settings", Toast.LENGTH_LONG).show();
+            } else {
                 FrameLayout cameraPreview = (FrameLayout) rootView.findViewById(R.id.camera_view);
                 Camera camera = Camera.open();
                 CameraPreview cameraview = new CameraPreview(getContext(), camera);
@@ -375,7 +397,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
 
 
-
         webView.setBackgroundColor(webViewBackground);
 
         bridge = new CommunicationBridge(webView);
@@ -452,7 +473,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         });
         webView.setWebViewClient(new OkHttpWebViewClient() {
-            @NonNull @Override public PageViewModel getModel() {
+            @NonNull
+            @Override
+            public PageViewModel getModel() {
                 return model;
             }
         });
@@ -615,8 +638,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
      * This shall be the single point of entry for loading content into the WebView, whether it's
      * loading an entirely new page, refreshing the current page, retrying a failed network
      * request, etc.
-     * @param title Title of the new page to load.
-     * @param entry HistoryEntry associated with the new page.
+     *
+     * @param title         Title of the new page to load.
+     * @param entry         HistoryEntry associated with the new page.
      * @param pushBackStack Whether to push the new page onto the backstack.
      */
     public void loadPage(@NonNull PageTitle title, @NonNull HistoryEntry entry,
@@ -728,7 +752,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
     }
 
-    @NonNull public ViewGroup getTabLayout() {
+    @NonNull
+    public ViewGroup getTabLayout() {
         return tabLayout;
     }
 
@@ -795,6 +820,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     /**
      * Scroll to a specific section in the WebView.
+     *
      * @param sectionAnchor Anchor link of the section to scroll to.
      */
     public void scrollToSection(@NonNull String sectionAnchor) {
@@ -944,7 +970,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     private void setupMessageHandlers() {
         linkHandler = new LinkHandler(requireActivity()) {
-            @Override public void onPageLinkClicked(@NonNull String anchor, @NonNull String linkText) {
+            @Override
+            public void onPageLinkClicked(@NonNull String anchor, @NonNull String linkText) {
                 dismissBottomSheet();
                 JSONObject payload = new JSONObject();
                 try {
@@ -956,11 +983,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 bridge.sendMessage("handleReference", payload);
             }
 
-            @Override public void onInternalLinkClicked(@NonNull PageTitle title) {
+            @Override
+            public void onInternalLinkClicked(@NonNull PageTitle title) {
                 handleInternalLink(title);
             }
 
-            @Override public WikiSite getWikiSite() {
+            @Override
+            public WikiSite getWikiSite() {
                 return model.getTitle().getWikiSite();
             }
         };
@@ -1236,7 +1265,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 timeSpentSec));
         Completable.fromAction(new UpdateHistoryTask(model.getCurEntry()))
                 .subscribeOn(Schedulers.io())
-                .subscribe(() -> { }, L::e);
+                .subscribe(() -> {
+                }, L::e);
     }
 
     private LinearLayout.LayoutParams getContentTopOffsetParams(@NonNull Context context) {
@@ -1264,6 +1294,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 updateProgressBar(false, true, 0);
             }
         }
+
         @Override
         public void onError() {
             if (avPlayer != null) {
