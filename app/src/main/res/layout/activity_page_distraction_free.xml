@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:id="@+id/main_incognito_display"
+        android:name="org.wikipedia.incognito.IncognitoActiveFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_page_DF_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/base10">
+
+        <fragment
+            android:id="@+id/page_fragment"
+            android:name="org.wikipedia.page.PageFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/fragment_page"
+            tools:layout="@layout/fragment_page" />
+
+        <FrameLayout
+            android:id="@+id/page_toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/page_toolbar_color"
+            android:elevation="4dp">
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/search_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/ic_search_white_24dp"
+                    app:tint="?attr/material_theme_secondary_color"
+                    android:contentDescription="@string/search_hint" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/search_hint"
+                    android:textColor="?attr/material_theme_de_emphasised_color" />
+
+            </LinearLayout>
+
+
+            <ProgressBar
+                android:id="@+id/page_progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginTop="-7dp"
+                android:max="10000" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/toc_container"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="?android:colorBackground"
+            android:elevation="6dp"
+            android:visibility="gone"
+            tools:background="@color/base80"
+            tools:visibility="visible">
+        </FrameLayout>
+
+        <org.wikipedia.views.PageScrollerView
+            android:id="@+id/page_scroller_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:background="@drawable/shape_circle"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:scaleType="center"
+            app:backgroundTint="?attr/nav_tab_background_color"
+            app:srcCompat="@drawable/ic_unfold_more_black_24dp"
+            app:tint="?attr/colorAccent" />
+
+    </FrameLayout>
+</LinearLayout>
