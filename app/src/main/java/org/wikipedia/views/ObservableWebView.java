@@ -18,38 +18,16 @@ import java.util.List;
 
 public class ObservableWebView extends WebView {
     private static final WebViewInvalidateEvent INVALIDATE_EVENT = new WebViewInvalidateEvent();
-
-    private List<OnClickListener> onClickListeners;
-    private List<OnScrollChangeListener> onScrollChangeListeners;
-    private List<OnDownMotionEventListener> onDownMotionEventListeners;
-    private List<OnUpOrCancelMotionEventListener> onUpOrCancelMotionEventListeners;
-    private List<OnContentHeightChangedListener> onContentHeightChangedListeners;
-    private OnFastScrollListener onFastScrollListener;
-    private OnEdgeSwipeListener onEdgeSwipeListener;
-
-    private int contentHeight = 0;
-    private float touchStartX;
-    private float touchStartY;
-    private int touchSlop;
-
-    private long lastScrollTime;
-    private int totalAmountScrolled;
-    private boolean edgeSwipePending;
-
-
     /**
-    * Threshold (in pixels) of continuous scrolling, to be considered "fast" scrolling.
-    */
+     * Threshold (in pixels) of continuous scrolling, to be considered "fast" scrolling.
+     */
     private static final int FAST_SCROLL_THRESHOLD = (int) (1000 * DimenUtil.getDensityScalar());
-
     /**
-    * Maximum single scroll amount (in pixels) to be considered a "human" scroll.
-    * Otherwise it's probably a programmatic scroll, which we won't count.
-    */
+     * Maximum single scroll amount (in pixels) to be considered a "human" scroll.
+     * Otherwise it's probably a programmatic scroll, which we won't count.
+     */
     private static final int MAX_HUMAN_SCROLL = (int) (500 * DimenUtil.getDensityScalar());
-
     private static final int EDGE_SWIPE_THRESHOLD = (int) (16 * DimenUtil.getDensityScalar());
-
     /**
      * Maximum amount of time that needs to elapse before the previous scroll amount
      * is "forgotten." That is, if the user scrolls once, then scrolls again within this
@@ -57,6 +35,36 @@ public class ObservableWebView extends WebView {
      * a possible "fast" scroll.
      */
     private static final int MAX_MILLIS_BETWEEN_SCROLLS = 500;
+    private List<OnClickListener> onClickListeners;
+    private List<OnScrollChangeListener> onScrollChangeListeners;
+    private List<OnDownMotionEventListener> onDownMotionEventListeners;
+    private List<OnUpOrCancelMotionEventListener> onUpOrCancelMotionEventListeners;
+    private List<OnContentHeightChangedListener> onContentHeightChangedListeners;
+    private OnFastScrollListener onFastScrollListener;
+    private OnEdgeSwipeListener onEdgeSwipeListener;
+    private int contentHeight = 0;
+    private float touchStartX;
+    private float touchStartY;
+    private int touchSlop;
+    private long lastScrollTime;
+    private int totalAmountScrolled;
+    private boolean edgeSwipePending;
+    private OnScrollChangedCallback mOnScrollChangedCallback;
+
+    public ObservableWebView(Context context) {
+        super(context);
+        init();
+    }
+
+    public ObservableWebView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public ObservableWebView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
 
     public void addOnClickListener(OnClickListener onClickListener) {
         onClickListeners.add(onClickListener);
@@ -97,34 +105,6 @@ public class ObservableWebView extends WebView {
         loadUrl("about:blank");
     }
 
-    public interface OnClickListener {
-        boolean onClick(float x, float y);
-    }
-
-    public interface OnScrollChangeListener {
-        void onScrollChanged(int oldScrollY, int scrollY, boolean isHumanScroll);
-    }
-
-    public interface OnDownMotionEventListener {
-        void onDownMotionEvent();
-    }
-
-    public interface OnUpOrCancelMotionEventListener {
-        void onUpOrCancelMotionEvent();
-    }
-
-    public interface OnContentHeightChangedListener {
-        void onContentHeightChanged(int contentHeight);
-    }
-
-    public interface OnFastScrollListener {
-        void onFastScroll();
-    }
-
-    public interface OnEdgeSwipeListener {
-        void onEdgeSwipe(boolean direction);
-    }
-
     public void copyToClipboard() {
         // Simulate a Ctrl-C key press, which copies the current selection to the clipboard.
         // Seems to work across all APIs.
@@ -132,21 +112,6 @@ public class ObservableWebView extends WebView {
                 KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_C, 0, KeyEvent.META_CTRL_ON));
         dispatchKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
                 KeyEvent.ACTION_UP, KeyEvent.KEYCODE_C, 0, KeyEvent.META_CTRL_ON));
-    }
-
-    public ObservableWebView(Context context) {
-        super(context);
-        init();
-    }
-
-    public ObservableWebView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public ObservableWebView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
     }
 
     private void init() {
@@ -162,7 +127,8 @@ public class ObservableWebView extends WebView {
     protected void onScrollChanged(int left, int top, int oldLeft, int oldTop) {
         super.onScrollChanged(left, top, oldLeft, oldTop);
 
-        if(mOnScrollChangedCallback != null) mOnScrollChangedCallback.onScroll(left, top, oldLeft, oldTop);
+        if (mOnScrollChangedCallback != null)
+            mOnScrollChangedCallback.onScroll(left, top, oldLeft, oldTop);
 
         boolean isHumanScroll = Math.abs(top - oldTop) < MAX_HUMAN_SCROLL;
         for (OnScrollChangeListener listener : onScrollChangeListeners) {
@@ -245,20 +211,43 @@ public class ObservableWebView extends WebView {
         WikipediaApp.getInstance().getBus().post(INVALIDATE_EVENT);
     }
 
-    private OnScrollChangedCallback mOnScrollChangedCallback;
-
-    public OnScrollChangedCallback getOnScrollChangedCallback()
-    {
+    public OnScrollChangedCallback getOnScrollChangedCallback() {
         return mOnScrollChangedCallback;
     }
 
-    public void setOnScrollChangedCallback(final OnScrollChangedCallback onScrollChangedCallback)
-    {
+    public void setOnScrollChangedCallback(final OnScrollChangedCallback onScrollChangedCallback) {
         mOnScrollChangedCallback = onScrollChangedCallback;
     }
 
-    public static interface OnScrollChangedCallback
-    {
+    public interface OnClickListener {
+        boolean onClick(float x, float y);
+    }
+
+    public interface OnScrollChangeListener {
+        void onScrollChanged(int oldScrollY, int scrollY, boolean isHumanScroll);
+    }
+
+    public interface OnDownMotionEventListener {
+        void onDownMotionEvent();
+    }
+
+    public interface OnUpOrCancelMotionEventListener {
+        void onUpOrCancelMotionEvent();
+    }
+
+    public interface OnContentHeightChangedListener {
+        void onContentHeightChanged(int contentHeight);
+    }
+
+    public interface OnFastScrollListener {
+        void onFastScroll();
+    }
+
+    public interface OnEdgeSwipeListener {
+        void onEdgeSwipe(boolean direction);
+    }
+
+    public static interface OnScrollChangedCallback {
         public void onScroll(int l, int t, int oldl, int oldt);
     }
 }
