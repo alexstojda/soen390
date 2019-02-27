@@ -24,7 +24,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
@@ -274,21 +273,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             cameraPreview.addView(cameraview);
         }
 
-
-        RecyclerView mRecyclerView = rootView.findViewById(R.id.recycler_view);
         FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.floating_action_button);
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0 && mFloatingActionButton.getVisibility() == View.VISIBLE) {
-                    mFloatingActionButton.hide();
-                } else if (dy < 0 && mFloatingActionButton.getVisibility() != View.VISIBLE) {
-                    mFloatingActionButton.show();
-                }
-            }
-        });
 
         ObservableWebView wv = rootView.findViewById(R.id.page_web_view);
         wv.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback() {
