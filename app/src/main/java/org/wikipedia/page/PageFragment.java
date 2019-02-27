@@ -98,6 +98,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 import static org.wikipedia.page.PageActivity.ACTION_RESUME_READING;
 import static org.wikipedia.page.PageCacher.loadIntoCache;
 import static org.wikipedia.settings.Prefs.isDescriptionEditTutorialEnabled;
@@ -303,7 +304,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         tabLayout = rootView.findViewById(R.id.page_actions_tab_layout);
         tabLayout.setPageActionTabsCallback(pageActionTabsCallback);
-
         errorView = rootView.findViewById(R.id.page_error);
 
         bottomContentView = rootView.findViewById(R.id.page_bottom_view);
@@ -363,6 +363,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
 
+        if(Prefs.isDistractionFreeModeEnabled()) {
+            tabLayout.setVisibility(GONE);
+        }
 
 
         webView.setBackgroundColor(webViewBackground);
@@ -624,7 +627,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         tocHandler.setEnabled(false);
 
         errorState = false;
-        errorView.setVisibility(View.GONE);
+        errorView.setVisibility(GONE);
         tabLayout.enableAllTabs();
 
         model.setTitle(title);
@@ -859,7 +862,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             return;
         }
 
-        errorView.setVisibility(View.GONE);
+        errorView.setVisibility(GONE);
 
         tabLayout.enableAllTabs();
         errorState = false;
