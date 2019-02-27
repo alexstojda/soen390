@@ -1,6 +1,7 @@
 package org.wikipedia.page;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,10 +19,13 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
@@ -30,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -98,6 +103,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
+import static android.support.constraint.Constraints.TAG;
 import static org.wikipedia.page.PageActivity.ACTION_RESUME_READING;
 import static org.wikipedia.page.PageCacher.loadIntoCache;
 import static org.wikipedia.settings.Prefs.isDescriptionEditTutorialEnabled;
@@ -292,6 +298,48 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             CameraPreview cameraview = new CameraPreview(getContext(), camera);
             cameraPreview.addView(cameraview);
         }
+
+
+        RecyclerView mRecyclerView = rootView.findViewById(R.id.recycler_view);
+        FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.floating_action_button);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && mFloatingActionButton.getVisibility() == View.VISIBLE) {
+                    mFloatingActionButton.hide();
+                } else if (dy < 0 && mFloatingActionButton.getVisibility() != View.VISIBLE) {
+                    mFloatingActionButton.show();
+                }
+            }
+        });
+
+        ObservableWebView wv = rootView.findViewById(R.id.page_web_view);
+        wv.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback(){
+            public void onScroll(int l, int t, int oldl, int oldt){
+                if(t> oldt){
+                    mFloatingActionButton.hide();
+                    System.out.println("Swipe UP");
+                    //Do stuff
+                }
+                else if(t< oldt){
+                    mFloatingActionButton.show();
+                    System.out.println("Swipe Down");
+                }
+                Log.d(TAG,"We Scrolled etc...");
+            }
+        });
+
+
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);

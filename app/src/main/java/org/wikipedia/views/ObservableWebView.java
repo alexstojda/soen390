@@ -161,6 +161,9 @@ public class ObservableWebView extends WebView {
     @Override
     protected void onScrollChanged(int left, int top, int oldLeft, int oldTop) {
         super.onScrollChanged(left, top, oldLeft, oldTop);
+
+        if(mOnScrollChangedCallback != null) mOnScrollChangedCallback.onScroll(left, top, oldLeft, oldTop);
+
         boolean isHumanScroll = Math.abs(top - oldTop) < MAX_HUMAN_SCROLL;
         for (OnScrollChangeListener listener : onScrollChangeListeners) {
             listener.onScrollChanged(oldTop, top, isHumanScroll);
@@ -241,4 +244,22 @@ public class ObservableWebView extends WebView {
         }
         WikipediaApp.getInstance().getBus().post(INVALIDATE_EVENT);
     }
+
+    private OnScrollChangedCallback mOnScrollChangedCallback;
+
+    public OnScrollChangedCallback getOnScrollChangedCallback()
+    {
+        return mOnScrollChangedCallback;
+    }
+
+    public void setOnScrollChangedCallback(final OnScrollChangedCallback onScrollChangedCallback)
+    {
+        mOnScrollChangedCallback = onScrollChangedCallback;
+    }
+
+    public static interface OnScrollChangedCallback
+    {
+        public void onScroll(int l, int t, int oldl, int oldt);
+    }
 }
+
