@@ -413,6 +413,10 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_wiki_walkey, false);
     }
 
+    public static boolean isDistractionFreeModeEnabled() {
+        return true; //TODO @Evan add logic
+    }
+
     public static int getReadingListSortMode(int defaultValue) {
         return getInt(R.string.preference_key_reading_list_sort_mode, defaultValue);
     }
