@@ -64,6 +64,7 @@
     <string name="preference_key_reading_lists_current_user_hash">readingListsCurrentUserHash</string>
     <string name="preference_key_permission_asked">permissionAsked</string>
     <string name="preference_key_dim_dark_mode_images">dimDarkModeImages</string>
+    <string name="preference_key_distraction_free">distractionFree</string>
     <string name="preference_key_notification_poll_reminder">enableNotificationPollingReminder</string>
     <string name="preference_key_notification_poll_enable">enableNotificationPolling</string>
     <string name="preference_key_notification_welcome_enable">enableWelcomeNotification</string>
