@@ -76,7 +76,7 @@ public class MainDrawerView extends ScrollView {
             accountWikiGlobe.setVisibility(View.VISIBLE);
             notificationsContainer.setVisibility(View.GONE);
         }
-        if(Prefs.isDistractionFreeModeEnabled()){
+        if (Prefs.isDistractionFreeModeEnabled()) {
             distractionFreeContainer.setVisibility(View.VISIBLE);
         } else {
             distractionFreeContainer.setVisibility(View.GONE);
