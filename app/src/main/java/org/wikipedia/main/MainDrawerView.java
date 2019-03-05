@@ -14,6 +14,7 @@ import org.wikipedia.BuildConfig;
 import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.auth.AccountUtil;
+import org.wikipedia.settings.Prefs;
 import org.wikipedia.util.ResourceUtil;
 import org.wikipedia.util.UriUtil;
 
@@ -74,6 +75,11 @@ public class MainDrawerView extends ScrollView {
             accountAvatar.setVisibility(View.GONE);
             accountWikiGlobe.setVisibility(View.VISIBLE);
             notificationsContainer.setVisibility(View.GONE);
+        }
+        if(Prefs.isDistractionFreeModeEnabled()){
+            distractionFreeContainer.setVisibility(View.VISIBLE);
+        } else {
+            distractionFreeContainer.setVisibility(View.GONE);
         }
     }
 

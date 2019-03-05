@@ -708,6 +708,10 @@
     <string name="main_drawer_help">Help</string>
     <string name="main_drawer_login">Log in / join Wikipedia</string>
 
+    <string name="preference_title_distraction_free">Distraction Free</string>
+    <string name="preference_summary_distraction_free">You needs this to use distraction free mode</string>
+
+
     <string name="incognito_display_text"> INCOGNITO ACTIVE </string>
 
 </resources>

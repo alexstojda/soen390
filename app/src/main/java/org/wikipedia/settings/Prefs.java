@@ -414,7 +414,7 @@ public final class Prefs {
     }
 
     public static boolean isDistractionFreeModeEnabled() {
-        return true; //TODO @Evan add logic
+       return getBoolean(R.string.preference_key_distraction_free, false);
     }
 
     public static int getReadingListSortMode(int defaultValue) {
