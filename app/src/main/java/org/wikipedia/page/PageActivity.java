@@ -112,6 +112,8 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
 
     @BindView(R.id.page_progress_bar) ProgressBar progressBar;
     @BindView(R.id.page_toolbar_container) View toolbarContainerView;
+    @BindView(R.id.normal_view_toolbar_container) View toolbarNormalViewContainer;
+    @BindView(R.id.DF_view_toolbar_container) View toolbarDFViewContainer;
     @BindView(R.id.page_toolbar) Toolbar toolbar;
     @BindView(R.id.page_toolbar_button_search) ImageView searchButton;
     @BindView(R.id.page_toolbar_button_tabs_container) View tabsButtonContainer;
@@ -198,6 +200,23 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
             // if there's no savedInstanceState, and we're not coming back from a Theme change,
             // then we must have been launched with an Intent, so... handle it!
             handleIntent(getIntent());
+        }
+
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            searchButton.setVisibility(View.GONE);
+            tabsButtonContainer.setVisibility(View.GONE);
+            tabsButton.setVisibility(View.GONE);
+            overflowButton.setVisibility(View.GONE);
+            toolbarDFViewContainer.setVisibility(View.VISIBLE);
+            toolbarNormalViewContainer.setVisibility(View.GONE);
+        }
+        else{
+            searchButton.setVisibility(View.VISIBLE);
+            tabsButtonContainer.setVisibility(View.VISIBLE);
+            tabsButton.setVisibility(View.VISIBLE);
+            overflowButton.setVisibility(View.VISIBLE);
+            toolbarDFViewContainer.setVisibility(View.GONE);
+            toolbarNormalViewContainer.setVisibility(View.VISIBLE);
         }
     }
 

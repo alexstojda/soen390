@@ -43,56 +43,95 @@
                 app:navigationIcon="@drawable/ic_icon_w_back"
                 app:titleTextColor="?attr/page_toolbar_icon_color">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical|end">
+                    android:id="@+id/normal_view_toolbar_container"
+                    android:layout_height="match_parent">
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/page_toolbar_button_search"
-                        android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/search_hint"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        app:srcCompat="@drawable/ic_search_themed_24dp"
-                        app:tint="?attr/page_toolbar_icon_color" />
+                        android:gravity="center_vertical|end">
 
-                    <FrameLayout
-                        android:id="@+id/page_toolbar_button_tabs_container"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/menu_page_show_tabs">
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/page_toolbar_button_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/search_hint"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp"
+                            app:srcCompat="@drawable/ic_search_themed_24dp"
+                            app:tint="?attr/page_toolbar_icon_color" />
 
-                        <org.wikipedia.views.TabCountsView
-                            android:id="@+id/page_toolbar_button_show_tabs"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="12dp"
-                            android:background="?attr/page_tab_counts_shape_border"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center"
-                            android:textAlignment="center"
-                            android:textColor="?attr/material_theme_secondary_color"
-                            android:textSize="12sp"
-                            tools:text="3" />
-                    </FrameLayout>
+                        <FrameLayout
+                            android:id="@+id/page_toolbar_button_tabs_container"
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/menu_page_show_tabs">
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/page_toolbar_button_show_overflow_menu"
-                        android:layout_width="wrap_content"
+                            <org.wikipedia.views.TabCountsView
+                                android:id="@+id/page_toolbar_button_show_tabs"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginEnd="12dp"
+                                android:background="?attr/page_tab_counts_shape_border"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center"
+                                android:textAlignment="center"
+                                android:textColor="?attr/material_theme_secondary_color"
+                                android:textSize="12sp"
+                                tools:text="3" />
+                        </FrameLayout>
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/page_toolbar_button_show_overflow_menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/menu_feed_overflow_label"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp"
+                            app:srcCompat="@drawable/ic_more_vert_themed_24dp"
+                            app:tint="?attr/page_toolbar_icon_color" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/DF_view_toolbar_container"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/search_container"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/menu_feed_overflow_label"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        app:srcCompat="@drawable/ic_more_vert_themed_24dp"
-                        app:tint="?attr/page_toolbar_icon_color" />
-                </LinearLayout>
+                        android:paddingTop="4dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical|end"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <org.wikipedia.views.CabSearchView
+                            android:id="@+id/search_cab_view"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:focusable="true"
+                            android:inputType="text"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="-8dp"
+                            android:imeOptions="actionGo|flagNoExtractUi"
+                            app:cabEnabled="false" />
+
+                    </LinearLayout>
+                </FrameLayout>
+
             </android.support.v7.widget.Toolbar>
 
             <ProgressBar
