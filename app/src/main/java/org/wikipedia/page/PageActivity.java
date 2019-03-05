@@ -111,7 +111,7 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
     }
 
     @BindView(R.id.page_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.page_toolbar_container) View toolbarContainerView;m
+    @BindView(R.id.page_toolbar_container) View toolbarContainerView;
     @BindView(R.id.page_toolbar) Toolbar toolbar;
     @BindView(R.id.page_toolbar_button_search) ImageView searchButton;
     @BindView(R.id.page_toolbar_button_tabs_container) View tabsButtonContainer;
