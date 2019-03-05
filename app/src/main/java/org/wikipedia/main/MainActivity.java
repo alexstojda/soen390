@@ -281,11 +281,5 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
             startActivity(new Intent(MainActivity.this, AboutActivity.class));
             closeMainDrawer();
         }
-
-        @Override
-        public void distractionFreeClick() {
-            startActivityForResult(PageActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
-            closeMainDrawer();
-        }
     }
 }

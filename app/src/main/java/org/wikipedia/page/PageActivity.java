@@ -727,7 +727,7 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         app.getSessionFunnel().touchSession();
 
         if (Prefs.isDistractionFreeModeEnabled()) {
-            searchButton.setVisibility(View.GONE);
+            //searchButton.setVisibility(View.GONE);
             tabsButtonContainer.setVisibility(View.GONE);
             tabsButton.setVisibility(View.GONE);
             overflowButton.setVisibility(View.GONE);
@@ -735,7 +735,7 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
             toolbarNormalViewContainer.setVisibility(View.GONE);
         }
         else{
-            searchButton.setVisibility(View.VISIBLE);
+            //searchButton.setVisibility(View.VISIBLE);
             tabsButtonContainer.setVisibility(View.VISIBLE);
             tabsButton.setVisibility(View.VISIBLE);
             overflowButton.setVisibility(View.VISIBLE);
