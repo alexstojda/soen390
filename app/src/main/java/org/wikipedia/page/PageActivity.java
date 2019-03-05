@@ -201,23 +201,6 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
             // then we must have been launched with an Intent, so... handle it!
             handleIntent(getIntent());
         }
-
-        if (Prefs.isDistractionFreeModeEnabled()) {
-            searchButton.setVisibility(View.GONE);
-            tabsButtonContainer.setVisibility(View.GONE);
-            tabsButton.setVisibility(View.GONE);
-            overflowButton.setVisibility(View.GONE);
-            toolbarDFViewContainer.setVisibility(View.VISIBLE);
-            toolbarNormalViewContainer.setVisibility(View.GONE);
-        }
-        else{
-            searchButton.setVisibility(View.VISIBLE);
-            tabsButtonContainer.setVisibility(View.VISIBLE);
-            tabsButton.setVisibility(View.VISIBLE);
-            overflowButton.setVisibility(View.VISIBLE);
-            toolbarDFViewContainer.setVisibility(View.GONE);
-            toolbarNormalViewContainer.setVisibility(View.VISIBLE);
-        }
     }
 
 
@@ -742,6 +725,23 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         super.onResume();
         app.resetWikiSite();
         app.getSessionFunnel().touchSession();
+
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            searchButton.setVisibility(View.GONE);
+            tabsButtonContainer.setVisibility(View.GONE);
+            tabsButton.setVisibility(View.GONE);
+            overflowButton.setVisibility(View.GONE);
+            toolbarDFViewContainer.setVisibility(View.VISIBLE);
+            toolbarNormalViewContainer.setVisibility(View.GONE);
+        }
+        else{
+            searchButton.setVisibility(View.VISIBLE);
+            tabsButtonContainer.setVisibility(View.VISIBLE);
+            tabsButton.setVisibility(View.VISIBLE);
+            overflowButton.setVisibility(View.VISIBLE);
+            toolbarDFViewContainer.setVisibility(View.GONE);
+            toolbarNormalViewContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

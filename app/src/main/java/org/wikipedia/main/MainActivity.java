@@ -26,7 +26,7 @@ import org.wikipedia.history.HistoryFragment;
 import org.wikipedia.navtab.NavTab;
 import org.wikipedia.notifications.NotificationActivity;
 import org.wikipedia.onboarding.InitialOnboardingActivity;
-import org.wikipedia.page.DistractionFreePageActivity;
+import org.wikipedia.page.PageActivity;
 import org.wikipedia.readinglist.ReadingListSyncBehaviorDialogs;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
 import org.wikipedia.settings.AboutActivity;
@@ -284,7 +284,7 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
 
         @Override
         public void distractionFreeClick() {
-            startActivityForResult(DistractionFreePageActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
+            startActivityForResult(PageActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
             closeMainDrawer();
         }
     }
