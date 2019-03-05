@@ -28,6 +28,7 @@ public class MainDrawerView extends ScrollView {
         void settingsClick();
         void configureFeedClick();
         void aboutClick();
+        void distractionFreeClick();
     }
 
     @BindView(R.id.main_drawer_account_name) TextView accountNameView;
@@ -35,6 +36,7 @@ public class MainDrawerView extends ScrollView {
     @BindView(R.id.main_drawer_account_avatar) ImageView accountAvatar;
     @BindView(R.id.main_drawer_account_wiki_globe) ImageView accountWikiGlobe;
     @BindView(R.id.main_drawer_notifications_container) ViewGroup notificationsContainer;
+    @BindView(R.id.main_drawer_distraction_free) ViewGroup distractionFreeContainer;
     @Nullable Callback callback;
 
     public MainDrawerView(Context context) {
@@ -102,6 +104,12 @@ public class MainDrawerView extends ScrollView {
     @OnClick(R.id.main_drawer_about_container) void onAboutClick() {
         if (callback != null) {
             callback.aboutClick();
+        }
+    }
+
+    @OnClick(R.id.main_drawer_distraction_free) void distractionFreeClick() {
+        if (callback != null) {
+            callback.distractionFreeClick();
         }
     }
 
