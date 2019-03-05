@@ -363,7 +363,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
 
-        if(Prefs.isDistractionFreeModeEnabled()) {
+        if (Prefs.isDistractionFreeModeEnabled()) {
             tabLayout.setVisibility(GONE);
         }
 
