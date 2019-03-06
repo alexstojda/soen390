@@ -284,6 +284,15 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
 
         @Override
         public void distractionFreeClick() {
+            Prefs.enableDistractionFreeMode();
+            Prefs.disableWikiWalkingEnabled();
+            startActivityForResult(PageActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
+            closeMainDrawer();
+        }
+
+        @Override
+        public void stopDistractionFreeClick() {
+            Prefs.disableDistractionFreeMode();
             startActivityForResult(PageActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
             closeMainDrawer();
         }

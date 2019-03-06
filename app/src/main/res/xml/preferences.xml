@@ -4,15 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/preferences_soen_390_header">
         <org.wikipedia.settings.SwitchPreferenceMultiLine
-            android:key="@string/preference_key_distraction_free"
-            android:defaultValue="false"
-            android:title="@string/preference_title_distraction_free"
-            android:summary="@string/preference_summary_distraction_free" />
-        <org.wikipedia.settings.SwitchPreferenceMultiLine
-            android:key="@string/preference_key_wiki_walkey"
-            android:defaultValue="false"
-            android:title="@string/preference_title_wiki_walkey"
-            android:summary="@string/preference_summary_wiki_walkey" />
+                android:key="@string/preference_key_wiki_walkey"
+                android:defaultValue="false"
+                android:title="@string/preference_title_wiki_walkey"
+                android:summary="@string/preference_summary_wiki_walkey" />
         <org.wikipedia.settings.SwitchPreferenceMultiLine
             android:key="@string/preference_key_incognito_mode"
             android:defaultValue="false"

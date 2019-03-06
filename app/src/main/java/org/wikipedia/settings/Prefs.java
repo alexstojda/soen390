@@ -413,8 +413,22 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_wiki_walkey, false);
     }
 
+    public static void disableWikiWalkingEnabled() {
+        setBoolean(R.string.preference_key_wiki_walkey, false);
+        return;
+    }
+
+
     public static boolean isDistractionFreeModeEnabled() {
        return getBoolean(R.string.preference_key_distraction_free, false);
+    }
+
+    public static void disableDistractionFreeMode() {
+        setBoolean(R.string.preference_key_distraction_free, false);
+    }
+
+    public static void enableDistractionFreeMode() {
+        setBoolean(R.string.preference_key_distraction_free, true);
     }
 
     public static int getReadingListSortMode(int defaultValue) {
