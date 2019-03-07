@@ -709,4 +709,9 @@
 
     <string name="incognito_display_text"> INCOGNITO ACTIVE </string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="score">Score:</string>
+    <string name="surrender">Surrender</string>
+
 </resources>

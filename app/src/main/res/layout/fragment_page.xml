@@ -54,6 +54,28 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom" />
 
+            <FrameLayout
+                android:id="@+id/the_game_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="?android:windowBackground">
+                <TextView
+                    android:id="@+id/game_footer_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/black87"
+                    android:text="@string/score"
+                    android:textSize="20sp"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:text="@string/surrender"
+                    android:textSize="20sp"/>
+            </FrameLayout>
+
             <org.wikipedia.page.PageActionTabLayout
                 android:id="@+id/page_actions_tab_layout"
                 android:layout_width="match_parent"
