@@ -127,8 +127,9 @@ public class ObservableWebView extends WebView {
     protected void onScrollChanged(int left, int top, int oldLeft, int oldTop) {
         super.onScrollChanged(left, top, oldLeft, oldTop);
 
-        if (mOnScrollChangedCallback != null)
+        if (mOnScrollChangedCallback != null) {
             mOnScrollChangedCallback.onScroll(left, top, oldLeft, oldTop);
+        }
 
         boolean isHumanScroll = Math.abs(top - oldTop) < MAX_HUMAN_SCROLL;
         for (OnScrollChangeListener listener : onScrollChangeListeners) {
@@ -251,4 +252,3 @@ public class ObservableWebView extends WebView {
         void onScroll(int l, int t, int oldl, int oldt);
     }
 }
-
