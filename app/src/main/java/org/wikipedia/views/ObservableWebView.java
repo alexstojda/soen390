@@ -247,8 +247,8 @@ public class ObservableWebView extends WebView {
         void onEdgeSwipe(boolean direction);
     }
 
-    public static interface OnScrollChangedCallback {
-        public void onScroll(int l, int t, int oldl, int oldt);
+    public interface OnScrollChangedCallback {
+        void onScroll(int l, int t, int oldl, int oldt);
     }
 }
 
