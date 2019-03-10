@@ -995,7 +995,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         };
 
-        linkHandler.addGameHandler(new GameClickHandler("Architect", getView().findViewById(R.id.game_footer_text)));
+        linkHandler.addGameHandler(new GameClickHandler("Engineer",
+                getView().findViewById(R.id.game_footer_text), getContext()));
 
         bridge.addListener("linkClicked", linkHandler);
 
