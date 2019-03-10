@@ -3,6 +3,7 @@ package org.wikipedia.espresso.search;
 
 import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -34,6 +37,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
+@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class IncognitoSearchTest {
 
@@ -42,13 +46,49 @@ public class IncognitoSearchTest {
 
     @Test
     public void incognitoSearchTest() {
-        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
-        performSearch("test");
-        clickOnArticle(R.id.page_toolbar, R.id.page_toolbar_container, 0);
-        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
-        checkRecentSearch();
+        sleep(2000);
 
-        ViewInteraction appCompatImageButton4 = onView(
+        setUpApp();
+
+        searchFor("android");
+
+        sleep(2000);
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Navigate up"),
+                        childAtPosition(
+                                allOf(withId(R.id.page_toolbar),
+                                        childAtPosition(
+                                                withId(R.id.page_toolbar_container),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        sleep(700);
+
+        ViewInteraction linearLayout2 = onView(
+                allOf(withId(R.id.search_container),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.fragment_feed_feed),
+                                        0),
+                                0),
+                        isDisplayed()));
+        linearLayout2.perform(click());
+
+        ViewInteraction textView = onView(
+                allOf(withText("android"),
+                        childAtPosition(
+                                allOf(withId(R.id.recent_searches_list),
+                                        childAtPosition(
+                                                withId(R.id.recent_searches),
+                                                2)),
+                                0),
+                        isDisplayed()));
+        textView.check(matches(withText("android")));
+
+        ViewInteraction appCompatImageButton2 = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.search_toolbar),
                                 childAtPosition(
@@ -56,9 +96,9 @@ public class IncognitoSearchTest {
                                         0)),
                         0),
                         isDisplayed()));
-        appCompatImageButton4.perform(click());
+        appCompatImageButton2.perform(click());
 
-        ViewInteraction appCompatImageButton5 = onView(
+        ViewInteraction appCompatImageButton3 = onView(
                 allOf(withContentDescription("Open"),
                         childAtPosition(
                                 allOf(withId(R.id.single_fragment_toolbar),
@@ -67,40 +107,52 @@ public class IncognitoSearchTest {
                                                 1)),
                                 2),
                         isDisplayed()));
-        appCompatImageButton5.perform(click());
+        appCompatImageButton3.perform(click());
 
-        clickSearchContainer(R.id.main_drawer_settings_container, R.id.navigation_drawer_view, 1);
+        enableIncognito();
 
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.recycler_view),
+        sleep(700);
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
                         childAtPosition(
-                                withId(android.R.id.list_container),
-                                0)));
-        recyclerView.perform(actionOnItemAtPosition(2, click()));
-        clickOnArticle(R.id.action_bar, R.id.action_bar_container, 1);
-        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
-        performSearch("android");
-        clickOnArticle(R.id.page_toolbar, R.id.page_toolbar_container, 0);
-        clickSearchContainer(R.id.search_container, R.id.fragment_feed_feed, 0);
-        checkRecentSearch();
-    }
+                                allOf(withId(R.id.main_incognito_display),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        textView2.check(matches(withText("INCOGNITO ACTIVE")));
 
-    private void clickOnArticle(int p, int p2, int i) {
-        ViewInteraction appCompatImageButton3 = onView(
+        searchFor("apple");
+
+        sleep(2000);
+
+        ViewInteraction appCompatImageButton5 = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(
-                                allOf(withId(p),
+                                allOf(withId(R.id.page_toolbar),
                                         childAtPosition(
-                                                withId(p2),
+                                                withId(R.id.page_toolbar_container),
                                                 0)),
-                                i),
+                                0),
                         isDisplayed()));
-        appCompatImageButton3.perform(click());
-    }
+        appCompatImageButton5.perform(click());
 
-    private void checkRecentSearch() {
-        ViewInteraction textView = onView(
-                allOf(withText("test"),
+        sleep(700);
+
+        ViewInteraction linearLayout5 = onView(
+                allOf(withId(R.id.search_container),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.fragment_feed_feed),
+                                        0),
+                                0),
+                        isDisplayed()));
+        linearLayout5.perform(click());
+
+        ViewInteraction textView3 = onView(
+                allOf(withText("android"),
                         childAtPosition(
                                 allOf(withId(R.id.recent_searches_list),
                                         childAtPosition(
@@ -108,10 +160,20 @@ public class IncognitoSearchTest {
                                                 2)),
                                 0),
                         isDisplayed()));
-        textView.check(matches(withText("test")));
+        textView3.check(matches(withText("android")));
     }
 
-    private void performSearch(String test) {
+    private void searchFor(String android) {
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.search_container),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.fragment_feed_feed),
+                                        0),
+                                0),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
         ViewInteraction searchAutoComplete = onView(
                 allOf(withId(R.id.search_src_text),
                         childAtPosition(
@@ -121,7 +183,7 @@ public class IncognitoSearchTest {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText(test), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText(android), closeSoftKeyboard());
 
         DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.search_results_list),
@@ -132,16 +194,67 @@ public class IncognitoSearchTest {
         constraintLayout.perform(click());
     }
 
-    private void clickSearchContainer(int p, int p2, int i) {
-        ViewInteraction linearLayout3 = onView(
-                allOf(withId(p),
+    private void setUpApp() {
+        ViewInteraction appCompatTextView = onView(
+                allOf(withId(R.id.fragment_onboarding_skip_button), withText("Skip"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(p2),
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        1),
+                                0),
+                        isDisplayed()));
+        appCompatTextView.perform(click());
+
+        sleep(700);
+
+        ViewInteraction appCompatButton = onView(
+                allOf(withId(android.R.id.button2), withText("No thanks"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
                                         0),
-                                i),
+                                2)));
+        appCompatButton.perform(scrollTo(), click());
+    }
+
+    private void enableIncognito() {
+        ViewInteraction linearLayout3 = onView(
+                allOf(withId(R.id.main_drawer_settings_container),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.navigation_drawer_view),
+                                        0),
+                                1),
                         isDisplayed()));
         linearLayout3.perform(click());
+
+        sleep(2000);
+
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.recycler_view),
+                        childAtPosition(
+                                withId(android.R.id.list_container),
+                                0)));
+        recyclerView.perform(actionOnItemAtPosition(2, click()));
+
+        ViewInteraction appCompatImageButton4 = onView(
+                allOf(withContentDescription("Navigate up"),
+                        childAtPosition(
+                                allOf(withId(R.id.action_bar),
+                                        childAtPosition(
+                                                withId(R.id.action_bar_container),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatImageButton4.perform(click());
+    }
+
+    private void sleep(int twoSecs) {
+        try {
+            Thread.sleep(twoSecs);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static Matcher<View> childAtPosition(
