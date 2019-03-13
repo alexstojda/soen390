@@ -20,6 +20,8 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -33,9 +35,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -158,11 +162,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageSetToolbarElevationEnabled(boolean enabled);
     }
 
+    private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
     private boolean errorState = false;
-
-    private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
-
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
 
@@ -325,6 +327,59 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 cameraPreview.addView(cameraview);
             }
         }
+
+        FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.floating_action_button);
+
+        ObservableWebView wv = rootView.findViewById(R.id.page_web_view);
+        wv.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback() {
+            public void onScroll(int l, int t, int oldl, int oldt) {
+                if (t > oldt) {
+                    mFloatingActionButton.hide();
+                } else if (t < oldt) {
+                    mFloatingActionButton.show();
+                }
+            }
+        });
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String[] gameDestinations = {"Canada", "World War 2", "Meme Review"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+                builder.setTitle("Start The Game?");
+                builder.setMessage("Try to get to the destination article by navigating through wikipedia via link click");
+                builder.setTitle("Start The Game?");
+
+                Spinner spinner = v.findViewById(R.id.spinner);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, gameDestinations);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("MainActivity", "start");
+
+                        Snackbar.make(view, spinner.getSelectedItem().toString(), Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("MainActivity", "cancel");
+                    }
+                });
+
+                builder.setView(v);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
