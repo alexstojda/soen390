@@ -39,8 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -168,7 +168,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
 
-    @NonNull private TabFunnel tabFunnel = new TabFunnel();
+    @NonNull
+    private TabFunnel tabFunnel = new TabFunnel();
 
     private PageScrollFunnel pageScrollFunnel;
     private LeadImagesHandler leadImagesHandler;
@@ -265,15 +266,18 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return model.getTitle();
     }
 
-    @Nullable public PageTitle getTitleOriginal() {
+    @Nullable
+    public PageTitle getTitleOriginal() {
         return model.getTitleOriginal();
     }
 
-    @NonNull public ShareHandler getShareHandler() {
+    @NonNull
+    public ShareHandler getShareHandler() {
         return shareHandler;
     }
 
-    @Nullable public Page getPage() {
+    @Nullable
+    public Page getPage() {
         return model.getPage();
     }
 
@@ -448,7 +452,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
 
 
-
         webView.setBackgroundColor(webViewBackground);
 
         bridge = new CommunicationBridge(webView);
@@ -525,7 +528,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         });
         webView.setWebViewClient(new OkHttpWebViewClient() {
-            @NonNull @Override public PageViewModel getModel() {
+            @NonNull
+            @Override
+            public PageViewModel getModel() {
                 return model;
             }
         });
@@ -688,8 +693,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
      * This shall be the single point of entry for loading content into the WebView, whether it's
      * loading an entirely new page, refreshing the current page, retrying a failed network
      * request, etc.
-     * @param title Title of the new page to load.
-     * @param entry HistoryEntry associated with the new page.
+     *
+     * @param title         Title of the new page to load.
+     * @param entry         HistoryEntry associated with the new page.
      * @param pushBackStack Whether to push the new page onto the backstack.
      */
     public void loadPage(@NonNull PageTitle title, @NonNull HistoryEntry entry,
@@ -801,7 +807,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
     }
 
-    @NonNull public ViewGroup getTabLayout() {
+    @NonNull
+    public ViewGroup getTabLayout() {
         return tabLayout;
     }
 
@@ -868,6 +875,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     /**
      * Scroll to a specific section in the WebView.
+     *
      * @param sectionAnchor Anchor link of the section to scroll to.
      */
     public void scrollToSection(@NonNull String sectionAnchor) {
@@ -1017,7 +1025,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     private void setupMessageHandlers() {
         linkHandler = new LinkHandler(requireActivity()) {
-            @Override public void onPageLinkClicked(@NonNull String anchor, @NonNull String linkText) {
+            @Override
+            public void onPageLinkClicked(@NonNull String anchor, @NonNull String linkText) {
                 dismissBottomSheet();
                 JSONObject payload = new JSONObject();
                 try {
@@ -1029,11 +1038,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 bridge.sendMessage("handleReference", payload);
             }
 
-            @Override public void onInternalLinkClicked(@NonNull PageTitle title) {
+            @Override
+            public void onInternalLinkClicked(@NonNull PageTitle title) {
                 handleInternalLink(title);
             }
 
-            @Override public WikiSite getWikiSite() {
+            @Override
+            public WikiSite getWikiSite() {
                 return model.getTitle().getWikiSite();
             }
         };
@@ -1309,7 +1320,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 timeSpentSec));
         Completable.fromAction(new UpdateHistoryTask(model.getCurEntry()))
                 .subscribeOn(Schedulers.io())
-                .subscribe(() -> { }, L::e);
+                .subscribe(() -> {
+                }, L::e);
     }
 
     private LinearLayout.LayoutParams getContentTopOffsetParams(@NonNull Context context) {
@@ -1337,6 +1349,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 updateProgressBar(false, true, 0);
             }
         }
+
         @Override
         public void onError() {
             if (avPlayer != null) {
