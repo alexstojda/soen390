@@ -20,6 +20,8 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -33,9 +35,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -103,6 +107,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 import static org.wikipedia.page.PageActivity.ACTION_RESUME_READING;
 import static org.wikipedia.page.PageCacher.loadIntoCache;
 import static org.wikipedia.settings.Prefs.isDescriptionEditTutorialEnabled;
@@ -159,11 +164,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageSetToolbarElevationEnabled(boolean enabled);
     }
 
+    private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
     private boolean errorState = false;
-
-    private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
-
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
 
@@ -320,12 +323,55 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getContext(), "Please enable camera permission in phone settings", Toast.LENGTH_LONG).show();
             } else {
-                FrameLayout cameraPreview = (FrameLayout) rootView.findViewById(R.id.camera_view);
+                FrameLayout cameraPreview = rootView.findViewById(R.id.camera_view);
                 Camera camera = Camera.open();
-                CameraPreview cameraview = new CameraPreview(getContext(), camera);
-                cameraPreview.addView(cameraview);
+                CameraPreview cameraView = new CameraPreview(getContext(), camera);
+                cameraPreview.addView(cameraView);
             }
         }
+
+        FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.the_game_floating_action_button);
+
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            mFloatingActionButton.hide();
+        }
+
+        webView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
+            if (Prefs.isDistractionFreeModeEnabled() || t > oldt) {
+                mFloatingActionButton.hide();
+            } else if (t < oldt) {
+                mFloatingActionButton.show();
+            }
+        });
+
+        mFloatingActionButton.setOnClickListener(view -> {
+
+            String[] gameDestinations = {"Canada", "World War 2", "Meme Review"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+            builder.setTitle("Start The Game?");
+            builder.setMessage("Try to get to the destination article by navigating through wikipedia via link click");
+            builder.setTitle("Start The Game?");
+
+            Spinner spinner = v.findViewById(R.id.spinner);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameDestinations);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            builder.setPositiveButton("Start", (dialog, which) -> {
+                Log.d("MainActivity", "start");
+
+                Snackbar.make(view, spinner.getSelectedItem().toString(), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> Log.d("MainActivity", "cancel"));
+
+            builder.setView(v);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
 
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
@@ -337,7 +383,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         tabLayout = rootView.findViewById(R.id.page_actions_tab_layout);
         tabLayout.setPageActionTabsCallback(pageActionTabsCallback);
-
         errorView = rootView.findViewById(R.id.page_error);
 
         bottomContentView = rootView.findViewById(R.id.page_bottom_view);
@@ -397,6 +442,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         int webViewBackground = (Prefs.isWikiWalkingEnabled() ? Color.argb(100, 222, 226, 232) : getThemedColor(requireActivity(), R.attr.paper_color));
 
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            tabLayout.setVisibility(GONE);
+        }
 
         webView.setBackgroundColor(webViewBackground);
 
@@ -660,7 +708,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         tocHandler.setEnabled(false);
 
         errorState = false;
-        errorView.setVisibility(View.GONE);
+        errorView.setVisibility(GONE);
         tabLayout.enableAllTabs();
 
         model.setTitle(title);
@@ -897,7 +945,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             return;
         }
 
-        errorView.setVisibility(View.GONE);
+        errorView.setVisibility(GONE);
 
         tabLayout.enableAllTabs();
         errorState = false;

@@ -395,6 +395,14 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_show_link_previews, true);
     }
 
+    public static void enableLinkPreview() {
+        setBoolean(R.string.preference_key_show_link_previews, true);
+    }
+
+    public static void disableLinkPreview() {
+        setBoolean(R.string.preference_key_show_link_previews, false);
+    }
+
     // Incognito Mode Getter
     public static boolean isIncognitoEnabled() {
         return getBoolean(R.string.preference_key_incognito_mode, false);
@@ -414,6 +422,23 @@ public final class Prefs {
     }
     public static void setWikiWalkeyEnabled(boolean enabled) {
         setBoolean(R.string.preference_key_wiki_walkey, enabled);
+    }
+
+    public static void disableWikiWalkingEnabled() {
+        setBoolean(R.string.preference_key_wiki_walkey, false);
+    }
+
+
+    public static boolean isDistractionFreeModeEnabled() {
+       return getBoolean(R.string.preference_key_distraction_free, false);
+    }
+
+    public static void disableDistractionFreeMode() {
+        setBoolean(R.string.preference_key_distraction_free, false);
+    }
+
+    public static void enableDistractionFreeMode() {
+        setBoolean(R.string.preference_key_distraction_free, true);
     }
 
     public static int getReadingListSortMode(int defaultValue) {

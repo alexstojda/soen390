@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:id="@+id/main_incognito_display"
+        android:name="org.wikipedia.incognito.IncognitoActiveFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_page_DF_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/base10">
+
+        <fragment
+            android:id="@+id/page_fragment"
+            android:name="org.wikipedia.page.PageFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/fragment_page"
+            tools:layout="@layout/fragment_page" />
+
+        <FrameLayout
+            android:id="@+id/page_DF_toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/page_toolbar_color"
+            android:elevation="4dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/page_DF_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/PageToolbarTheme"
+                app:navigationIcon="@drawable/ic_icon_w_back"
+                app:titleTextColor="?attr/page_toolbar_icon_color">
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/search_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:scaleType="center"
+                        app:srcCompat="@drawable/ic_search_white_24dp"
+                        app:tint="?attr/material_theme_secondary_color"
+                        android:contentDescription="@string/search_hint" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/search_hint"
+                        android:textColor="?attr/material_theme_de_emphasised_color" />
+
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+
+            <ProgressBar
+                android:id="@+id/page_progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginTop="-7dp"
+                android:max="10000" />
+
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>
