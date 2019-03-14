@@ -395,6 +395,14 @@ public final class Prefs {
         return getBoolean(R.string.preference_key_show_link_previews, true);
     }
 
+    public static void enableLinkPreview() {
+        setBoolean(R.string.preference_key_show_link_previews, true);
+    }
+
+    public static void disableLinkPreview() {
+        setBoolean(R.string.preference_key_show_link_previews, false);
+    }
+
     // Incognito Mode Getter
     public static boolean isIncognitoEnabled() {
         return getBoolean(R.string.preference_key_incognito_mode, false);
@@ -418,7 +426,6 @@ public final class Prefs {
 
     public static void disableWikiWalkingEnabled() {
         setBoolean(R.string.preference_key_wiki_walkey, false);
-        return;
     }
 
 
