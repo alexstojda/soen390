@@ -412,6 +412,9 @@ public final class Prefs {
     public static boolean isWikiWalkingEnabled() {
         return getBoolean(R.string.preference_key_wiki_walkey, false);
     }
+    public static void setWikiWalkeyEnabled(boolean enabled) {
+        setBoolean(R.string.preference_key_wiki_walkey, enabled);
+    }
 
     public static int getReadingListSortMode(int defaultValue) {
         return getInt(R.string.preference_key_reading_list_sort_mode, defaultValue);

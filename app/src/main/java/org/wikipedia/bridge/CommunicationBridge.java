@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
+import org.wikipedia.settings.Prefs;
 import org.wikipedia.util.FileUtil;
 import org.wikipedia.util.ResourceUtil;
 
@@ -67,12 +68,15 @@ public class CommunicationBridge {
 
     public void resetHtml(@NonNull Context context, @NonNull String assetFileName, @NonNull String wikiUrl) {
         String html = "";
+
         try {
             final int rgbMask = 0xFFFFFF;
+
+            String background = (Prefs.isWikiWalkingEnabled() ? "transparent" : String.format("#%06X", ResourceUtil.getThemedColor(context, R.attr.paper_color) & rgbMask));
+
             html = FileUtil.readFile(WikipediaApp.getInstance().getAssets().open(assetFileName))
                     .replace("$wikiurl", wikiUrl)
-                    .replace("$bodybackground", String.format("#%06X",
-                            ResourceUtil.getThemedColor(context, R.attr.paper_color) & rgbMask));
+                    .replace("$bodybackground", background);
         } catch (IOException e) {
             e.printStackTrace();
         }
