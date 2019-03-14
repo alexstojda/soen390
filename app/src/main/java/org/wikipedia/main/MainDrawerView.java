@@ -14,6 +14,7 @@ import org.wikipedia.BuildConfig;
 import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.auth.AccountUtil;
+import org.wikipedia.settings.Prefs;
 import org.wikipedia.util.ResourceUtil;
 import org.wikipedia.util.UriUtil;
 
@@ -28,6 +29,8 @@ public class MainDrawerView extends ScrollView {
         void settingsClick();
         void configureFeedClick();
         void aboutClick();
+        void distractionFreeClick();
+        void stopDistractionFreeClick();
     }
 
     @BindView(R.id.main_drawer_account_name) TextView accountNameView;
@@ -35,6 +38,8 @@ public class MainDrawerView extends ScrollView {
     @BindView(R.id.main_drawer_account_avatar) ImageView accountAvatar;
     @BindView(R.id.main_drawer_account_wiki_globe) ImageView accountWikiGlobe;
     @BindView(R.id.main_drawer_notifications_container) ViewGroup notificationsContainer;
+    @BindView(R.id.main_drawer_distraction_free) ViewGroup distractionFreeContainer;
+    @BindView(R.id.main_drawer_distraction_free_stop) ViewGroup distractionFreeContainerStop;
     @Nullable Callback callback;
 
     public MainDrawerView(Context context) {
@@ -73,6 +78,13 @@ public class MainDrawerView extends ScrollView {
             accountWikiGlobe.setVisibility(View.VISIBLE);
             notificationsContainer.setVisibility(View.GONE);
         }
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            distractionFreeContainer.setVisibility(View.GONE);
+            distractionFreeContainerStop.setVisibility(View.VISIBLE);
+        } else {
+            distractionFreeContainer.setVisibility(View.VISIBLE);
+            distractionFreeContainerStop.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.main_drawer_settings_container) void onSettingsClick() {
@@ -102,6 +114,18 @@ public class MainDrawerView extends ScrollView {
     @OnClick(R.id.main_drawer_about_container) void onAboutClick() {
         if (callback != null) {
             callback.aboutClick();
+        }
+    }
+
+    @OnClick(R.id.main_drawer_distraction_free) void distractionFreeClick() {
+        if (callback != null) {
+            callback.distractionFreeClick();
+        }
+    }
+
+    @OnClick(R.id.main_drawer_distraction_free_stop) void stopDistractionFreeClick() {
+        if (callback != null) {
+            callback.stopDistractionFreeClick();
         }
     }
 

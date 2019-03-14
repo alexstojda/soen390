@@ -723,6 +723,16 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         super.onResume();
         app.resetWikiSite();
         app.getSessionFunnel().touchSession();
+
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            tabsButtonContainer.setVisibility(View.GONE);
+            tabsButton.setVisibility(View.GONE);
+            overflowButton.setVisibility(View.GONE);
+        } else {
+            tabsButtonContainer.setVisibility(View.VISIBLE);
+            tabsButton.setVisibility(View.VISIBLE);
+            overflowButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
