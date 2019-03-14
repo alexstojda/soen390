@@ -331,8 +331,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.the_game_floating_action_button);
 
-        if(Prefs.isDistractionFreeModeEnabled())
+        if (Prefs.isDistractionFreeModeEnabled()){
             mFloatingActionButton.hide();
+        }
 
         webView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
             if (Prefs.isDistractionFreeModeEnabled() || t > oldt) {
