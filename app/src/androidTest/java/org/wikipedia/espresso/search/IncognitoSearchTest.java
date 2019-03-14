@@ -25,7 +25,6 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -65,7 +64,7 @@ public class IncognitoSearchTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
-        sleep(700);
+        sleep(2000);
 
         ViewInteraction linearLayout2 = onView(
                 allOf(withId(R.id.search_container),
@@ -76,7 +75,7 @@ public class IncognitoSearchTest {
                                 0),
                         isDisplayed()));
         linearLayout2.perform(click());
-
+        sleep(2000);
         ViewInteraction textView = onView(
                 allOf(withText("android"),
                         childAtPosition(
@@ -87,7 +86,7 @@ public class IncognitoSearchTest {
                                 0),
                         isDisplayed()));
         textView.check(matches(withText("android")));
-
+        sleep(2000);
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.search_toolbar),
@@ -97,6 +96,7 @@ public class IncognitoSearchTest {
                         0),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
+        sleep(2000);
 
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withContentDescription("Open"),
@@ -111,7 +111,7 @@ public class IncognitoSearchTest {
 
         enableIncognito();
 
-        sleep(700);
+        sleep(2000);
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.incognito_active_display_text), withText("INCOGNITO ACTIVE"),
@@ -139,7 +139,7 @@ public class IncognitoSearchTest {
                         isDisplayed()));
         appCompatImageButton5.perform(click());
 
-        sleep(700);
+        sleep(2000);
 
         ViewInteraction linearLayout5 = onView(
                 allOf(withId(R.id.search_container),
@@ -150,6 +150,7 @@ public class IncognitoSearchTest {
                                 0),
                         isDisplayed()));
         linearLayout5.perform(click());
+        sleep(2000);
 
         ViewInteraction textView3 = onView(
                 allOf(withText("android"),
@@ -173,7 +174,7 @@ public class IncognitoSearchTest {
                                 0),
                         isDisplayed()));
         linearLayout.perform(click());
-
+        sleep(2000);
         ViewInteraction searchAutoComplete = onView(
                 allOf(withId(R.id.search_src_text),
                         childAtPosition(
@@ -184,7 +185,7 @@ public class IncognitoSearchTest {
                                 0),
                         isDisplayed()));
         searchAutoComplete.perform(replaceText(android), closeSoftKeyboard());
-
+        sleep(2000);
         DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.search_results_list),
                         childAtPosition(
@@ -192,6 +193,7 @@ public class IncognitoSearchTest {
                                 1)))
                 .atPosition(0);
         constraintLayout.perform(click());
+        sleep(2000);
     }
 
     private void setUpApp() {
@@ -205,16 +207,16 @@ public class IncognitoSearchTest {
                         isDisplayed()));
         appCompatTextView.perform(click());
 
-        sleep(700);
+        sleep(2000);
 
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(android.R.id.button2), withText("No thanks"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                2)));
-        appCompatButton.perform(scrollTo(), click());
+//        ViewInteraction appCompatButton = onView(
+//                allOf(withId(android.R.id.button2), withText("No thanks"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(R.id.buttonPanel),
+//                                        0),
+//                                2)));
+//        appCompatButton.perform(scrollTo(), click());
     }
 
     private void enableIncognito() {
@@ -236,6 +238,8 @@ public class IncognitoSearchTest {
                                 withId(android.R.id.list_container),
                                 0)));
         recyclerView.perform(actionOnItemAtPosition(2, click()));
+
+        sleep(2000);
 
         ViewInteraction appCompatImageButton4 = onView(
                 allOf(withContentDescription("Navigate up"),
