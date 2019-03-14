@@ -2,6 +2,7 @@ package org.wikipedia.espresso.search;
 
 
 import android.support.test.espresso.DataInteraction;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -25,6 +26,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -208,15 +210,18 @@ public class IncognitoSearchTest {
         appCompatTextView.perform(click());
 
         sleep(2000);
-
-//        ViewInteraction appCompatButton = onView(
-//                allOf(withId(android.R.id.button2), withText("No thanks"),
-//                        childAtPosition(
-//                                childAtPosition(
-//                                        withId(R.id.buttonPanel),
-//                                        0),
-//                                2)));
-//        appCompatButton.perform(scrollTo(), click());
+        try {
+            ViewInteraction appCompatButton = onView(
+                    allOf(withId(android.R.id.button2), withText("No thanks"),
+                            childAtPosition(
+                                    childAtPosition(
+                                            withId(R.id.buttonPanel),
+                                            0),
+                                    2)));
+            appCompatButton.perform(scrollTo(), click());
+        } catch (NoMatchingViewException e) {
+            //keep going since this version of OS/Device does not have the card
+        }
     }
 
     private void enableIncognito() {
