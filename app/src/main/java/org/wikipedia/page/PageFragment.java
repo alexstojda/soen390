@@ -331,7 +331,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.the_game_floating_action_button);
 
-        if (Prefs.isDistractionFreeModeEnabled()){
+        if (Prefs.isDistractionFreeModeEnabled()) {
             mFloatingActionButton.hide();
         }
 
