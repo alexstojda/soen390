@@ -321,6 +321,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         webView = rootView.findViewById(R.id.page_web_view);
         initWebViewListeners();
 
+        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
+
         if (Prefs.isWikiWalkingEnabled()) {
 
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -347,7 +349,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         });
 
         gameFooter = rootView.findViewById(R.id.the_game_footer);
-        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
 
         gameStartButton.setOnClickListener(view -> {
 
@@ -416,8 +417,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private void endGame() {
         gameStartButton.show();
         gameFooter.setVisibility(View.GONE);
-        setDistractionFreeModeEnabled(false);
+        tabLayout.setVisibility(View.VISIBLE);
         Prefs.disableDistractionFreeMode();
+        setDistractionFreeModeEnabled(false);
     }
 
     @Override
