@@ -162,7 +162,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         void onPageSetToolbarElevationEnabled(boolean enabled);
 
-        void onPageToggleDistractionFreeEnabled(boolean enabled);
+        void onPageToggleDistractionFreeEnabledForGame();
     }
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
@@ -368,7 +368,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             builder.setPositiveButton("Start", (dialog, which) -> {
                 Log.d("MainActivity", "start");
                 Prefs.enableDistractionFreeMode();
-                setDistractionFreeModeEnabled(true);
+                toggleDistractionFreeMode();
                 gameStartButton.hide();
                 gameFooter.setVisibility(View.VISIBLE);
                 linkHandler.addGameHandler(new GameClickHandler(spinner.getSelectedItem().toString(),
@@ -419,7 +419,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         gameFooter.setVisibility(View.GONE);
         tabLayout.setVisibility(View.VISIBLE);
         Prefs.disableDistractionFreeMode();
-        setDistractionFreeModeEnabled(false);
+        toggleDistractionFreeMode();
     }
 
     @Override
@@ -1310,10 +1310,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
     }
 
-    public void setDistractionFreeModeEnabled(boolean enabled) {
+    public void toggleDistractionFreeMode() {
         Callback callback = callback();
         if (callback != null) {
-            callback.onPageToggleDistractionFreeEnabled(enabled);
+            callback.onPageToggleDistractionFreeEnabledForGame();
         }
     }
 

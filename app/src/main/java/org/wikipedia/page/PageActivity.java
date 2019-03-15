@@ -614,8 +614,8 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
     }
 
     @Override
-    public void onPageToggleDistractionFreeEnabled(boolean enabled) {
-        toggleDistractionFreeMode();
+    public void onPageToggleDistractionFreeEnabledForGame() {
+        toggleDistractionFreeMode(true);
     }
 
     @Override
@@ -729,14 +729,17 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         app.resetWikiSite();
         app.getSessionFunnel().touchSession();
 
-        toggleDistractionFreeMode();
+        toggleDistractionFreeMode(false);
     }
 
-    private void toggleDistractionFreeMode() {
+    private void toggleDistractionFreeMode(boolean theGame) {
         if (Prefs.isDistractionFreeModeEnabled()) {
             tabsButtonContainer.setVisibility(View.GONE);
             tabsButton.setVisibility(View.GONE);
             overflowButton.setVisibility(View.GONE);
+            if (theGame) {
+                searchButton.setVisibility(View.GONE);
+            }
             Prefs.enableDistractionFreeMode();
             Prefs.disableWikiWalkingEnabled();
             Prefs.disableLinkPreview();
@@ -744,6 +747,7 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
             tabsButtonContainer.setVisibility(View.VISIBLE);
             tabsButton.setVisibility(View.VISIBLE);
             overflowButton.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
             Prefs.disableDistractionFreeMode();
         }
     }
