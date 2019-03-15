@@ -29,7 +29,7 @@ public class GameClickHandler {
         textView.setText("Score: " + gameScore);
     }
 
-    public void verifyArticle(String title) {
+    public boolean verifyArticle(String title) {
 
         L.e("passed title: " + title);
         if (title.equals(endTitle)) {
@@ -37,6 +37,10 @@ public class GameClickHandler {
             System.err.println("It took you: " + gameScore + " tries");
             Toast toast = Toast.makeText(context, "You have won The Game.", 3000);
             toast.show();
+
+
+            return true;
         }
+        return false;
     }
 }

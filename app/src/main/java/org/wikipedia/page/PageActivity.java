@@ -614,6 +614,11 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
     }
 
     @Override
+    public void onPageToggleDistractionFreeEnabled(boolean enabled) {
+        toggleDistractionFreeMode();
+    }
+
+    @Override
     public void onSearchOpen() {
         toolbarContainerView.setVisibility(View.GONE);
     }
@@ -724,14 +729,22 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         app.resetWikiSite();
         app.getSessionFunnel().touchSession();
 
+        toggleDistractionFreeMode();
+    }
+
+    private void toggleDistractionFreeMode() {
         if (Prefs.isDistractionFreeModeEnabled()) {
             tabsButtonContainer.setVisibility(View.GONE);
             tabsButton.setVisibility(View.GONE);
             overflowButton.setVisibility(View.GONE);
+            Prefs.enableDistractionFreeMode();
+            Prefs.disableWikiWalkingEnabled();
+            Prefs.disableLinkPreview();
         } else {
             tabsButtonContainer.setVisibility(View.VISIBLE);
             tabsButton.setVisibility(View.VISIBLE);
             overflowButton.setVisibility(View.VISIBLE);
+            Prefs.disableDistractionFreeMode();
         }
     }
 

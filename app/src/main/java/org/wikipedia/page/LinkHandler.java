@@ -24,6 +24,10 @@ import static org.wikipedia.util.UriUtil.handleExternalLink;
  * Handles any html links coming from a {@link org.wikipedia.page.PageFragment}
  */
 public abstract class LinkHandler implements CommunicationBridge.JSEventListener, LinkMovementMethodExt.UrlHandlerWithText {
+    public interface Callback {
+        void onVictoryEndGame();
+    }
+
     private static final List<String> KNOWN_SCHEMES
             = Arrays.asList("http", "https", "geo", "file", "content");
 
@@ -58,7 +62,6 @@ public abstract class LinkHandler implements CommunicationBridge.JSEventListener
 
     @Override
     public void onUrlClick(@NonNull String href, @Nullable String titleString, @NonNull String linkText) {
-        gameClickHandler.incrementScore();
         if (href.startsWith("//")) {
             // for URLs without an explicit scheme, add our default scheme explicitly.
             href = getWikiSite().scheme() + ":" + href;
@@ -80,10 +83,12 @@ public abstract class LinkHandler implements CommunicationBridge.JSEventListener
                     .path(href)
                     .build();
         }
-
-        Log.d("Wikipedia", "Link clicked was " + uri.toString());
-        Log.e("Wikipedia", "TITLE STRING : " + titleString);
-        gameClickHandler.verifyArticle(titleString);
+        if (gameClickHandler != null) {
+            gameClickHandler.incrementScore();
+            if (gameClickHandler.verifyArticle(titleString)) {
+                removeGameHandler();
+            }
+        }
         if (!TextUtils.isEmpty(uri.getPath()) && WikiSite.supportedAuthority(uri.getAuthority())
                 && (uri.getPath().startsWith("/wiki/") || uri.getPath().startsWith("/zh-"))) {
             WikiSite site = new WikiSite(uri);
@@ -110,6 +115,10 @@ public abstract class LinkHandler implements CommunicationBridge.JSEventListener
 
     public void addGameHandler(GameClickHandler gameClickHandler) {
         this.gameClickHandler = gameClickHandler;
+    }
+
+    public void removeGameHandler() {
+        this.gameClickHandler = null;
     }
 
     public void onExternalLinkClicked(@NonNull Uri uri) {

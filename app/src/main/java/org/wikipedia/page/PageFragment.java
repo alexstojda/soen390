@@ -21,7 +21,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -162,6 +161,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageSetToolbarFadeEnabled(boolean enabled);
 
         void onPageSetToolbarElevationEnabled(boolean enabled);
+
+        void onPageToggleDistractionFreeEnabled(boolean enabled);
     }
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
@@ -184,6 +185,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private PageActionTabLayout tabLayout;
     private ToCHandler tocHandler;
 
+    private FloatingActionButton gameStartButton;
+    private View gameFooter;
     private CommunicationBridge bridge;
     private LinkHandler linkHandler;
     private EditHandler editHandler;
@@ -330,27 +333,28 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         }
 
-        FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.the_game_floating_action_button);
 
         if (Prefs.isDistractionFreeModeEnabled()) {
-            mFloatingActionButton.hide();
+            gameStartButton.hide();
         }
 
         webView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
             if (Prefs.isDistractionFreeModeEnabled() || t > oldt) {
-                mFloatingActionButton.hide();
+                gameStartButton.hide();
             } else if (t < oldt) {
-                mFloatingActionButton.show();
+                gameStartButton.show();
             }
         });
 
-        mFloatingActionButton.setOnClickListener(view -> {
+        gameFooter = rootView.findViewById(R.id.the_game_footer);
+        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
 
-            String[] gameDestinations = {"Canada", "World War 2", "Meme Review"};
+        gameStartButton.setOnClickListener(view -> {
+
+            String[] gameDestinations = {"Canada", "United States", "Mexico"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
-            builder.setTitle("Start The Game?");
             builder.setMessage("Try to get to the destination article by navigating through wikipedia via link click");
             builder.setTitle("Start The Game?");
 
@@ -362,9 +366,20 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
             builder.setPositiveButton("Start", (dialog, which) -> {
                 Log.d("MainActivity", "start");
+                Prefs.enableDistractionFreeMode();
+                setDistractionFreeModeEnabled(true);
+                gameStartButton.hide();
+                gameFooter.setVisibility(View.VISIBLE);
+                linkHandler.addGameHandler(new GameClickHandler(spinner.getSelectedItem().toString(),
+                        getView().findViewById(R.id.game_footer_text), getContext()));
 
-                Snackbar.make(view, spinner.getSelectedItem().toString(), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                rootView.findViewById(R.id.game_end_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        endGame();
+                    }
+                });
+                tabLayout.setVisibility(GONE);
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> Log.d("MainActivity", "cancel"));
 
@@ -396,6 +411,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         snackbarHideHandler.setScrollView(webView);
 
         return rootView;
+    }
+
+    private void endGame() {
+        gameStartButton.show();
+        gameFooter.setVisibility(View.GONE);
+        setDistractionFreeModeEnabled(false);
+        Prefs.disableDistractionFreeMode();
     }
 
     @Override
@@ -1043,8 +1065,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         };
 
-        linkHandler.addGameHandler(new GameClickHandler("Engineer",
-                getView().findViewById(R.id.game_footer_text), getContext()));
+//        linkHandler.addGameHandler(new GameClickHandler("Engineer",
+//                getView().findViewById(R.id.game_footer_text), getContext()));
 
         bridge.addListener("linkClicked", linkHandler);
 
@@ -1283,6 +1305,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         Callback callback = callback();
         if (callback != null) {
             callback.onPageSetToolbarElevationEnabled(enabled);
+        }
+    }
+
+    public void setDistractionFreeModeEnabled(boolean enabled) {
+        Callback callback = callback();
+        if (callback != null) {
+            callback.onPageToggleDistractionFreeEnabled(enabled);
         }
     }
 

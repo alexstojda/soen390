@@ -24,6 +24,15 @@
                 android:layout_height="match_parent"
                 android:scrollbars="none"/>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/the_game_floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="65dp"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_game" />
+
             <org.wikipedia.page.leadimages.PageHeaderView
                 android:id="@+id/page_header_view"
                 android:layout_width="match_parent"
@@ -55,6 +64,7 @@
 
             <FrameLayout
                 android:id="@+id/the_game_footer"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -68,6 +78,7 @@
                     android:text="@string/score"
                     android:textSize="20sp"/>
                 <Button
+                    android:id="@+id/game_end_button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
