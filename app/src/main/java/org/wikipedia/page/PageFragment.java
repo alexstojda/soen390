@@ -372,7 +372,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 gameStartButton.hide();
                 gameFooter.setVisibility(View.VISIBLE);
                 linkHandler.addGameHandler(new GameClickHandler(spinner.getSelectedItem().toString(),
-                        getView().findViewById(R.id.game_footer_text), getContext()));
+                        getView().findViewById(R.id.game_footer_text), this));
 
                 rootView.findViewById(R.id.game_end_button).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -414,7 +414,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return rootView;
     }
 
-    private void endGame() {
+    public void endGame() {
         gameStartButton.show();
         gameFooter.setVisibility(View.GONE);
         tabLayout.setVisibility(View.VISIBLE);
