@@ -21,7 +21,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,6 +82,7 @@ import org.wikipedia.readinglist.ReadingListBookmarkMenu;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
 import org.wikipedia.readinglist.database.ReadingListPage;
 import org.wikipedia.settings.Prefs;
+import org.wikipedia.thegame.GameClickHandler;
 import org.wikipedia.util.ActiveTimer;
 import org.wikipedia.util.AnimationUtil;
 import org.wikipedia.util.DimenUtil;
@@ -161,6 +162,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageSetToolbarFadeEnabled(boolean enabled);
 
         void onPageSetToolbarElevationEnabled(boolean enabled);
+
+        void onPageToggleDistractionFreeEnabledForGame();
     }
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
@@ -182,7 +185,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private WikiPageErrorView errorView;
     private PageActionTabLayout tabLayout;
     private ToCHandler tocHandler;
+    private Button surrenderButton;
+    private Spinner spinner;
 
+    private FloatingActionButton gameStartButton;
+    private View gameFooter;
     private CommunicationBridge bridge;
     private LinkHandler linkHandler;
     private EditHandler editHandler;
@@ -312,65 +319,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                              final Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_page, container, false);
         pageHeaderView = rootView.findViewById(R.id.page_header_view);
-        DimenUtil.setViewHeight(pageHeaderView, leadImageHeightForDevice());
-
         webView = rootView.findViewById(R.id.page_web_view);
-        initWebViewListeners();
-
-        if (Prefs.isWikiWalkingEnabled()) {
-
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Please enable camera permission in phone settings", Toast.LENGTH_LONG).show();
-            } else {
-                FrameLayout cameraPreview = rootView.findViewById(R.id.camera_view);
-                Camera camera = Camera.open();
-                CameraPreview cameraView = new CameraPreview(getContext(), camera);
-                cameraPreview.addView(cameraView);
-            }
-        }
-
-        FloatingActionButton mFloatingActionButton = rootView.findViewById(R.id.the_game_floating_action_button);
-
-        if (Prefs.isDistractionFreeModeEnabled()) {
-            mFloatingActionButton.hide();
-        }
-
-        webView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
-            if (Prefs.isDistractionFreeModeEnabled() || t > oldt) {
-                mFloatingActionButton.hide();
-            } else if (t < oldt) {
-                mFloatingActionButton.show();
-            }
-        });
-
-        mFloatingActionButton.setOnClickListener(view -> {
-
-            String[] gameDestinations = {"Canada", "World War 2", "Meme Review"};
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
-            builder.setTitle("Start The Game?");
-            builder.setMessage("Try to get to the destination article by navigating through wikipedia via link click");
-            builder.setTitle("Start The Game?");
-
-            Spinner spinner = v.findViewById(R.id.spinner);
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameDestinations);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-
-            builder.setPositiveButton("Start", (dialog, which) -> {
-                Log.d("MainActivity", "start");
-
-                Snackbar.make(view, spinner.getSelectedItem().toString(), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            });
-            builder.setNegativeButton("Cancel", (dialog, which) -> Log.d("MainActivity", "cancel"));
-
-            builder.setView(v);
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        });
 
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
@@ -385,6 +334,63 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         errorView = rootView.findViewById(R.id.page_error);
 
         bottomContentView = rootView.findViewById(R.id.page_bottom_view);
+        surrenderButton = rootView.findViewById(R.id.game_end_button);
+        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
+        gameFooter = rootView.findViewById(R.id.the_game_footer);
+
+
+        DimenUtil.setViewHeight(pageHeaderView, leadImageHeightForDevice());
+        initWebViewListeners();
+
+        if (Prefs.isWikiWalkingEnabled()) {
+
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), getString(R.string.camera_permission), Toast.LENGTH_LONG).show();
+            } else {
+                FrameLayout cameraPreview = rootView.findViewById(R.id.camera_view);
+                Camera camera = Camera.open();
+                CameraPreview cameraView = new CameraPreview(getContext(), camera);
+                cameraPreview.addView(cameraView);
+            }
+        }
+
+        if (Prefs.isDistractionFreeModeEnabled()) {
+            gameStartButton.hide();
+        }
+
+        webView.setOnScrollChangedCallback((l, t, oldl, oldt) -> {
+            if (Prefs.isDistractionFreeModeEnabled() || t > oldt) {
+                gameStartButton.hide();
+            } else if (t < oldt) {
+                gameStartButton.show();
+            }
+        });
+
+        gameStartButton.setOnClickListener(view -> {
+
+            String[] gameDestinations = {"Canada", "Concordia University", "Capstone course"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+            builder.setMessage(R.string.game_instructions);
+            builder.setTitle(R.string.game_start_title);
+
+            spinner = v.findViewById(R.id.spinner);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, gameDestinations);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            builder.setPositiveButton(R.string.game_start, (dialog, which) -> {
+                startGame();
+
+            });
+            builder.setNegativeButton(R.string.game_cancel, (dialog, which) -> Log.d("MainActivity", "cancel"));
+
+            builder.setView(v);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
 
         PageActionToolbarHideHandler pageActionToolbarHideHandler
                 = new PageActionToolbarHideHandler(tabLayout, null);
@@ -395,6 +401,28 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         snackbarHideHandler.setScrollView(webView);
 
         return rootView;
+    }
+
+    private void startGame() {
+        Prefs.enableDistractionFreeMode();
+        toggleDistractionFreeMode();
+        gameStartButton.hide();
+        gameFooter.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(GONE);
+        //Adds the listener to the Surrender button.
+        surrenderButton.setOnClickListener(v1 -> endGame());
+        //The following adds the Game Handler to the link handler, so it detects when
+        //a click occurs to increment the score and verify the article title.
+        linkHandler.addGameHandler(new GameClickHandler(spinner.getSelectedItem().toString(),
+                getView().findViewById(R.id.game_footer_text), this));
+    }
+
+    public void endGame() {
+        gameStartButton.show();
+        gameFooter.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.VISIBLE);
+        Prefs.disableDistractionFreeMode();
+        toggleDistractionFreeMode();
     }
 
     @Override
@@ -1041,6 +1069,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 return model.getTitle().getWikiSite();
             }
         };
+
         bridge.addListener("linkClicked", linkHandler);
 
         bridge.addListener("referenceClicked", new ReferenceHandler() {
@@ -1278,6 +1307,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         Callback callback = callback();
         if (callback != null) {
             callback.onPageSetToolbarElevationEnabled(enabled);
+        }
+    }
+
+    public void toggleDistractionFreeMode() {
+        Callback callback = callback();
+        if (callback != null) {
+            callback.onPageToggleDistractionFreeEnabledForGame();
         }
     }
 

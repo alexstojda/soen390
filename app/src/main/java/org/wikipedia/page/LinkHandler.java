@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.wikipedia.bridge.CommunicationBridge;
 import org.wikipedia.dataclient.WikiSite;
+import org.wikipedia.thegame.GameClickHandler;
 import org.wikipedia.util.UriUtil;
 
 import java.util.Arrays;
@@ -23,10 +24,14 @@ import static org.wikipedia.util.UriUtil.handleExternalLink;
  * Handles any html links coming from a {@link org.wikipedia.page.PageFragment}
  */
 public abstract class LinkHandler implements CommunicationBridge.JSEventListener, LinkMovementMethodExt.UrlHandlerWithText {
+
     private static final List<String> KNOWN_SCHEMES
             = Arrays.asList("http", "https", "geo", "file", "content");
 
-    @NonNull private final Context context;
+    private GameClickHandler gameClickHandler;
+
+    @NonNull
+    private final Context context;
 
     public LinkHandler(@NonNull Context context) {
         this.context = context;
@@ -75,8 +80,12 @@ public abstract class LinkHandler implements CommunicationBridge.JSEventListener
                     .path(href)
                     .build();
         }
-
-        Log.d("Wikipedia", "Link clicked was " + uri.toString());
+        if (gameClickHandler != null) {
+            gameClickHandler.incrementScore();
+            if (gameClickHandler.verifyArticle(titleString)) {
+                removeGameHandler();
+            }
+        }
         if (!TextUtils.isEmpty(uri.getPath()) && WikiSite.supportedAuthority(uri.getAuthority())
                 && (uri.getPath().startsWith("/wiki/") || uri.getPath().startsWith("/zh-"))) {
             WikiSite site = new WikiSite(uri);
@@ -101,11 +110,20 @@ public abstract class LinkHandler implements CommunicationBridge.JSEventListener
         }
     }
 
+    public void addGameHandler(GameClickHandler gameClickHandler) {
+        this.gameClickHandler = gameClickHandler;
+    }
+
+    public void removeGameHandler() {
+        this.gameClickHandler = null;
+    }
+
     public void onExternalLinkClicked(@NonNull Uri uri) {
         handleExternalLink(context, uri);
     }
 
-    @NonNull protected Context getContext() {
+    @NonNull
+    protected Context getContext() {
         return context;
     }
 }

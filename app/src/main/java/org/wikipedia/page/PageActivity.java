@@ -614,6 +614,11 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
     }
 
     @Override
+    public void onPageToggleDistractionFreeEnabledForGame() {
+        toggleDistractionFreeMode(true);
+    }
+
+    @Override
     public void onSearchOpen() {
         toolbarContainerView.setVisibility(View.GONE);
     }
@@ -724,14 +729,26 @@ public class PageActivity extends BaseActivity implements PageFragment.Callback,
         app.resetWikiSite();
         app.getSessionFunnel().touchSession();
 
+        toggleDistractionFreeMode(false);
+    }
+
+    private void toggleDistractionFreeMode(boolean theGame) {
         if (Prefs.isDistractionFreeModeEnabled()) {
             tabsButtonContainer.setVisibility(View.GONE);
             tabsButton.setVisibility(View.GONE);
             overflowButton.setVisibility(View.GONE);
+            if (theGame) {
+                searchButton.setVisibility(View.GONE);
+            }
+            Prefs.enableDistractionFreeMode();
+            Prefs.disableWikiWalkingEnabled();
+            Prefs.disableLinkPreview();
         } else {
             tabsButtonContainer.setVisibility(View.VISIBLE);
             tabsButton.setVisibility(View.VISIBLE);
             overflowButton.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
+            Prefs.disableDistractionFreeMode();
         }
     }
 
