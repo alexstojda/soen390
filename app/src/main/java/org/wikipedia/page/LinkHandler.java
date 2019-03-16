@@ -24,9 +24,6 @@ import static org.wikipedia.util.UriUtil.handleExternalLink;
  * Handles any html links coming from a {@link org.wikipedia.page.PageFragment}
  */
 public abstract class LinkHandler implements CommunicationBridge.JSEventListener, LinkMovementMethodExt.UrlHandlerWithText {
-    public interface Callback {
-        void onVictoryEndGame();
-    }
 
     private static final List<String> KNOWN_SCHEMES
             = Arrays.asList("http", "https", "geo", "file", "content");

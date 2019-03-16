@@ -7,6 +7,7 @@ import org.wikipedia.page.PageFragment;
 import org.wikipedia.util.log.L;
 
 public class GameClickHandler {
+
     private int gameScore;
     private String endTitle;
     private TextView textView;
@@ -33,13 +34,20 @@ public class GameClickHandler {
 
         L.e("passed title: " + title);
         if (title.equals(endTitle)) {
-            pageFragment.endGame();
-            Toast toast = Toast.makeText(pageFragment.getContext(), "Congratulations! You have "
-                            + "won The Game. It took you " + gameScore + " clicks.",
-                    Toast.LENGTH_LONG);
-            toast.show();
+            if (pageFragment != null) {
+                pageFragment.endGame();
+                Toast toast = Toast.makeText(pageFragment.getContext(), "Congratulations! You have "
+                                + "won The Game. It took you " + gameScore + " clicks.",
+                        Toast.LENGTH_LONG);
+                toast.show();
+
+            }
             return true;
         }
         return false;
+    }
+
+    public int getGameScore() {
+        return gameScore;
     }
 }
