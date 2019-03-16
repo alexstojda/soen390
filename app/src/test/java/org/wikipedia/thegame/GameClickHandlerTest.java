@@ -22,13 +22,13 @@ public class GameClickHandlerTest {
     }
 
     @Test
-    public void whenIncorrectTitlePassed_returnFalse() {
+    public void whenIncorrectTitlePassedReturnFalse() {
         boolean result = gameClickHandler.verifyArticle("United States");
         assertFalse(result);
     }
 
     @Test
-    public void whenCorrectTitlePassed_returnTrue() {
+    public void whenCorrectTitlePassedReturnTrue() {
         boolean result = gameClickHandler.verifyArticle(endTitle);
         assertTrue(result);
     }
