@@ -17,10 +17,9 @@ import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.dataclient.ServiceFactory;
 import org.wikipedia.dataclient.restbase.page.RbPageSummary;
-import org.wikipedia.page.PageActivity;
+import org.wikipedia.page.PageFragment;
 import org.wikipedia.page.PageTitle;
 import org.wikipedia.related.RelatedActivity;
-import org.wikipedia.settings.Prefs;
 import org.wikipedia.util.log.L;
 import org.wikipedia.views.FaceAndColorDetectImageView;
 import org.wikipedia.views.GoneIfEmptyTextView;
@@ -79,8 +78,8 @@ public class RandomItemFragment extends Fragment {
         errorView.setRetryClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             if (getActivity() instanceof RelatedActivity) {
-                // placeholder for current page title
-                getRelatedPage("adolf_hitler");
+                // use last/current page title to select a related artic;e
+                getRelatedPage(PageFragment.lastTitle);
             } else {
                 getRandomPage();
             }
@@ -88,8 +87,8 @@ public class RandomItemFragment extends Fragment {
         updateContents();
         if (summary == null) {
             if (getActivity() instanceof RelatedActivity) {
-                // placeholder for current page title
-                getRelatedPage("adolf_hitler");
+                // use last/current page title to select a related artic;e
+                getRelatedPage(PageFragment.lastTitle);
             } else {
                 getRandomPage();
             }
