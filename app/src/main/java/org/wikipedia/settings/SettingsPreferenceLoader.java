@@ -74,6 +74,10 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         // Binding IncognitoMode toggle switch to incognitoListener
         findPreference(R.string.preference_key_incognito_mode)
                 .setOnPreferenceChangeListener(new IncognitoListener());
+
+        // Binding ShakeToRelated toggle switch to incognitoListener
+        findPreference(R.string.preference_key_shake_to_related)
+                .setOnPreferenceChangeListener(new ShakeToRelatedListener());
     }
 
     void updateLanguagePrefSummary() {
@@ -96,6 +100,53 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         }
     }
 
+    // Listener for ShakeToRelated Toggle to set isIncognitoEnabled code
+    private final class ShakeToRelatedListener implements Preference.OnPreferenceChangeListener {
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (newValue == Boolean.TRUE) {
+                ((SwitchPreferenceCompat) preference).setChecked(true);
+                Prefs.setShakeToRelatedEnabled(true);
+
+                /*if( MainActivity.mSensorManager != null) {
+                    MainActivity.mSensorManager.registerListener(mShakeHandler, MainActivity.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                }*/
+            } else {
+                ((SwitchPreferenceCompat) preference).setChecked(false);
+                Prefs.setShakeToRelatedEnabled(false);
+
+                //MainActivity.mSensorManager.unregisterListener(mShakeHandler);
+            }
+            return true;
+        }
+    }
+
+   /* public SensorEventListener mShakeHandler = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // ignore
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            float gX = x / SensorManager.GRAVITY_EARTH;
+            float gY = y / SensorManager.GRAVITY_EARTH;
+            float gZ = z / SensorManager.GRAVITY_EARTH;
+
+            // gForce will be close to 1 when there is no movement.
+            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+
+            if (gForce > SHAKE_THRESHOLD_GRAVITY && getActivity() instanceof PageActivity) {
+                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
+            }
+        }
+    };
+*/
     private final class SyncReadingListsListener implements Preference.OnPreferenceChangeListener {
         @Override public boolean onPreferenceChange(final Preference preference, Object newValue) {
             if (AccountUtil.isLoggedIn()) {
