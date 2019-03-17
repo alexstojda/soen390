@@ -2,10 +2,6 @@ package org.wikipedia.settings;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
@@ -18,22 +14,14 @@ import org.wikipedia.analytics.LoginFunnel;
 import org.wikipedia.auth.AccountUtil;
 import org.wikipedia.language.LanguageSettingsInvokeSource;
 import org.wikipedia.login.LoginActivity;
-import org.wikipedia.main.MainActivity;
-import org.wikipedia.page.PageActivity;
-import org.wikipedia.random.RandomActivity;
 import org.wikipedia.readinglist.sync.ReadingListSyncAdapter;
-import org.wikipedia.related.RelatedActivity;
 import org.wikipedia.settings.languages.WikipediaLanguagesActivity;
 import org.wikipedia.theme.ThemeFittingRoomActivity;
 
-import static com.mapbox.mapboxsdk.Mapbox.getApplicationContext;
 import static org.wikipedia.Constants.ACTIVITY_REQUEST_ADD_A_LANGUAGE;
 
 /** UI code for app settings used by PreferenceFragment. */
 class SettingsPreferenceLoader extends BasePreferenceLoader {
-
-    // The following are used for the shake detection
-    private static final float SHAKE_THRESHOLD_GRAVITY = 1.5F;
 
     /*package*/ SettingsPreferenceLoader(@NonNull PreferenceFragmentCompat fragment) {
         super(fragment);
@@ -118,47 +106,14 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
             if (newValue == Boolean.TRUE) {
                 ((SwitchPreferenceCompat) preference).setChecked(true);
                 Prefs.setShakeToRelatedEnabled(true);
-
-                if( MainActivity.mSensorManager != null) {
-                    MainActivity.mSensorManager.registerListener(mShakeHandler, MainActivity.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-                }
             } else {
                 ((SwitchPreferenceCompat) preference).setChecked(false);
                 Prefs.setShakeToRelatedEnabled(false);
-
-                MainActivity.mSensorManager.unregisterListener(mShakeHandler);
             }
             return true;
         }
     }
 
-    public SensorEventListener mShakeHandler = new SensorEventListener() {
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // ignore
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            float gX = x / SensorManager.GRAVITY_EARTH;
-            float gY = y / SensorManager.GRAVITY_EARTH;
-            float gZ = z / SensorManager.GRAVITY_EARTH;
-
-            // gForce will be close to 1 when there is no movement.
-            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-
-            if (gForce > SHAKE_THRESHOLD_GRAVITY && getActivity() instanceof PageActivity) {
-                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
-            }
-        }
-    };
-    
     private final class SyncReadingListsListener implements Preference.OnPreferenceChangeListener {
         @Override public boolean onPreferenceChange(final Preference preference, Object newValue) {
             if (AccountUtil.isLoggedIn()) {

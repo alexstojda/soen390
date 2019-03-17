@@ -9,6 +9,10 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,6 +63,7 @@ import org.wikipedia.history.HistoryEntry;
 import org.wikipedia.history.UpdateHistoryTask;
 import org.wikipedia.language.LangLinksActivity;
 import org.wikipedia.login.LoginActivity;
+import org.wikipedia.main.MainActivity;
 import org.wikipedia.media.AvPlayer;
 import org.wikipedia.media.DefaultAvPlayer;
 import org.wikipedia.media.MediaPlayerImplementation;
@@ -73,6 +78,7 @@ import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.readinglist.ReadingListBookmarkMenu;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
 import org.wikipedia.readinglist.database.ReadingListPage;
+import org.wikipedia.related.RelatedActivity;
 import org.wikipedia.settings.Prefs;
 import org.wikipedia.util.ActiveTimer;
 import org.wikipedia.util.AnimationUtil;
@@ -135,6 +141,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageSetToolbarFadeEnabled(boolean enabled);
         void onPageSetToolbarElevationEnabled(boolean enabled);
     }
+
+    // The following are used for the shake detection
+    private static final float SHAKE_THRESHOLD_GRAVITY = 3F;
 
     private boolean pageRefreshed;
     private boolean errorState = false;
@@ -293,6 +302,12 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             cameraPreview.addView(cameraview);
         }
 
+        if (Prefs.isShakeToRelatedEnabled()) {
+            if (MainActivity.mSensorManager != null) {
+                MainActivity.mSensorManager.registerListener(mShakeHandler, MainActivity.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }
+
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
         int swipeOffset = getContentTopOffsetPx(requireActivity()) + REFRESH_SPINNER_ADDITIONAL_OFFSET;
@@ -325,6 +340,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             avPlayer.deinit();
             avPlayer = null;
         }
+
+        if (Prefs.isShakeToRelatedEnabled()) {
+            MainActivity.mSensorManager.unregisterListener(mShakeHandler);
+        }
+
         //uninitialize the bridge, so that no further JS events can have any effect.
         bridge.cleanup();
         shareHandler.dispose();
@@ -500,6 +520,33 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         initPageScrollFunnel();
         activeTimer.resume();
     }
+
+    public SensorEventListener mShakeHandler = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // ignore
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            float gX = x / SensorManager.GRAVITY_EARTH;
+            float gY = y / SensorManager.GRAVITY_EARTH;
+            float gZ = z / SensorManager.GRAVITY_EARTH;
+
+            // gForce will be close to 1 when there is no movement.
+            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+
+            if (gForce > SHAKE_THRESHOLD_GRAVITY && getActivity() instanceof PageActivity) {
+                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
+            }
+        }
+    };
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
