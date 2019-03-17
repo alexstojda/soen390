@@ -2,25 +2,18 @@ package org.wikipedia.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
 
 import org.wikipedia.Constants;
 import org.wikipedia.R;
@@ -33,9 +26,6 @@ import org.wikipedia.history.HistoryFragment;
 import org.wikipedia.navtab.NavTab;
 import org.wikipedia.notifications.NotificationActivity;
 import org.wikipedia.onboarding.InitialOnboardingActivity;
-import org.wikipedia.page.PageActivity;
-import org.wikipedia.random.RandomActivity;
-import org.wikipedia.random.ShakeHandler;
 import org.wikipedia.readinglist.ReadingListSyncBehaviorDialogs;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
 import org.wikipedia.settings.AboutActivity;
@@ -64,9 +54,6 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
     View wordMark;
 
     private boolean controlNavTabInFragment;
-
-    public static SensorManager mSensorManager;
-    public static Sensor mAccelerometer;
 
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, MainActivity.class);
@@ -106,10 +93,6 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
         });
         drawerView.setCallback(new DrawerViewCallback());
         shouldShowMainDrawer(true);
-
-        // ShakeDetector initialization
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
     @Override

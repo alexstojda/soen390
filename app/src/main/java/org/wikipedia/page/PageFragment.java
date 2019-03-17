@@ -63,7 +63,6 @@ import org.wikipedia.history.HistoryEntry;
 import org.wikipedia.history.UpdateHistoryTask;
 import org.wikipedia.language.LangLinksActivity;
 import org.wikipedia.login.LoginActivity;
-import org.wikipedia.main.MainActivity;
 import org.wikipedia.media.AvPlayer;
 import org.wikipedia.media.DefaultAvPlayer;
 import org.wikipedia.media.MediaPlayerImplementation;
@@ -143,7 +142,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     }
 
     // The following are used for the shake detection
-    private static final float SHAKE_THRESHOLD_GRAVITY = 3F;
+    private static final float SHAKE_THRESHOLD_GRAVITY = 2.7F;
 
     private boolean pageRefreshed;
     private boolean errorState = false;
@@ -276,6 +275,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return containerView;
     }
 
+    public static SensorManager mSensorManager;
+    public static Sensor mAccelerometer;
+    public static String lastTitle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -303,9 +306,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
 
         if (Prefs.isShakeToRelatedEnabled()) {
-            if (MainActivity.mSensorManager != null) {
-                MainActivity.mSensorManager.registerListener(mShakeHandler, MainActivity.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            }
+            // ShakeDetector initialization
+            mSensorManager = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+            mSensorManager.registerListener(mShakeHandler, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         containerView = rootView.findViewById(R.id.page_contents_container);
@@ -342,7 +347,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
 
         if (Prefs.isShakeToRelatedEnabled()) {
-            MainActivity.mSensorManager.unregisterListener(mShakeHandler);
+            mSensorManager.unregisterListener(mShakeHandler);
         }
 
         //uninitialize the bridge, so that no further JS events can have any effect.
@@ -542,7 +547,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             // gForce will be close to 1 when there is no movement.
             float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
-            if (gForce > SHAKE_THRESHOLD_GRAVITY && getActivity() instanceof PageActivity) {
+            if (gForce > SHAKE_THRESHOLD_GRAVITY) {
                 getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
             }
         }
@@ -683,6 +688,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         updateProgressBar(true, true, 0);
 
         this.pageRefreshed = isRefresh;
+
+        lastTitle = model.getTitle().getConvertedText();
 
         closePageScrollFunnel();
         pageFragmentLoadState.load(pushBackStack, stagedScrollY);
