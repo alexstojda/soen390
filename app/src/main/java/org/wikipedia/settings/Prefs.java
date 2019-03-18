@@ -441,6 +441,16 @@ public final class Prefs {
         setBoolean(R.string.preference_key_distraction_free, true);
     }
 
+    // ShakeToRelated Getter
+    public static boolean isShakeToRelatedEnabled() {
+        return getBoolean(R.string.preference_key_shake_to_related, false);
+    }
+
+    // ShakeToRelated Setter
+    public static void setShakeToRelatedEnabled(boolean enabled) {
+        setBoolean(R.string.preference_key_shake_to_related, enabled);
+    }
+
     public static int getReadingListSortMode(int defaultValue) {
         return getInt(R.string.preference_key_reading_list_sort_mode, defaultValue);
     }

@@ -7,6 +7,7 @@ import org.wikipedia.dataclient.restbase.page.RbPageSummary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RbRelatedPages {
     @SuppressWarnings("unused") @Nullable private List<RbPageSummary> pages;
@@ -29,5 +30,17 @@ public class RbRelatedPages {
         }
 
         return list;
+    }
+
+    @NonNull
+    public RbPageSummary getRelatedPage() {
+        RbPageSummary pageSummary = new RbPageSummary();
+        if (getPages() != null) {
+            Random rand = new Random();
+            int pageIndex = rand.nextInt(getPages().size());
+            pageSummary = getPages().get(pageIndex);
+        }
+
+        return pageSummary;
     }
 }

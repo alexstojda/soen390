@@ -13,6 +13,11 @@
             android:defaultValue="false"
             android:title="@string/preference_title_incognito_mode"
             android:summary="@string/preference_summary_incognito_mode" />
+        <org.wikipedia.settings.SwitchPreferenceMultiLine
+            android:key="@string/preference_key_shake_to_related"
+            android:defaultValue="false"
+            android:title="@string/preference_title_shake_to_related"
+            android:summary="@string/preference_summary_shake_to_related" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_general_heading">
         <org.wikipedia.settings.PreferenceMultiLine

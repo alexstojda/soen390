@@ -17,7 +17,9 @@ import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.dataclient.ServiceFactory;
 import org.wikipedia.dataclient.restbase.page.RbPageSummary;
+import org.wikipedia.page.PageFragment;
 import org.wikipedia.page.PageTitle;
+import org.wikipedia.related.RelatedActivity;
 import org.wikipedia.util.log.L;
 import org.wikipedia.views.FaceAndColorDetectImageView;
 import org.wikipedia.views.GoneIfEmptyTextView;
@@ -75,11 +77,21 @@ public class RandomItemFragment extends Fragment {
         errorView.setBackClickListener(v -> requireActivity().finish());
         errorView.setRetryClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
-            getRandomPage();
+            if (getActivity() instanceof RelatedActivity) {
+                // use last/current page title to select a related artic;e
+                getRelatedPage(PageFragment.lastTitle);
+            } else {
+                getRandomPage();
+            }
         });
         updateContents();
         if (summary == null) {
-            getRandomPage();
+            if (getActivity() instanceof RelatedActivity) {
+                // use last/current page title to select a related artic;e
+                getRelatedPage(PageFragment.lastTitle);
+            } else {
+                getRandomPage();
+            }
         }
         return view;
     }
@@ -88,6 +100,17 @@ public class RandomItemFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         disposables.clear();
+    }
+
+    private void getRelatedPage(String title) {
+        disposables.add(ServiceFactory.getRest(WikipediaApp.getInstance().getWikiSite()).getRelatedPages(title)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pageSummaries -> {
+                    summary = pageSummaries.getRelatedPage();
+                    updateContents();
+                    parent().onChildLoaded();
+                }, this::setErrorState));
     }
 
     private void getRandomPage() {

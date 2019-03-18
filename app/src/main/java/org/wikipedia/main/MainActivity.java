@@ -45,10 +45,14 @@ import static org.wikipedia.Constants.ACTIVITY_REQUEST_INITIAL_ONBOARDING;
 public class MainActivity extends SingleFragmentActivity<MainFragment>
         implements MainFragment.Callback {
 
-    @BindView(R.id.navigation_drawer) WikiDrawerLayout drawerLayout;
-    @BindView(R.id.navigation_drawer_view) MainDrawerView drawerView;
-    @BindView(R.id.single_fragment_toolbar) Toolbar toolbar;
-    @BindView(R.id.single_fragment_toolbar_wordmark) View wordMark;
+    @BindView(R.id.navigation_drawer)
+    WikiDrawerLayout drawerLayout;
+    @BindView(R.id.navigation_drawer_view)
+    MainDrawerView drawerView;
+    @BindView(R.id.single_fragment_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.single_fragment_toolbar_wordmark)
+    View wordMark;
 
     private boolean controlNavTabInFragment;
 
