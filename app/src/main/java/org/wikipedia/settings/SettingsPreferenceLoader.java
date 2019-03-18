@@ -85,7 +85,7 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         findPreference(R.string.preference_key_wiki_walkey)
                 .setOnPreferenceChangeListener(new WikiWalkeyListener());
 
-        // Binding ShakeToRelated toggle switch to incognitoListener
+        // Binding ShakeToRelated toggle switch to ShakeToRelatedListener
         findPreference(R.string.preference_key_shake_to_related)
                 .setOnPreferenceChangeListener(new ShakeToRelatedListener());
     }
@@ -111,7 +111,7 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         }
     }
 
-    // Listener for ShakeToRelated Toggle to set isIncognitoEnabled code
+    // Listener for ShakeToRelated Toggle to set setShakeToRelatedEnabled code
     private final class ShakeToRelatedListener implements Preference.OnPreferenceChangeListener {
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (newValue == Boolean.TRUE) {

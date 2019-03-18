@@ -205,13 +205,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private ShareHandler shareHandler;
     private CompositeDisposable disposables = new CompositeDisposable();
     private ActiveTimer activeTimer = new ActiveTimer();
+    private WikipediaApp app;
     @Nullable
     private AvPlayer avPlayer;
     @Nullable
     private AvCallback avCallback;
-
-    private WikipediaApp app;
-
     @NonNull
     private final SwipeRefreshLayout.OnRefreshListener pageRefreshListener = this::refreshPage;
 
@@ -332,6 +330,23 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         View rootView = inflater.inflate(R.layout.fragment_page, container, false);
         pageHeaderView = rootView.findViewById(R.id.page_header_view);
         webView = rootView.findViewById(R.id.page_web_view);
+        containerView = rootView.findViewById(R.id.page_contents_container);
+        refreshView = rootView.findViewById(R.id.page_refresh_container);
+        int swipeOffset = getContentTopOffsetPx(requireActivity()) + REFRESH_SPINNER_ADDITIONAL_OFFSET;
+        refreshView.setProgressViewOffset(false, -swipeOffset, swipeOffset);
+        refreshView.setColorSchemeResources(getThemedAttributeId(requireContext(), R.attr.colorAccent));
+        refreshView.setScrollableChild(webView);
+        refreshView.setOnRefreshListener(pageRefreshListener);
+        tabLayout = rootView.findViewById(R.id.page_actions_tab_layout);
+        tabLayout.setPageActionTabsCallback(pageActionTabsCallback);
+        errorView = rootView.findViewById(R.id.page_error);
+        bottomContentView = rootView.findViewById(R.id.page_bottom_view);
+        surrenderButton = rootView.findViewById(R.id.game_end_button);
+        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
+        gameFooter = rootView.findViewById(R.id.the_game_footer);
+
+        DimenUtil.setViewHeight(pageHeaderView, leadImageHeightForDevice());
+        initWebViewListeners();
 
         if (Prefs.isShakeToRelatedEnabled()) {
             // ShakeDetector initialization
@@ -340,27 +355,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
             mSensorManager.registerListener(mShakeHandler, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
-
-        containerView = rootView.findViewById(R.id.page_contents_container);
-        refreshView = rootView.findViewById(R.id.page_refresh_container);
-        int swipeOffset = getContentTopOffsetPx(requireActivity()) + REFRESH_SPINNER_ADDITIONAL_OFFSET;
-        refreshView.setProgressViewOffset(false, -swipeOffset, swipeOffset);
-        refreshView.setColorSchemeResources(getThemedAttributeId(requireContext(), R.attr.colorAccent));
-        refreshView.setScrollableChild(webView);
-        refreshView.setOnRefreshListener(pageRefreshListener);
-
-        tabLayout = rootView.findViewById(R.id.page_actions_tab_layout);
-        tabLayout.setPageActionTabsCallback(pageActionTabsCallback);
-        errorView = rootView.findViewById(R.id.page_error);
-
-        bottomContentView = rootView.findViewById(R.id.page_bottom_view);
-        surrenderButton = rootView.findViewById(R.id.game_end_button);
-        gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
-        gameFooter = rootView.findViewById(R.id.the_game_footer);
-
-
-        DimenUtil.setViewHeight(pageHeaderView, leadImageHeightForDevice());
-        initWebViewListeners();
 
         if (Prefs.isWikiWalkingEnabled()) {
 
@@ -799,9 +793,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         updateProgressBar(true, true, 0);
 
         this.pageRefreshed = isRefresh;
-
         lastTitle = model.getTitle().getConvertedText();
-
         closePageScrollFunnel();
         pageFragmentLoadState.load(pushBackStack, stagedScrollY);
         bottomContentView.hide();
