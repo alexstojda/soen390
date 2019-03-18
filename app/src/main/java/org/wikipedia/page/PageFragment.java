@@ -81,7 +81,6 @@ import org.wikipedia.page.leadimages.LeadImagesHandler;
 import org.wikipedia.page.leadimages.PageHeaderView;
 import org.wikipedia.page.shareafact.ShareHandler;
 import org.wikipedia.page.tabs.Tab;
-import org.wikipedia.random.RandomItemFragment;
 import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.readinglist.ReadingListBookmarkMenu;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
@@ -174,6 +173,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     // The following are used for the shake detection
     private static final float SHAKE_THRESHOLD_GRAVITY = 4.5F;
+    public static boolean isRelatedActive = false;
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
@@ -652,8 +652,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             // gForce will be close to 1 when there is no movement.
             float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
-            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !RandomItemFragment.isRelatedActive) {
+            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !isRelatedActive) {
                 getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
+                isRelatedActive = true;
             }
         }
     };

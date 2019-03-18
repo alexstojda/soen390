@@ -62,8 +62,6 @@ public class RandomItemFragment extends Fragment {
         return summary != null;
     }
 
-    public static boolean isRelatedActive = false;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +78,6 @@ public class RandomItemFragment extends Fragment {
         errorView.setRetryClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             if (getActivity() instanceof RelatedActivity) {
-                isRelatedActive = true;
                 // use last/current page title to select a related article
                 getRelatedPage(PageFragment.lastTitle);
             } else {
@@ -90,7 +87,6 @@ public class RandomItemFragment extends Fragment {
         updateContents();
         if (summary == null) {
             if (getActivity() instanceof RelatedActivity) {
-                isRelatedActive = true;
                 // use last/current page title to select a related article
                 getRelatedPage(PageFragment.lastTitle);
             } else {
@@ -103,7 +99,7 @@ public class RandomItemFragment extends Fragment {
     @Override
     public void onDestroy() {
         if (getActivity() instanceof RelatedActivity) {
-            isRelatedActive = false;
+            PageFragment.isRelatedActive = false;
         }
 
         super.onDestroy();
