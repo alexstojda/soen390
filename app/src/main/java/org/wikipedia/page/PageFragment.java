@@ -173,7 +173,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     // The following are used for the shake detection
     private static final float SHAKE_THRESHOLD_GRAVITY = 4.5F;
-    public static boolean isRelatedActive = false;
+    private static boolean IS_RELATED_ACTIVE = false;
+    private static SensorManager SENSOR_MANAGER;
+    private static Sensor ACCELEROMETER;
+    private static String LAST_TITLE;
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
@@ -312,10 +315,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return containerView;
     }
 
-    public static SensorManager mSensorManager;
-    public static Sensor mAccelerometer;
-    public static String lastTitle;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -351,10 +350,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         if (Prefs.isShakeToRelatedEnabled()) {
             // ShakeDetector initialization
-            mSensorManager = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
-            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            SENSOR_MANAGER = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
+            ACCELEROMETER = SENSOR_MANAGER.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-            mSensorManager.registerListener(mShakeHandler, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            SENSOR_MANAGER.registerListener(mShakeHandler, ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         if (Prefs.isWikiWalkingEnabled()) {
@@ -448,7 +447,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
 
         if (Prefs.isShakeToRelatedEnabled()) {
-            mSensorManager.unregisterListener(mShakeHandler);
+            SENSOR_MANAGER.unregisterListener(mShakeHandler);
         }
 
         //uninitialize the bridge, so that no further JS events can have any effect.
@@ -631,7 +630,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         activeTimer.resume();
     }
 
-    public SensorEventListener mShakeHandler = new SensorEventListener() {
+    private SensorEventListener mShakeHandler = new SensorEventListener() {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -652,9 +651,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             // gForce will be close to 1 when there is no movement.
             float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
-            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !isRelatedActive) {
+            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !getIsRelatedActive()) {
                 getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
-                isRelatedActive = true;
+                setIsRelatedActive(true);
             }
         }
     };
@@ -795,7 +794,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         updateProgressBar(true, true, 0);
 
         this.pageRefreshed = isRefresh;
-        lastTitle = model.getTitle().getConvertedText();
+        setLastTitle(model.getTitle().getConvertedText());
         closePageScrollFunnel();
         pageFragmentLoadState.load(pushBackStack, stagedScrollY);
         bottomContentView.hide();
@@ -1434,6 +1433,22 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 updateProgressBar(false, true, 0);
             }
         }
+    }
+
+    public static boolean getIsRelatedActive() {
+        return IS_RELATED_ACTIVE;
+    }
+
+    public static void setIsRelatedActive(boolean isActive) {
+        IS_RELATED_ACTIVE = isActive;
+    }
+
+    public static String getLastTitle() {
+        return LAST_TITLE;
+    }
+
+    public static void setLastTitle(String title) {
+        LAST_TITLE = title;
     }
 
     @Nullable
