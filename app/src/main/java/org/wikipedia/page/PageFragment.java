@@ -430,7 +430,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     public void endGame(int endScore) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.game_win_title);
-        builder.setMessage("Congratulations! You won The Game in " + endScore + " move(s)!");
+        builder.setMessage("Congratulations! You won The Game in " + endScore
+                + " move"
+                + ((endScore > 1) ? "s": "")
+                + "!");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
