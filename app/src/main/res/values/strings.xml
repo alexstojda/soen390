@@ -721,6 +721,7 @@
     <string name="surrender">Surrender</string>
     <string name="game_instructions">Try to get to the destination article by navigating through Wikipedia via link click</string>
     <string name="game_start_title">Start The Game?</string>
+    <string name="game_win_title">You won The Game!</string>
     <string name="game_start">Start</string>
     <string name="game_cancel">Cancel</string>
     <string name="camera_permission">Please enable camera permission in phone settings</string>

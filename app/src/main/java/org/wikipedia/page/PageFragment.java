@@ -417,12 +417,30 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 getView().findViewById(R.id.game_footer_text), this));
     }
 
+    // End game (surrender), simply restore UI to original state.
     public void endGame() {
         gameStartButton.show();
         gameFooter.setVisibility(View.GONE);
         tabLayout.setVisibility(View.VISIBLE);
         Prefs.disableDistractionFreeMode();
         toggleDistractionFreeMode();
+    }
+
+    // End game (win), display win dialog, then restore UI to original state.
+    public void endGame(int endScore) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.game_win_title);
+        builder.setMessage("Congratulations! You won The Game in " + endScore + " move(s)!");
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create().show();
+
+        endGame();
     }
 
     @Override
