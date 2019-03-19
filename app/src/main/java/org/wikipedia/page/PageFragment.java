@@ -432,7 +432,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         builder.setTitle(R.string.game_win_title);
         builder.setMessage("Congratulations! You won The Game in " + endScore
                 + " move"
-                + ((endScore > 1) ? "s": "")
+                + ((endScore > 1) ? "s" : "")
                 + "!");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
             @Override
