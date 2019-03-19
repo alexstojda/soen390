@@ -38,6 +38,7 @@
     <string name="preference_key_incognito_mode">enableIncognitoMode</string>
     <string name="preference_key_collapse_tables">collapseTables</string>
     <string name="preference_key_wiki_walkey">wikiWalkey</string>
+    <string name="preference_key_shake_to_related">enableShakeToRelated</string>
     <string name="preference_key_session_data">session_data</string>
     <string name="preference_key_session_timeout">session_timeout</string>
     <string name="preference_key_remote_log">remoteLog</string>

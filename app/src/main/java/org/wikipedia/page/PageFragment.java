@@ -11,6 +11,10 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -81,6 +85,7 @@ import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.readinglist.ReadingListBookmarkMenu;
 import org.wikipedia.readinglist.database.ReadingListDbHelper;
 import org.wikipedia.readinglist.database.ReadingListPage;
+import org.wikipedia.related.RelatedActivity;
 import org.wikipedia.settings.Prefs;
 import org.wikipedia.thegame.GameClickHandler;
 import org.wikipedia.util.ActiveTimer;
@@ -166,6 +171,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         void onPageToggleDistractionFreeEnabledForGame();
     }
 
+    // The following are used for the shake detection
+    private static final float SHAKE_THRESHOLD_GRAVITY = 4.5F;
+    private static boolean IS_RELATED_ACTIVE = false;
+    private static SensorManager SENSOR_MANAGER;
+    private static Sensor ACCELEROMETER;
+    private static String LAST_TITLE;
+
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
     private boolean errorState = false;
@@ -197,13 +209,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private ShareHandler shareHandler;
     private CompositeDisposable disposables = new CompositeDisposable();
     private ActiveTimer activeTimer = new ActiveTimer();
+    private WikipediaApp app;
     @Nullable
     private AvPlayer avPlayer;
     @Nullable
     private AvCallback avCallback;
-
-    private WikipediaApp app;
-
     @NonNull
     private final SwipeRefreshLayout.OnRefreshListener pageRefreshListener = this::refreshPage;
 
@@ -320,7 +330,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         View rootView = inflater.inflate(R.layout.fragment_page, container, false);
         pageHeaderView = rootView.findViewById(R.id.page_header_view);
         webView = rootView.findViewById(R.id.page_web_view);
-
         containerView = rootView.findViewById(R.id.page_contents_container);
         refreshView = rootView.findViewById(R.id.page_refresh_container);
         int swipeOffset = getContentTopOffsetPx(requireActivity()) + REFRESH_SPINNER_ADDITIONAL_OFFSET;
@@ -328,19 +337,24 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         refreshView.setColorSchemeResources(getThemedAttributeId(requireContext(), R.attr.colorAccent));
         refreshView.setScrollableChild(webView);
         refreshView.setOnRefreshListener(pageRefreshListener);
-
         tabLayout = rootView.findViewById(R.id.page_actions_tab_layout);
         tabLayout.setPageActionTabsCallback(pageActionTabsCallback);
         errorView = rootView.findViewById(R.id.page_error);
-
         bottomContentView = rootView.findViewById(R.id.page_bottom_view);
         surrenderButton = rootView.findViewById(R.id.game_end_button);
         gameStartButton = rootView.findViewById(R.id.the_game_floating_action_button);
         gameFooter = rootView.findViewById(R.id.the_game_footer);
 
-
         DimenUtil.setViewHeight(pageHeaderView, leadImageHeightForDevice());
         initWebViewListeners();
+
+        if (Prefs.isShakeToRelatedEnabled()) {
+            // ShakeDetector initialization
+            SENSOR_MANAGER = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
+            ACCELEROMETER = SENSOR_MANAGER.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+            SENSOR_MANAGER.registerListener(mShakeHandler, ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         if (Prefs.isWikiWalkingEnabled()) {
 
@@ -452,6 +466,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             avPlayer.deinit();
             avPlayer = null;
         }
+
+        if (Prefs.isShakeToRelatedEnabled()) {
+            SENSOR_MANAGER.unregisterListener(mShakeHandler);
+        }
+
         //uninitialize the bridge, so that no further JS events can have any effect.
         bridge.cleanup();
         shareHandler.dispose();
@@ -632,6 +651,34 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         activeTimer.resume();
     }
 
+    private SensorEventListener mShakeHandler = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // ignore
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            float gX = x / SensorManager.GRAVITY_EARTH;
+            float gY = y / SensorManager.GRAVITY_EARTH;
+            float gZ = z / SensorManager.GRAVITY_EARTH;
+
+            // gForce will be close to 1 when there is no movement.
+            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+
+            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !getIsRelatedActive()) {
+                getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
+                setIsRelatedActive(true);
+            }
+        }
+    };
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -768,7 +815,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         updateProgressBar(true, true, 0);
 
         this.pageRefreshed = isRefresh;
-
+        setLastTitle(model.getTitle().getConvertedText());
         closePageScrollFunnel();
         pageFragmentLoadState.load(pushBackStack, stagedScrollY);
         bottomContentView.hide();
@@ -1407,6 +1454,22 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 updateProgressBar(false, true, 0);
             }
         }
+    }
+
+    public static boolean getIsRelatedActive() {
+        return IS_RELATED_ACTIVE;
+    }
+
+    public static void setIsRelatedActive(boolean isActive) {
+        IS_RELATED_ACTIVE = isActive;
+    }
+
+    public static String getLastTitle() {
+        return LAST_TITLE;
+    }
+
+    public static void setLastTitle(String title) {
+        LAST_TITLE = title;
     }
 
     @Nullable

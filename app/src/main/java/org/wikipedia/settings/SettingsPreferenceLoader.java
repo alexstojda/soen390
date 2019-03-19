@@ -84,6 +84,10 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
         // Binding WikiWalkey toggle switch to wikiWalkeyListener
         findPreference(R.string.preference_key_wiki_walkey)
                 .setOnPreferenceChangeListener(new WikiWalkeyListener());
+
+        // Binding ShakeToRelated toggle switch to ShakeToRelatedListener
+        findPreference(R.string.preference_key_shake_to_related)
+                .setOnPreferenceChangeListener(new ShakeToRelatedListener());
     }
 
     void updateLanguagePrefSummary() {
@@ -102,6 +106,20 @@ class SettingsPreferenceLoader extends BasePreferenceLoader {
             } else {
                 ((SwitchPreferenceCompat) preference).setChecked(false);
                 Prefs.setIncognitoEnabled(false);
+            }
+            return true;
+        }
+    }
+
+    // Listener for ShakeToRelated Toggle to set setShakeToRelatedEnabled code
+    private final class ShakeToRelatedListener implements Preference.OnPreferenceChangeListener {
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (newValue == Boolean.TRUE) {
+                ((SwitchPreferenceCompat) preference).setChecked(true);
+                Prefs.setShakeToRelatedEnabled(true);
+            } else {
+                ((SwitchPreferenceCompat) preference).setChecked(false);
+                Prefs.setShakeToRelatedEnabled(false);
             }
             return true;
         }
