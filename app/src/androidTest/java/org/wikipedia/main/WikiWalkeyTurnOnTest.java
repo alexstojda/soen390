@@ -1,9 +1,11 @@
 package org.wikipedia.main;
 
 
+import android.Manifest;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.rule.GrantPermissionRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +28,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.wikipedia.espresso.util.CompareTools.assertScreenshotWithinTolerance;
 
 
 @LargeTest
@@ -38,7 +41,8 @@ public class WikiWalkeyTurnOnTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
+    @Rule
+    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(Manifest.permission.CAMERA);
     @Test
     public void wikiWalkeyTurnOnTest() {
         // Added a sleep statement to match the app's execution delay.
@@ -106,7 +110,8 @@ public class WikiWalkeyTurnOnTest {
                                 0)));
         recyclerView.perform(actionOnItemAtPosition(1, click()));
 
-        assertTrue(Prefs.isWikiWalkingEnabled());
+       Boolean temp = Prefs.isWikiWalkingEnabled();
+        assertTrue(temp);
 
         try {
             Thread.sleep(2000);
@@ -114,12 +119,8 @@ public class WikiWalkeyTurnOnTest {
             e.printStackTrace();
         }
 
-         recyclerView = onView(
-                allOf(withId(R.id.recycler_view),
-                        childAtPosition(
-                                withId(android.R.id.list_container),
-                                1)));
-        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        recyclerView.perform(actionOnItemAtPosition(1, click()));
 
         assertFalse(Prefs.isWikiWalkingEnabled());
     }
@@ -141,5 +142,8 @@ public class WikiWalkeyTurnOnTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+    private void runComparisons() throws Exception {
+        assertScreenshotWithinTolerance("EmptyHistoryTab");
     }
 }

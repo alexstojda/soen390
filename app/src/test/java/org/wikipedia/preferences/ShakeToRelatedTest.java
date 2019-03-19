@@ -12,20 +12,20 @@ import static org.junit.Assert.assertTrue;
 @RunWith(RobolectricTestRunner.class)
 public class ShakeToRelatedTest {
 
-    // Tests Incognito's default false setting
+    // Tests Shake2Related's default false setting
     @Test
     public void testShakeToRelatedDefaultSetting() throws Throwable {
         assertFalse(Prefs.isShakeToRelatedEnabled());
     }
 
-    // Tests Incognito's setter
+    // Tests Shake2Related's setter
     @Test
     public void testShakeToRelatedSetFalse() throws Throwable {
         Prefs.setShakeToRelatedEnabled(false);
         assertFalse(Prefs.isShakeToRelatedEnabled());
     }
 
-    // Tests Incognito's setter
+    // Tests Shake2Related's setter
     @Test
     public void testShakeToRelatedSetTrue() throws Throwable {
         Prefs.setShakeToRelatedEnabled(true);
