@@ -116,26 +116,9 @@ public class TestWhenGameStartsScoreIs0 {
                                         childAtPosition(
                                                 withId(R.id.page_fragment),
                                                 0)),
-                                2),
+                                3),
                         isDisplayed()));
         floatingActionButton.perform(click());
-
-        ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.custom),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatSpinner.perform(click());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(android.R.id.button1), withText("Start"),
@@ -153,7 +136,7 @@ public class TestWhenGameStartsScoreIs0 {
                                         childAtPosition(
                                                 withId(R.id.page_fragment),
                                                 0)),
-                                4),
+                                2),
                         isDisplayed()));
         frameLayout.check(matches(isDisplayed()));
 
@@ -163,7 +146,7 @@ public class TestWhenGameStartsScoreIs0 {
                                 allOf(withId(R.id.the_game_footer),
                                         childAtPosition(
                                                 withId(R.id.page_contents_container),
-                                                4)),
+                                                2)),
                                 0),
                         isDisplayed()));
         textView.check(matches(withText("Score: 0")));
