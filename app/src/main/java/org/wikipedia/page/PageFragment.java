@@ -382,7 +382,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         gameStartButton.setOnClickListener(view -> {
 
-            String[] gameDestinations = {"Canada", "Concordia University", "Capstone course"};
+            String[] gameDestinations = {"Canada", "Concordia University (Montreal)", "Capstone "
+                    + "course"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             View v = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
@@ -672,7 +673,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             // gForce will be close to 1 when there is no movement.
             float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
-            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !getIsRelatedActive()) {
+            if (gForce > SHAKE_THRESHOLD_GRAVITY && !getIsRelatedActive()) {
                 getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
                 setIsRelatedActive(true);
             }
