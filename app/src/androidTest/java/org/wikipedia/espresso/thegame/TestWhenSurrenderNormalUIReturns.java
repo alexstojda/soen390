@@ -92,6 +92,15 @@ public class TestWhenSurrenderNormalUIReturns {
                         isDisplayed()));
         searchAutoComplete.perform(replaceText("montreal"), closeSoftKeyboard());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.search_results_list),
                         childAtPosition(
@@ -116,26 +125,18 @@ public class TestWhenSurrenderNormalUIReturns {
                                         childAtPosition(
                                                 withId(R.id.page_fragment),
                                                 0)),
-                                2),
+                                3),
                         isDisplayed()));
         floatingActionButton.perform(click());
 
-        ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.custom),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatSpinner.perform(click());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView.perform(click());
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(android.R.id.button1), withText("Start"),
@@ -146,16 +147,34 @@ public class TestWhenSurrenderNormalUIReturns {
                                 3)));
         appCompatButton.perform(scrollTo(), click());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.game_end_button), withText("Surrender"),
                         childAtPosition(
                                 allOf(withId(R.id.the_game_footer),
                                         childAtPosition(
                                                 withId(R.id.page_contents_container),
-                                                7)),
+                                                2)),
                                 1),
                         isDisplayed()));
         appCompatButton2.perform(click());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction imageButton = onView(
                 allOf(withId(R.id.the_game_floating_action_button),
@@ -164,18 +183,12 @@ public class TestWhenSurrenderNormalUIReturns {
                                         childAtPosition(
                                                 withId(R.id.page_fragment),
                                                 0)),
-                                4),
+                                3),
                         isDisplayed()));
         imageButton.check(matches(isDisplayed()));
 
         ViewInteraction viewGroup = onView(
                 allOf(withId(R.id.page_actions_tab_layout),
-                        childAtPosition(
-                                allOf(withId(R.id.page_contents_container),
-                                        childAtPosition(
-                                                withId(R.id.page_fragment),
-                                                0)),
-                                5),
                         isDisplayed()));
         viewGroup.check(matches(isDisplayed()));
     }
