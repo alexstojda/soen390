@@ -14,7 +14,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,47 +59,21 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
             e.printStackTrace();
         }
 
-        ViewInteraction frameLayout = onView(
-                allOf(withId(R.id.the_game_footer),
-                        childAtPosition(
-                                allOf(withId(R.id.page_contents_container),
-                                        childAtPosition(
-                                                withId(R.id.page_fragment),
-                                                0)),
-                                4),
-                        isDisplayed()));
-        frameLayout.check(matches(isDisplayed()));
+//        ViewInteraction frameLayout = onView(
+//                allOf(withId(R.id.the_game_footer),
+//                        childAtPosition(
+//                                allOf(withId(R.id.page_contents_container),
+//                                        childAtPosition(
+//                                                withId(R.id.page_fragment),
+//                                                0)),
+//                                4),
+//                        isDisplayed()));
+//        frameLayout.check(matches(isDisplayed()));
 
         onWebView()
                 // Find the input element by ID.
-                .withElement(findElement(Locator.valueOf("title"), "Provinces and territories of Canada"))
+                .withElement(findElement(Locator.XPATH, "//*[@id=\"content_block_0\"]/p[1]/a[3]"))
                 .perform(webClick());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.game_footer_text), withText("Score: 1"),
-                        childAtPosition(
-                                allOf(withId(R.id.the_game_footer),
-                                        childAtPosition(
-                                                withId(R.id.page_contents_container),
-                                                4)),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("Score: 1")));
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.game_footer_text), withText("Score: 1"),
-                        childAtPosition(
-                                allOf(withId(R.id.the_game_footer),
-                                        childAtPosition(
-                                                withId(R.id.page_contents_container),
-                                                4)),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(withText("Score: 1")));
-
-        ViewInteraction tapTargetView = onView(
-                allOf(withClassName(is("com.getkeepsafe.taptargetview.TapTargetView")), isDisplayed()));
-        tapTargetView.perform(click());
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
@@ -111,25 +84,62 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
             e.printStackTrace();
         }
 
-        ViewInteraction frameLayout2 = onView(
-                allOf(IsInstanceOf.instanceOf(android.widget.FrameLayout.class), isDisplayed()));
-        frameLayout2.check(matches(isDisplayed()));
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.game_footer_text), withText("Score: 1"),
+                        childAtPosition(
+                                allOf(withId(R.id.the_game_footer),
+                                        childAtPosition(
+                                                withId(R.id.page_contents_container),
+                                                2)),
+                                0),
+                        isDisplayed()));
+        textView.check(matches(withText("Score: 1")));
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         onWebView()
                 // Find the input element by ID.
-                .withElement(findElement(Locator.valueOf("href"), "/wiki/Canada"))
+                .withElement(findElement(Locator.XPATH, "//*[@id=\"content_block_0\"]/p[1]/a[1]"))
                 .perform(webClick());
 
-        ViewInteraction textView3 = onView(
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+//        ViewInteraction tapTargetView = onView(
+//                allOf(withClassName(is("com.getkeepsafe.taptargetview.TapTargetView")), isDisplayed()));
+//        tapTargetView.perform(click());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+//        ViewInteraction frameLayout = onView(
+//                allOf(IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class), isDisplayed()));
+//        frameLayout.check(matches(isDisplayed()));
+
+        ViewInteraction textView2 = onView(
                 allOf(withId(R.id.alertTitle), withText("You won The Game!"),
-                        childAtPosition(
-                                allOf(withId(R.id.title_template),
-                                        childAtPosition(
-                                                withId(R.id.topPanel),
-                                                0)),
-                                0),
                         isDisplayed()));
-        textView3.check(matches(withText("You won The Game!")));
+        textView2.check(matches(withText("You won The Game!")));
+
     }
 
     private static void startGameWithCanada() {
@@ -182,6 +192,15 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
                         isDisplayed()));
         searchAutoComplete.perform(replaceText("Montréal"), closeSoftKeyboard());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.search_results_list),
                         childAtPosition(
@@ -206,7 +225,7 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
                                         childAtPosition(
                                                 withId(R.id.page_fragment),
                                                 0)),
-                                2),
+                                3),
                         isDisplayed()));
         floatingActionButton.perform(click());
 
@@ -218,23 +237,6 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.custom),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatSpinner.perform(click());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(android.R.id.button1), withText("Start"),
