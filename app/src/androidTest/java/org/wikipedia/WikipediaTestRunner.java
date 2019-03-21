@@ -19,6 +19,7 @@ public class WikipediaTestRunner extends AndroidJUnitRunner {
     @Override
     public void onStart() {
         clearAppInfo();
+        PrefsIoUtil.setBoolean(R.string.preference_key_toc_tutorial_enabled, false);
         super.onStart();
     }
 
