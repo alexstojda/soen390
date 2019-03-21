@@ -22,10 +22,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew jacocoTestReport
+          command: ./gradlew jacocoTestReport --no-daemon
       - run:
           name: Check style
-          command: ./gradlew checkstyle
+          command: ./gradlew checkstyle --no-daemon
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports
