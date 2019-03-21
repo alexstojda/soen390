@@ -118,23 +118,6 @@ public class TestWhenNewPageScoreIncrementAndGameEnd {
             e.printStackTrace();
         }
 
-//        ViewInteraction tapTargetView = onView(
-//                allOf(withClassName(is("com.getkeepsafe.taptargetview.TapTargetView")), isDisplayed()));
-//        tapTargetView.perform(click());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-//        ViewInteraction frameLayout = onView(
-//                allOf(IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class), isDisplayed()));
-//        frameLayout.check(matches(isDisplayed()));
-
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.alertTitle), withText("You won The Game!"),
                         isDisplayed()));
