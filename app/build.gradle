@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'jacoco'
 
 import com.android.build.gradle.internal.dsl.ProductFlavor
 import com.android.ddmlib.DdmPreferences
@@ -43,6 +44,11 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
     }
 
     // Keep version in sync with /project.properties
@@ -98,11 +104,13 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-debug.pro'
             testProguardFile 'test-proguard-rules.pro'
+            testCoverageEnabled true
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFile 'test-proguard-rules.pro'
+            testCoverageEnabled true
         }
     }
 
