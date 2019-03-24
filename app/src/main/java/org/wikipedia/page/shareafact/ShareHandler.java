@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ public class ShareHandler {
     private static final String PAYLOAD_PURPOSE_SHARE = "share";
     private static final String PAYLOAD_PURPOSE_DEFINE = "define";
     private static final String PAYLOAD_PURPOSE_EDIT_HERE = "edit_here";
+    private static final String PAYLOAD_PURPOSE_SPRINT = "sprint";
     private static final String PAYLOAD_TEXT_KEY = "text";
 
     @NonNull private final PageFragment fragment;
@@ -86,6 +88,9 @@ public class ShareHandler {
                 case PAYLOAD_PURPOSE_EDIT_HERE:
                     onEditHerePayload(messagePayload.optInt("sectionID", 0), text);
                     break;
+                case PAYLOAD_PURPOSE_SPRINT:
+                    onSprintPayload(text);
+                    break;
                 default:
                     L.d("Unknown purpose=" + purpose);
             }
@@ -108,6 +113,11 @@ public class ShareHandler {
         fragment.showBottomSheet(WiktionaryDialog.newInstance(title, text));
     }
 
+    public void showSprintReader(String text) {
+        final String selectedText = StringUtil.sanitizeText(text);
+        fragment.showBottomSheet(new SprintDialog(fragment.getContext(), selectedText));
+    }
+
     private void onSharePayload(@NonNull String text) {
         if (funnel == null) {
             createFunnel();
@@ -124,6 +134,10 @@ public class ShareHandler {
         if (sectionID >= 0) {
             fragment.getEditHandler().startEditingSection(sectionID, text);
         }
+    }
+
+    private void onSprintPayload(String text) {
+        showSprintReader(text);
     }
 
     private void showCopySnackbar() {
@@ -198,6 +212,8 @@ public class ShareHandler {
         if (!fragment.getPage().isArticle()) {
             editItem.setVisible(false);
         }
+        MenuItem sprintItem = menu.findItem(R.id.menu_text_select_sprint);
+        sprintItem.setOnMenuItemClickListener(new RequestTextSelectOnMenuItemClickListener(PAYLOAD_PURPOSE_SPRINT));
 
         onHighlightText();
     }
@@ -326,5 +342,76 @@ public class ShareHandler {
         private static String constructShareText(String selectedText, String introText) {
             return selectedText + "\n\n" + introText;
         }
+    }
+
+
+    /**
+     * Sprint Reader dialog
+     */
+    private static class SprintDialog extends NoDimBottomSheetDialog {
+
+        public static boolean isRunning = false;
+        public static int placeHolder = 0;
+        public TextView sprintText;
+        public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
+
+
+
+        SprintDialog(final Context context, final String selectedText) {
+
+            super(context);
+
+            View rootView = LayoutInflater.from(context).inflate(R.layout.dialog_sprint_reader, null);
+            setContentView(rootView);
+
+            rootView.findViewById(R.id.close_button)
+                    .setOnClickListener((v) -> {
+                        sprintText.removeCallbacks(setSprintText);
+                        resetSprint();
+                        dismiss();
+                    });
+
+            rootView.findViewById(R.id.start_sprint_button)
+                    .setOnClickListener((v) -> {
+
+                        if(!isRunning) {
+                            setIsRunning(true);
+                            sprintText = findViewById(R.id.sprint_text);
+                            sprintText.postDelayed(setSprintText, 0);
+                        }
+                    });
+
+            rootView.findViewById(R.id.reset_sprint_button)
+                    .setOnClickListener((v) -> {
+                        setIsRunning(false);
+                        resetSprint();
+                    });
+
+            rootView.findViewById(R.id.stop_sprint_button)
+                    .setOnClickListener((v) -> {
+                        setIsRunning(false);
+                    });
+        }
+
+        public void setIsRunning(boolean isRunning){
+            this.isRunning = isRunning;
+        }
+
+        public void resetSprint(){
+            this.placeHolder = 0;
+            this.isRunning = false;
+            sprintText.setText(" - start -");
+        }
+
+        private Runnable setSprintText = new Runnable() {
+            public void run() {
+                if(isRunning && placeHolder < test.length) {
+                    sprintText.setText(test[placeHolder]);
+                    placeHolder++;
+                    sprintText.postDelayed(this, 200);
+                }
+            }
+        };
+
     }
 }
