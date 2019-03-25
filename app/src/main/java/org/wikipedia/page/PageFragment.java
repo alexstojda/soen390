@@ -15,6 +15,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -366,6 +368,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 CameraPreview cameraView = new CameraPreview(getContext(), camera);
                 cameraPreview.addView(cameraView);
             }
+
         }
 
         if (Prefs.isDistractionFreeModeEnabled()) {
@@ -414,6 +417,26 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         PageActionToolbarHideHandler snackbarHideHandler =
                 new PageActionToolbarHideHandler(rootView.findViewById(R.id.fragment_page_coordinator), null);
         snackbarHideHandler.setScrollView(webView);
+
+        // TODO: Create specfic WikiListeny MediaPLayer!
+        DefaultAvPlayer futureWikiListenyPlayer = new DefaultAvPlayer(new MediaPlayerImplementation());
+        ImageView playPauseButton = rootView.findViewById(R.id.article_menu_play_pause_button);
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                if(!futureWikiListenyPlayer.isPlaying())
+                {
+                    // write play code here
+                    playPauseButton.setImageResource(R.drawable.ic_pause_green_24dp);
+                }
+                else
+                {
+                    // write pause code here
+                    playPauseButton.setImageResource(R.drawable.ic_play_arrow_green_24dp);
+                }
+
+            }
+        });
 
         return rootView;
     }
