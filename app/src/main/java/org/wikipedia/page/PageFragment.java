@@ -437,48 +437,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 getView().findViewById(R.id.game_footer_text), this));
     }
 
-    public void getPageHTML(ValueCallback<String> callback) {
 
-        webView.evaluateJavascript("(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
-            (String value) -> {
-                    value = value.replace("\\u003C", "<");
-                    callback.onReceiveValue(value);
-        });
-    }
-
-    private String filterNewlines(String str) {
-        return str.replace("\\n", "");
-    }
-
-    public void getParsedPage(ValueCallback<List<PageSection>> callback) {
-
-        getPageHTML((pageHTML) -> {
-
-            ArrayList<PageSection> sections = new ArrayList<>();
-
-            Document parsedPage = Jsoup.parse(pageHTML);
-
-            Element title = parsedPage.selectFirst("h1");
-            Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
-            String titleStr = filterNewlines(title.text());
-            String firstParagraphStr = filterNewlines(firstParagraph.text());
-
-            sections.add(new PageSection(titleStr, firstParagraphStr));
-
-            for (Element e : parsedPage.select("h2,h3,h4,h5,h6[class*=pagelib_edit_section_title]")) {
-
-                int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
-                String sectionTitle = filterNewlines(e.text());
-
-                Element paragraphElement = parsedPage.selectFirst("div[id*=content_block_" + sectionID + "]");
-                String paragraph = filterNewlines(paragraphElement.text());
-
-                sections.add(new PageSection(sectionTitle, paragraph));
-            }
-
-            callback.onReceiveValue(sections);
-        });
-    }
 
     // End game (surrender), simply restore UI to original state.
     public void endGame() {
@@ -487,10 +446,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         tabLayout.setVisibility(View.VISIBLE);
         Prefs.disableDistractionFreeMode();
         toggleDistractionFreeMode();
-
-        getParsedPage((sections) -> {
-
-        });
     }
 
 
@@ -1530,5 +1485,49 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     @Nullable
     public Callback callback() {
         return FragmentUtil.getCallback(this, Callback.class);
+    }
+
+
+    private String filterNewlines(String str) {
+        return str.replace("\\n", "");
+    }
+
+    public void getPageHTML(ValueCallback<String> callback) {
+
+        webView.evaluateJavascript("(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
+                (String value) -> {
+                    value = value.replace("\\u003C", "<");
+                    callback.onReceiveValue(value);
+                });
+    }
+
+    public void getParsedPage(ValueCallback<List<PageSection>> callback) {
+
+        getPageHTML((pageHTML) -> {
+
+            ArrayList<PageSection> sections = new ArrayList<>();
+
+            Document parsedPage = Jsoup.parse(pageHTML);
+
+            Element title = parsedPage.selectFirst("h1");
+            Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
+            String titleStr = filterNewlines(title.text());
+            String firstParagraphStr = filterNewlines(firstParagraph.text());
+
+            sections.add(new PageSection(titleStr, firstParagraphStr));
+
+            for (Element e : parsedPage.select("h2,h3,h4,h5,h6[class*=pagelib_edit_section_title]")) {
+
+                int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
+                String sectionTitle = filterNewlines(e.text());
+
+                Element paragraphElement = parsedPage.selectFirst("div[id*=content_block_" + sectionID + "]");
+                String paragraph = filterNewlines(paragraphElement.text());
+
+                sections.add(new PageSection(sectionTitle, paragraph));
+            }
+
+            callback.onReceiveValue(sections);
+        });
     }
 }
