@@ -1,7 +1,6 @@
 package org.wikipedia.thegame;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.wikipedia.page.PageFragment;
 import org.wikipedia.util.log.L;
@@ -35,12 +34,7 @@ public class GameClickHandler {
         L.e("passed title: " + title);
         if (title.equals(endTitle)) {
             if (pageFragment != null) {
-                pageFragment.endGame();
-                Toast toast = Toast.makeText(pageFragment.getContext(), "Congratulations! You have "
-                                + "won The Game. It took you " + gameScore + " clicks.",
-                        Toast.LENGTH_LONG);
-                toast.show();
-
+                pageFragment.endGame(gameScore);
             }
             return true;
         }

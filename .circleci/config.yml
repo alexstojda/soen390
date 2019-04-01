@@ -5,7 +5,8 @@ jobs:
     docker:
       - image: circleci/android:api-28
     environment:
-      JVM_OPTS: -Xmx3200m
+      JVM_OPTS: -Xmx4096m
+      GRADLE_OPTS: -Xmx3200m -Dorg.gradle.daemon=false
     steps:
       - checkout
       - restore_cache:
@@ -22,10 +23,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew testDevDebug
+          command: ./gradlew clean jacocoTestReport --no-daemon --max-workers 4
       - run:
           name: Check style
-          command: ./gradlew checkstyle
+          command: ./gradlew clean checkstyle --no-daemon
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports
