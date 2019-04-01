@@ -18,4 +18,8 @@ public class PageSection {
         return sectionContents;
     }
 
+    public String[] getSectionContentsSplit() {
+        return sectionContents.split(" ");
+    }
+
 }
