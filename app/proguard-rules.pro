@@ -28,6 +28,10 @@
 -dontwarn okio.**
 # --- /OkHttp + Okio ---
 
+# --- Spotify ---
+-dontwarn com.spotify.**
+# --- /Spotify ---
+
 # --- Gson ---
 # https://github.com/google/gson/blob/master/examples/android-proguard-example/proguard.cfg
 
