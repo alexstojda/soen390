@@ -173,7 +173,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
     // The following are used for the shake detection
     private static final float SHAKE_THRESHOLD_GRAVITY = 4.5F;
-    public static boolean isRelatedActive = false;
+    public static boolean is_related_active = false;
 
     private static final int REFRESH_SPINNER_ADDITIONAL_OFFSET = (int) (16 * DimenUtil.getDensityScalar());
     private boolean pageRefreshed;
@@ -312,9 +312,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         return containerView;
     }
 
-    public static SensorManager mSensorManager;
-    public static Sensor mAccelerometer;
-    public static String lastTitle;
+    public static SensorManager sensor_manager;
+    public static Sensor accelerometer;
+    public static String last_title;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -351,10 +351,10 @@ public class PageFragment extends Fragment implements BackPressedHandler {
 
         if (Prefs.isShakeToRelatedEnabled()) {
             // ShakeDetector initialization
-            mSensorManager = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
-            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensor_manager = (SensorManager) app.getSystemService(Context.SENSOR_SERVICE);
+            accelerometer = sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-            mSensorManager.registerListener(mShakeHandler, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            sensor_manager.registerListener(shake_handler, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         if (Prefs.isWikiWalkingEnabled()) {
@@ -448,7 +448,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         }
 
         if (Prefs.isShakeToRelatedEnabled()) {
-            mSensorManager.unregisterListener(mShakeHandler);
+            sensor_manager.unregisterListener(shake_handler);
         }
 
         //uninitialize the bridge, so that no further JS events can have any effect.
@@ -631,7 +631,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         activeTimer.resume();
     }
 
-    public SensorEventListener mShakeHandler = new SensorEventListener() {
+    public SensorEventListener shake_handler = new SensorEventListener() {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -652,9 +652,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             // gForce will be close to 1 when there is no movement.
             float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
-            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !isRelatedActive) {
+            if (gForce > SHAKE_THRESHOLD_GRAVITY  && !is_related_active) {
                 getActivity().startActivity(new Intent(getActivity().getApplicationContext(), RelatedActivity.class));
-                isRelatedActive = true;
+                is_related_active = true;
             }
         }
     };
@@ -795,7 +795,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         updateProgressBar(true, true, 0);
 
         this.pageRefreshed = isRefresh;
-        lastTitle = model.getTitle().getConvertedText();
+        last_title = model.getTitle().getConvertedText();
         closePageScrollFunnel();
         pageFragmentLoadState.load(pushBackStack, stagedScrollY);
         bottomContentView.hide();

@@ -57,19 +57,15 @@ public class ShareHandler {
     private static final String PAYLOAD_PURPOSE_SPRINT = "sprint";
     private static final String PAYLOAD_TEXT_KEY = "text";
 
-    @NonNull private final PageFragment fragment;
-    @NonNull private final CommunicationBridge bridge;
-    @Nullable private ActionMode webViewActionMode;
-    @Nullable private ShareAFactFunnel funnel;
+    @NonNull
+    private final PageFragment fragment;
+    @NonNull
+    private final CommunicationBridge bridge;
+    @Nullable
+    private ActionMode webViewActionMode;
+    @Nullable
+    private ShareAFactFunnel funnel;
     private CompositeDisposable disposables = new CompositeDisposable();
-
-    private void createFunnel() {
-        WikipediaApp app = WikipediaApp.getInstance();
-        final Page page = fragment.getPage();
-        final PageProperties pageProperties = page.getPageProperties();
-        funnel = new ShareAFactFunnel(app, page.getTitle(), pageProperties.getPageId(),
-                pageProperties.getRevisionId());
-    }
 
     public ShareHandler(@NonNull PageFragment fragment, @NonNull CommunicationBridge bridge) {
         this.fragment = fragment;
@@ -95,6 +91,14 @@ public class ShareHandler {
                     L.d("Unknown purpose=" + purpose);
             }
         });
+    }
+
+    private void createFunnel() {
+        WikipediaApp app = WikipediaApp.getInstance();
+        final Page page = fragment.getPage();
+        final PageProperties pageProperties = page.getPageProperties();
+        funnel = new ShareAFactFunnel(app, page.getTitle(), pageProperties.getPageId(),
+                pageProperties.getRevisionId());
     }
 
     public void dispose() {
@@ -260,21 +264,6 @@ public class ShareHandler {
         webViewActionMode.finish();
     }
 
-    private class RequestTextSelectOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
-        @NonNull private final String purpose;
-
-        RequestTextSelectOnMenuItemClickListener(@NonNull String purpose) {
-            this.purpose = purpose;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            requestTextSelection(purpose);
-            leaveActionMode();
-            return true;
-        }
-    }
-
     private void requestTextSelection(String purpose) {
         // send an event to the WebView that will make it return the
         // selected text (or first paragraph) back to us...
@@ -344,18 +333,24 @@ public class ShareHandler {
         }
     }
 
-
     /**
      * Sprint Reader dialog
      */
     private static class SprintDialog extends NoDimBottomSheetDialog {
 
-        public static boolean isRunning = false;
-        public static int placeHolder = 0;
-        public TextView sprintText;
+        public static boolean is_running = false;
+        public static int place_holder = 0;
+        public TextView sprint_text;
         public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
-
-
+        private Runnable set_sprint_text = new Runnable() {
+            public void run() {
+                if (is_running && place_holder < test.length) {
+                    sprint_text.setText(test[place_holder]);
+                    place_holder++;
+                    sprint_text.postDelayed(this, 200);
+                }
+            }
+        };
 
         SprintDialog(final Context context, final String selectedText) {
 
@@ -366,7 +361,7 @@ public class ShareHandler {
 
             rootView.findViewById(R.id.close_button)
                     .setOnClickListener((v) -> {
-                        sprintText.removeCallbacks(setSprintText);
+                        sprint_text.removeCallbacks(set_sprint_text);
                         resetSprint();
                         dismiss();
                     });
@@ -374,44 +369,50 @@ public class ShareHandler {
             rootView.findViewById(R.id.start_sprint_button)
                     .setOnClickListener((v) -> {
 
-                        if(!isRunning) {
-                            setIsRunning(true);
-                            sprintText = findViewById(R.id.sprint_text);
-                            sprintText.postDelayed(setSprintText, 0);
+                        if (!is_running) {
+                            set_is_running(true);
+                            sprint_text = findViewById(R.id.sprint_text);
+                            sprint_text.postDelayed(set_sprint_text, 0);
                         }
                     });
 
             rootView.findViewById(R.id.reset_sprint_button)
                     .setOnClickListener((v) -> {
-                        setIsRunning(false);
+                        set_is_running(false);
                         resetSprint();
                     });
 
             rootView.findViewById(R.id.stop_sprint_button)
                     .setOnClickListener((v) -> {
-                        setIsRunning(false);
+                        set_is_running(false);
                     });
         }
 
-        public void setIsRunning(boolean isRunning){
-            this.isRunning = isRunning;
+        public void set_is_running(boolean is_running) {
+            this.is_running = is_running;
         }
 
-        public void resetSprint(){
-            this.placeHolder = 0;
-            this.isRunning = false;
-            sprintText.setText(" - start -");
+        public void resetSprint() {
+            this.place_holder = 0;
+            this.is_running = false;
+            sprint_text.setText(" - start -");
         }
 
-        private Runnable setSprintText = new Runnable() {
-            public void run() {
-                if(isRunning && placeHolder < test.length) {
-                    sprintText.setText(test[placeHolder]);
-                    placeHolder++;
-                    sprintText.postDelayed(this, 200);
-                }
-            }
-        };
+    }
 
+    private class RequestTextSelectOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
+        @NonNull
+        private final String purpose;
+
+        RequestTextSelectOnMenuItemClickListener(@NonNull String purpose) {
+            this.purpose = purpose;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            requestTextSelection(purpose);
+            leaveActionMode();
+            return true;
+        }
     }
 }

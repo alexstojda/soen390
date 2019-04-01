@@ -79,7 +79,7 @@ public class RandomItemFragment extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
             if (getActivity() instanceof RelatedActivity) {
                 // use last/current page title to select a related article
-                getRelatedPage(PageFragment.lastTitle);
+                getRelatedPage(PageFragment.last_title);
             } else {
                 getRandomPage();
             }
@@ -88,7 +88,7 @@ public class RandomItemFragment extends Fragment {
         if (summary == null) {
             if (getActivity() instanceof RelatedActivity) {
                 // use last/current page title to select a related article
-                getRelatedPage(PageFragment.lastTitle);
+                getRelatedPage(PageFragment.last_title);
             } else {
                 getRandomPage();
             }
@@ -99,7 +99,7 @@ public class RandomItemFragment extends Fragment {
     @Override
     public void onDestroy() {
         if (getActivity() instanceof RelatedActivity) {
-            PageFragment.isRelatedActive = false;
+            PageFragment.is_related_active = false;
         }
 
         super.onDestroy();
