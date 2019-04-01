@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -35,6 +34,7 @@ import org.wikipedia.util.ShareUtil;
 import org.wikipedia.util.StringUtil;
 import org.wikipedia.util.UriUtil;
 import org.wikipedia.util.log.L;
+import org.wikipedia.wikiSpeedi.WikiSpeediDialog;
 import org.wikipedia.wiktionary.WiktionaryDialog;
 
 import java.util.Arrays;
@@ -119,7 +119,7 @@ public class ShareHandler {
 
     public void showSprintReader(String text) {
         final String selectedText = StringUtil.sanitizeText(text);
-        fragment.showBottomSheet(new SprintDialog(fragment.getContext(), selectedText));
+        fragment.showBottomSheet(new WikiSpeediDialog(fragment.getContext(), selectedText));
     }
 
     private void onSharePayload(@NonNull String text) {
@@ -331,73 +331,6 @@ public class ShareHandler {
         private static String constructShareText(String selectedText, String introText) {
             return selectedText + "\n\n" + introText;
         }
-    }
-
-    /**
-     * Sprint Reader dialog
-     */
-    private static class SprintDialog extends NoDimBottomSheetDialog {
-
-        public static boolean is_running = false;
-        public static int place_holder = 0;
-        public TextView sprint_text;
-        public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
-        private Runnable set_sprint_text = new Runnable() {
-            public void run() {
-                if (is_running && place_holder < test.length) {
-                    sprint_text.setText(test[place_holder]);
-                    place_holder++;
-                    sprint_text.postDelayed(this, 200);
-                }
-            }
-        };
-
-        SprintDialog(final Context context, final String selectedText) {
-
-            super(context);
-
-            View rootView = LayoutInflater.from(context).inflate(R.layout.dialog_sprint_reader, null);
-            setContentView(rootView);
-
-            rootView.findViewById(R.id.close_button)
-                    .setOnClickListener((v) -> {
-                        sprint_text.removeCallbacks(set_sprint_text);
-                        resetSprint();
-                        dismiss();
-                    });
-
-            rootView.findViewById(R.id.start_sprint_button)
-                    .setOnClickListener((v) -> {
-
-                        if (!is_running) {
-                            set_is_running(true);
-                            sprint_text = findViewById(R.id.sprint_text);
-                            sprint_text.postDelayed(set_sprint_text, 0);
-                        }
-                    });
-
-            rootView.findViewById(R.id.reset_sprint_button)
-                    .setOnClickListener((v) -> {
-                        set_is_running(false);
-                        resetSprint();
-                    });
-
-            rootView.findViewById(R.id.stop_sprint_button)
-                    .setOnClickListener((v) -> {
-                        set_is_running(false);
-                    });
-        }
-
-        public void set_is_running(boolean is_running) {
-            this.is_running = is_running;
-        }
-
-        public void resetSprint() {
-            this.place_holder = 0;
-            this.is_running = false;
-            sprint_text.setText(" - start -");
-        }
-
     }
 
     private class RequestTextSelectOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
