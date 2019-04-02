@@ -84,8 +84,7 @@ public enum FeedContentType implements EnumCode {
         public FeedClient newClient(AggregatedFeedContentClient aggregatedClient, int age, boolean isOnline) {
             return isEnabled() && isOnline ? new BecauseYouReadClient() : null;
         }
-    }
-    ;
+    };
 
     private static final EnumCodeMap<FeedContentType> MAP
             = new EnumCodeMap<>(FeedContentType.class);
