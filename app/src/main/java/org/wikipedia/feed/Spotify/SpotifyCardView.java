@@ -1,9 +1,10 @@
 package org.wikipedia.feed.Spotify;
 
+import org.wikipedia.R;
+
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import org.wikipedia.R;
 import org.wikipedia.feed.view.StaticCardView;
 
 public class SpotifyCardView extends StaticCardView<SpotifyCard> {

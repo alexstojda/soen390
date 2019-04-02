@@ -28,7 +28,7 @@ public enum CardType implements EnumCode {
             return new SearchCardView(ctx);
         }
     },
-    SPOTIFY(1 , FeedContentType.SPOTIFY) {
+    SPOTIFY(1, FeedContentType.SPOTIFY) {
         @NonNull @Override public FeedCardView<?> newView(@NonNull Context ctx) {
             return new SpotifyCardView(ctx);
         }
