@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.wikipedia.feed.FeedContentType;
+import org.wikipedia.feed.Spotify.SpotifyCardView;
 import org.wikipedia.feed.announcement.AnnouncementCardView;
 import org.wikipedia.feed.becauseyouread.BecauseYouReadCardView;
 import org.wikipedia.feed.dayheader.DayHeaderCardView;
@@ -25,6 +26,11 @@ public enum CardType implements EnumCode {
     SEARCH_BAR(0) {
         @NonNull @Override public FeedCardView<?> newView(@NonNull Context ctx) {
             return new SearchCardView(ctx);
+        }
+    },
+    SPOTIFY(1 , FeedContentType.SPOTIFY) {
+        @NonNull @Override public FeedCardView<?> newView(@NonNull Context ctx) {
+            return new SpotifyCardView(ctx);
         }
     },
     BECAUSE_YOU_READ_LIST(2, FeedContentType.BECAUSE_YOU_READ) {
