@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 
 import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
+import org.wikipedia.feed.Spotify.SpotifyClient;
 import org.wikipedia.feed.aggregated.AggregatedFeedContentClient;
 import org.wikipedia.feed.becauseyouread.BecauseYouReadClient;
 import org.wikipedia.feed.dataclient.FeedClient;
@@ -21,6 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 public enum FeedContentType implements EnumCode {
+    SPOTIFY(-1, R.string.view_spotify_title, R.string.feed_item_type_spotify, false) {
+        @Nullable
+        @Override
+        public FeedClient newClient(AggregatedFeedContentClient aggregatedClient, int age, boolean isOnline) {
+            return isEnabled() && isOnline ? new SpotifyClient() : null;
+        }
+    },
     NEWS(0, R.string.view_card_news_title, R.string.feed_item_type_news, true) {
         @Nullable
         @Override
@@ -76,7 +84,8 @@ public enum FeedContentType implements EnumCode {
         public FeedClient newClient(AggregatedFeedContentClient aggregatedClient, int age, boolean isOnline) {
             return isEnabled() && isOnline ? new BecauseYouReadClient() : null;
         }
-    };
+    }
+    ;
 
     private static final EnumCodeMap<FeedContentType> MAP
             = new EnumCodeMap<>(FeedContentType.class);
