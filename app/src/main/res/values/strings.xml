@@ -728,5 +728,6 @@
     <string name="game_start">Start</string>
     <string name="game_cancel">Cancel</string>
     <string name="camera_permission">Please enable camera permission in phone settings</string>
+    <string name="artist_name">Artist Name</string>
 
 </resources>
