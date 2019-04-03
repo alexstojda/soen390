@@ -59,6 +59,7 @@ import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.search.SearchFragment;
 import org.wikipedia.search.SearchInvokeSource;
 import org.wikipedia.settings.Prefs;
+import org.wikipedia.spotify.SpotifyReceiver;
 import org.wikipedia.spotify.SpotifyRemote;
 import org.wikipedia.util.ClipboardUtil;
 import org.wikipedia.util.FeedbackUtil;
@@ -89,6 +90,7 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
     private ExclusiveBottomSheetPresenter bottomSheetPresenter = new ExclusiveBottomSheetPresenter();
     private MediaDownloadReceiver downloadReceiver = new MediaDownloadReceiver();
     private MediaDownloadReceiverCallback downloadReceiverCallback = new MediaDownloadReceiverCallback();
+    private SpotifyReceiver spotifyReceiver = new SpotifyReceiver();
     private SpotifyCallback spotifyCallback = new SpotifyCallback();
 
     // The permissions request API doesn't take a callback, so in the event we have to
@@ -138,7 +140,7 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
             handleIntent(requireActivity().getIntent());
         }
 
-        new SpotifyRemote(this, spotifyCallback);
+        new SpotifyRemote(this/*, spotifyCallback*/);
 
         return view;
     }
@@ -157,6 +159,9 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         requireContext().registerReceiver(downloadReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         downloadReceiver.setCallback(downloadReceiverCallback);
+        requireContext().registerReceiver(spotifyReceiver,
+                new IntentFilter("com.spotify.music.metadatachanged"));
+        spotifyReceiver.setCallback(spotifyCallback);
         // reset the last-page-viewed timer
         Prefs.pageLastShown(0);
         // update after returning from PageActivity
@@ -600,7 +605,7 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }
     }
 
-    private class SpotifyCallback implements SpotifyRemote.Callback {
+    private class SpotifyCallback implements SpotifyReceiver.Callback {
 
         @Override
         public void updateArtist(String artistName) {
