@@ -20,6 +20,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.wikipedia.BackPressedHandler;
@@ -58,6 +59,7 @@ import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.search.SearchFragment;
 import org.wikipedia.search.SearchInvokeSource;
 import org.wikipedia.settings.Prefs;
+import org.wikipedia.spotify.SpotifyRemote;
 import org.wikipedia.util.ClipboardUtil;
 import org.wikipedia.util.FeedbackUtil;
 import org.wikipedia.util.PermissionUtil;
@@ -75,23 +77,33 @@ import butterknife.Unbinder;
 public class MainFragment extends Fragment implements BackPressedHandler, FeedFragment.Callback,
         NearbyFragment.Callback, HistoryFragment.Callback, SearchFragment.Callback, FloatingQueueView.Callback,
         LinkPreviewDialog.Callback {
-    @BindView(R.id.fragment_main_view_pager) ViewPager viewPager;
-    @BindView(R.id.fragment_main_nav_tab_layout) NavTabLayout tabLayout;
-    @BindView(R.id.floating_queue_view) FloatingQueueView floatingQueueView;
+    @BindView(R.id.fragment_main_view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.fragment_main_nav_tab_layout)
+    NavTabLayout tabLayout;
+    @BindView(R.id.floating_queue_view)
+    FloatingQueueView floatingQueueView;
+    @BindView(R.id.artist_name)
+    TextView textView;
     private Unbinder unbinder;
     private ExclusiveBottomSheetPresenter bottomSheetPresenter = new ExclusiveBottomSheetPresenter();
     private MediaDownloadReceiver downloadReceiver = new MediaDownloadReceiver();
     private MediaDownloadReceiverCallback downloadReceiverCallback = new MediaDownloadReceiverCallback();
+    private SpotifyCallback spotifyCallback = new SpotifyCallback();
 
     // The permissions request API doesn't take a callback, so in the event we have to
     // ask for permission to download a featured image from the feed, we'll have to hold
     // the image we're waiting for permission to download as a bit of state here. :(
-    @Nullable private FeaturedImage pendingDownloadImage;
+    @Nullable
+    private FeaturedImage pendingDownloadImage;
 
     public interface Callback {
         void onTabChanged(@NonNull NavTab tab);
+
         void onSearchOpen();
+
         void onSearchClose(boolean shouldFinishActivity);
+
         void updateToolbarElevation(boolean elevate);
     }
 
@@ -101,9 +113,11 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         return fragment;
     }
 
-    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
-                                                 @Nullable ViewGroup container,
-                                                 @Nullable Bundle savedInstanceState) {
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -123,6 +137,9 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         if (savedInstanceState == null) {
             handleIntent(requireActivity().getIntent());
         }
+
+        new SpotifyRemote(this, spotifyCallback);
+
         return view;
     }
 
@@ -134,7 +151,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         floatingQueueView.animation(true);
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         requireContext().registerReceiver(downloadReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -145,7 +163,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         floatingQueueView.update();
     }
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         unbinder.unbind();
         unbinder = null;
         super.onDestroyView();
@@ -241,11 +260,13 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }
     }
 
-    @Override public void onFeedSearchRequested() {
+    @Override
+    public void onFeedSearchRequested() {
         openSearchFragment(SearchInvokeSource.FEED_BAR, null);
     }
 
-    @Override public void onFeedVoiceSearchRequested() {
+    @Override
+    public void onFeedVoiceSearchRequested() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         try {
             startActivityForResult(intent, Constants.ACTIVITY_REQUEST_VOICE_SEARCH);
@@ -254,15 +275,18 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }
     }
 
-    @Override public void onFeedSelectPage(HistoryEntry entry) {
+    @Override
+    public void onFeedSelectPage(HistoryEntry entry) {
         startActivity(PageActivity.newIntentForNewTab(requireContext(), entry, entry.getTitle()), getTransitionAnimationBundle(entry.getTitle()));
     }
 
-    @Override public void onFeedSelectPageFromExistingTab(HistoryEntry entry) {
+    @Override
+    public void onFeedSelectPageFromExistingTab(HistoryEntry entry) {
         startActivity(PageActivity.newIntentForExistingTab(requireContext(), entry, entry.getTitle()), getTransitionAnimationBundle(entry.getTitle()));
     }
 
-    @Override public void onFeedAddPageToList(HistoryEntry entry) {
+    @Override
+    public void onFeedAddPageToList(HistoryEntry entry) {
         bottomSheetPresenter.show(getChildFragmentManager(),
                 AddToReadingListDialog.newInstance(entry.getTitle(),
                         AddToReadingListDialog.InvokeSource.FEED));
@@ -274,17 +298,20 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
                 getString(R.string.reading_list_item_deleted, entry.getTitle().getDisplayText()));
     }
 
-    @Override public void onFeedSharePage(HistoryEntry entry) {
+    @Override
+    public void onFeedSharePage(HistoryEntry entry) {
         ShareUtil.shareText(requireContext(), entry.getTitle());
     }
 
-    @Override public void onFeedNewsItemSelected(@NonNull NewsItemCard card, @NonNull HorizontalScrollingListCardItemView view) {
+    @Override
+    public void onFeedNewsItemSelected(@NonNull NewsItemCard card, @NonNull HorizontalScrollingListCardItemView view) {
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(requireActivity(), view.getImageView(), getString(R.string.transition_news_item));
         startActivity(NewsActivity.newIntent(requireActivity(), card.item(), card.wikiSite()), options.toBundle());
     }
 
-    @Override public void onFeedShareImage(final FeaturedImageCard card) {
+    @Override
+    public void onFeedShareImage(final FeaturedImageCard card) {
         final String thumbUrl = card.baseImage().thumbnail().source().toString();
         final String fullSizeUrl = card.baseImage().image().source().toString();
         new ImagePipelineBitmapGetter(thumbUrl) {
@@ -303,7 +330,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }.get();
     }
 
-    @Override public void onFeedDownloadImage(FeaturedImage image) {
+    @Override
+    public void onFeedDownloadImage(FeaturedImage image) {
         if (!(PermissionUtil.hasWriteExternalStoragePermission(requireContext()))) {
             setPendingDownload(image);
             requestWriteExternalStoragePermission();
@@ -312,7 +340,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }
     }
 
-    @Override public void onFeaturedImageSelected(FeaturedImageCard card) {
+    @Override
+    public void onFeaturedImageSelected(FeaturedImageCard card) {
         startActivityForResult(GalleryActivity.newIntent(requireActivity(), card.age(),
                 card.filename(), card.baseImage(), card.wikiSite(),
                 GalleryFunnel.SOURCE_FEED_FEATURED_IMAGE), Constants.ACTIVITY_REQUEST_GALLERY);
@@ -342,23 +371,28 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         updateToolbarElevation(!(fragment instanceof FeedFragment) || ((FeedFragment) fragment).shouldElevateToolbar());
     }
 
-    @Override public void onLoading() {
+    @Override
+    public void onLoading() {
         // todo: [overhaul] update loading indicator.
     }
 
-    @Override public void onLoaded() {
+    @Override
+    public void onLoaded() {
         // todo: [overhaul] update loading indicator.
     }
 
-    @Override public void onLoadPage(@NonNull HistoryEntry entry, @Nullable Location location) {
+    @Override
+    public void onLoadPage(@NonNull HistoryEntry entry, @Nullable Location location) {
         showLinkPreview(entry, location);
     }
 
-    @Override public void onLoadPage(@NonNull HistoryEntry entry) {
+    @Override
+    public void onLoadPage(@NonNull HistoryEntry entry) {
         startActivity(PageActivity.newIntentForNewTab(requireContext(), entry, entry.getTitle()), getTransitionAnimationBundle(entry.getTitle()));
     }
 
-    @Override public void onClearHistory() {
+    @Override
+    public void onClearHistory() {
         // todo: [overhaul] clear history.
     }
 
@@ -477,7 +511,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         return floatingQueueView;
     }
 
-    @OnPageChange(R.id.fragment_main_view_pager) void onTabChanged(int position) {
+    @OnPageChange(R.id.fragment_main_view_pager)
+    void onTabChanged(int position) {
         Callback callback = callback();
         if (callback != null) {
             NavTab tab = NavTab.of(position);
@@ -530,7 +565,8 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         getChildFragmentManager().beginTransaction().remove(fragment).commitNowAllowingStateLoss();
     }
 
-    @Nullable private SearchFragment searchFragment() {
+    @Nullable
+    private SearchFragment searchFragment() {
         return (SearchFragment) getChildFragmentManager().findFragmentById(R.id.fragment_main_container);
     }
 
@@ -564,7 +600,17 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         }
     }
 
-    @Nullable private Callback callback() {
+    private class SpotifyCallback implements SpotifyRemote.Callback {
+
+        @Override
+        public void updateArtist(String artistName) {
+            textView.setText(artistName);
+        }
+    }
+
+
+    @Nullable
+    private Callback callback() {
         return FragmentUtil.getCallback(this, Callback.class);
     }
 }

@@ -12,14 +12,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-
-import com.spotify.android.appremote.api.ConnectionParams;
-import com.spotify.android.appremote.api.Connector;
-import com.spotify.android.appremote.api.PlayerApi;
-import com.spotify.android.appremote.api.SpotifyAppRemote;
 
 import org.wikipedia.Constants;
 import org.wikipedia.R;
@@ -62,10 +56,6 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
 
     private boolean controlNavTabInFragment;
 
-    private static final String CLIENT_ID = "89625714de2848f48e048a3f628968d5";
-    private static final String REDIRECT_URI = "testtest://redirect";
-    private SpotifyAppRemote mSpotifyAppRemote;
-
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, MainActivity.class);
     }
@@ -104,42 +94,6 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
         });
         drawerView.setCallback(new DrawerViewCallback());
         shouldShowMainDrawer(true);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
-
-        SpotifyAppRemote.connect(this, connectionParams,
-                new Connector.ConnectionListener() {
-
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity", "Connected to Spotify!");
-                        connected();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e("MainActivity", throwable.getMessage(), throwable);
-                    }
-                });
-    }
-
-    private void connected() {
-        PlayerApi playerApi = mSpotifyAppRemote.getPlayerApi();
-        playerApi.play("spotify:track:3cfOd4CMv2snFaKAnMdnvK");
-        playerApi.getPlayerState()
-                .setResultCallback(playerState -> {
-                    Log.e("MainActivity", playerState.track.artist.name);
-                })
-                .setErrorCallback(throwable -> System.err.println(throwable.getMessage()));
     }
 
     @Override
