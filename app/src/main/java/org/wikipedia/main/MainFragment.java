@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,7 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
     FloatingQueueView floatingQueueView;
     @BindView(R.id.artist_name)
     TextView textView;
+
     private Unbinder unbinder;
     private ExclusiveBottomSheetPresenter bottomSheetPresenter = new ExclusiveBottomSheetPresenter();
     private MediaDownloadReceiver downloadReceiver = new MediaDownloadReceiver();
@@ -140,7 +142,7 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
             handleIntent(requireActivity().getIntent());
         }
 
-        new SpotifyRemote(this/*, spotifyCallback*/);
+        SpotifyRemote spotifyRemote = new SpotifyRemote(this);
 
         return view;
     }
@@ -610,8 +612,14 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
     private class SpotifyCallback implements SpotifyReceiver.Callback {
 
         @Override
-        public void updateArtist(String artistName) {
-            textView.setText(artistName);
+        public void updateCurrentlyPlaying(String track, String album, String artist) {
+            textView.setText(artist);
+
+        }
+
+        @Override
+        public void songStartedPlaying(boolean isPlaying) {
+            Log.e("MainFragment", isPlaying ? "User resumed song" : "User paused song");
         }
     }
 
