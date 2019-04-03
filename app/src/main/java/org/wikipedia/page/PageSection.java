@@ -4,24 +4,38 @@ import java.util.Objects;
 
 public class PageSection {
 
-    private String sectionTitle;
-    private String sectionContents;
+    private String title;
+    private String contents;
 
+    /**
+     * Ctor for the PageSection object.
+     * @param title The title of the page section.
+     * @param content The contents of the page section.
+     */
     public PageSection(String title, String content) {
-        sectionTitle = title;
-        sectionContents = content;
+        this.title = title;
+        contents = content;
     }
 
-    public String getSectionTitle() {
-        return sectionTitle;
+    /**
+     * @return The title of the section.
+     */
+    public String getTitle() {
+        return title;
     }
 
-    public String getSectionContents() {
-        return sectionContents;
+    /**
+     * @return The contents of the section.
+     */
+    public String getContents() {
+        return contents;
     }
 
-    public String[] getSectionContentsSplit() {
-        return sectionContents.split(" ");
+    /**
+     * @return The contents of the section split into an array by space.
+     */
+    public String[] getContentsSplit() {
+        return contents.split(" ");
     }
 
     @Override
@@ -35,12 +49,12 @@ public class PageSection {
         }
 
         PageSection that = (PageSection) o;
-        return Objects.equals(sectionTitle, that.sectionTitle)
-                && Objects.equals(sectionContents, that.sectionContents);
+        return Objects.equals(title, that.title)
+                && Objects.equals(contents, that.contents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sectionTitle, sectionContents);
+        return Objects.hash(title, contents);
     }
 }

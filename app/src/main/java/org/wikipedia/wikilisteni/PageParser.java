@@ -15,6 +15,11 @@ public final class PageParser {
 
     private PageParser() { }
 
+    /**
+     * Gets the HTML from a WebView (You can get one from PageFragment)
+     * @param webView The WebView to get the HTML from.
+     * @param callback The callback that will handle receiving the HTML (This is an async action.)
+     */
     public static void getPageHTML(WebView webView, ValueCallback<String> callback) {
         webView.evaluateJavascript("(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
                 (String value) -> {
@@ -23,7 +28,12 @@ public final class PageParser {
                 });
     }
 
-    public static void getParsedPage(String pageHTML, ValueCallback<List<PageSection>> callback) {
+    /**
+     * Extracts a list of PageSection objects from the HTML of a Wikipedia Page.
+     * @param pageHTML The HTML of said Wikipedia page.
+     * @return The extracted list of page sections.
+     */
+    public static List<PageSection> getParsedPage(String pageHTML) {
 
         ArrayList<PageSection> sections = new ArrayList<>();
         Document parsedPage = Jsoup.parse(pageHTML);
@@ -45,9 +55,14 @@ public final class PageParser {
 
             sections.add(new PageSection(sectionTitle, paragraph));
         }
-        callback.onReceiveValue(sections);
+        return sections;
     }
 
+    /**
+     * Helper to remove annoying "\n"s found throughout the html page from WebViews.
+     * @param str The string to clean.
+     * @return The clean string.
+     */
     private static String filterNewlines(String str) {
         return str.replace("\\n", "");
     }

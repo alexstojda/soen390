@@ -80,12 +80,11 @@ public class PageParserTest {
             assertTrue(testHTML.equals(html));
 
             List<PageSection> testSections = buildPageSections();
+            List<PageSection> parsedSections = PageParser.getParsedPage(testHTML);
 
-            PageParser.getParsedPage(testHTML, (parsedSections) -> {
-                for (int i = 0; i < testSections.size(); ++i) {
-                    assertTrue(testSections.get(i).equals(parsedSections.get(i)));
-                }
-            });
+            for (int i = 0; i < testSections.size(); ++i) {
+                assertTrue(testSections.get(i).equals(parsedSections.get(i)));
+            }
         });
     }
 }
