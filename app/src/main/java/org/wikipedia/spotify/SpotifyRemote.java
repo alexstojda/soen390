@@ -9,10 +9,10 @@ import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
 /*
-*   This class will allow you to control the Spotify player (play, pause, seek, skip, etc).
-*   However, this is not where you will find the title, artist, album of the current song.
-*   Use SpotifyReceiver instead.
-*/
+ *   This class will allow you to control the Spotify player (play, pause, seek, skip, etc).
+ *   However, this is not where you will find the title, artist, album of the current song.
+ *   Use SpotifyReceiver instead.
+ */
 public class SpotifyRemote {
 
     private static final String CLIENT_ID = "89625714de2848f48e048a3f628968d5";

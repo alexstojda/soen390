@@ -159,8 +159,10 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         requireContext().registerReceiver(downloadReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         downloadReceiver.setCallback(downloadReceiverCallback);
-        requireContext().registerReceiver(spotifyReceiver,
-                new IntentFilter("com.spotify.music.metadatachanged"));
+        IntentFilter spotifyIntentFilter = new IntentFilter();
+        spotifyIntentFilter.addAction("com.spotify.music.metadatachanged");
+        spotifyIntentFilter.addAction("com.spotify.music.playbackstatechanged");
+        requireContext().registerReceiver(spotifyReceiver, spotifyIntentFilter);
         spotifyReceiver.setCallback(spotifyCallback);
         // reset the last-page-viewed timer
         Prefs.pageLastShown(0);
