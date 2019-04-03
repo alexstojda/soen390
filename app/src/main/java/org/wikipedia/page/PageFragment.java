@@ -38,7 +38,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ValueCallback;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -49,9 +48,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.wikipedia.BackPressedHandler;
 import org.wikipedia.Constants;
 import org.wikipedia.LongPressHandler;
@@ -106,7 +102,6 @@ import org.wikipedia.views.SwipeRefreshLayoutWithScroll;
 import org.wikipedia.views.WikiPageErrorView;
 import org.wikipedia.wikiwalki.CameraPreview;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -1485,49 +1480,5 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     @Nullable
     public Callback callback() {
         return FragmentUtil.getCallback(this, Callback.class);
-    }
-
-
-    private String filterNewlines(String str) {
-        return str.replace("\\n", "");
-    }
-
-    public void getPageHTML(ValueCallback<String> callback) {
-
-        webView.evaluateJavascript("(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
-                (String value) -> {
-                    value = value.replace("\\u003C", "<");
-                    callback.onReceiveValue(value);
-                });
-    }
-
-    public void getParsedPage(ValueCallback<List<PageSection>> callback) {
-
-        getPageHTML((pageHTML) -> {
-
-            ArrayList<PageSection> sections = new ArrayList<>();
-
-            Document parsedPage = Jsoup.parse(pageHTML);
-
-            Element title = parsedPage.selectFirst("h1");
-            Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
-            String titleStr = filterNewlines(title.text());
-            String firstParagraphStr = filterNewlines(firstParagraph.text());
-
-            sections.add(new PageSection(titleStr, firstParagraphStr));
-
-            for (Element e : parsedPage.select("h2,h3,h4,h5,h6[class*=pagelib_edit_section_title]")) {
-
-                int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
-                String sectionTitle = filterNewlines(e.text());
-
-                Element paragraphElement = parsedPage.selectFirst("div[id*=content_block_" + sectionID + "]");
-                String paragraph = filterNewlines(paragraphElement.text());
-
-                sections.add(new PageSection(sectionTitle, paragraph));
-            }
-
-            callback.onReceiveValue(sections);
-        });
     }
 }

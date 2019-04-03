@@ -1,5 +1,7 @@
 package org.wikipedia.page;
 
+import java.util.Objects;
+
 public class PageSection {
 
     private String sectionTitle;
@@ -22,4 +24,23 @@ public class PageSection {
         return sectionContents.split(" ");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PageSection that = (PageSection) o;
+        return Objects.equals(sectionTitle, that.sectionTitle)
+                && Objects.equals(sectionContents, that.sectionContents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sectionTitle, sectionContents);
+    }
 }
