@@ -4,6 +4,7 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
+        resource_class: medium+
     environment:
       JVM_OPTS: -Xmx4096m
       GRADLE_OPTS: -Xmx4096m -Dorg.gradle.daemon=false
@@ -23,7 +24,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew clean jacocoTestReport --no-daemon --max-workers 4
+          command: ./gradlew clean jacocoTestReport --no-daemon --max-workers 2
       - run:
           name: Check style
           command: ./gradlew clean checkstyle --no-daemon
