@@ -10,11 +10,11 @@ public class PageSection {
     /**
      * Ctor for the PageSection object.
      * @param title The title of the page section.
-     * @param content The contents of the page section.
+     * @param contents The contents of the page section.
      */
-    public PageSection(String title, String content) {
+    public PageSection(String title, String contents) {
         this.title = title;
-        contents = content;
+        this.contents = contents;
     }
 
     /**
