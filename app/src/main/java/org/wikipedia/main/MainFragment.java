@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -86,8 +87,19 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
     @BindView(R.id.floating_queue_view)
     FloatingQueueView floatingQueueView;
     @BindView(R.id.artist_name)
-    TextView textView;
+    TextView artistName;
+    @BindView(R.id.album_name)
+    TextView albumName;
+    @BindView(R.id.song_name)
+    TextView songName;
+    @BindView(R.id.skip_previous)
+    ImageButton skipPrevious;
+    @BindView(R.id.skip_next)
+    ImageButton skipNext;
+    @BindView(R.id.play)
+    ImageButton playButton;
 
+    private boolean songIsPlaying = false;
     private Unbinder unbinder;
     private ExclusiveBottomSheetPresenter bottomSheetPresenter = new ExclusiveBottomSheetPresenter();
     private MediaDownloadReceiver downloadReceiver = new MediaDownloadReceiver();
@@ -142,7 +154,16 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
             handleIntent(requireActivity().getIntent());
         }
 
-        SpotifyRemote spotifyRemote = new SpotifyRemote(this);
+        SpotifyRemote spotifyRemote = new SpotifyRemote(this.requireContext());
+        skipNext.setOnClickListener(v -> spotifyRemote.skipNext());
+        skipPrevious.setOnClickListener(v -> spotifyRemote.skipPrevious());
+        playButton.setOnClickListener(v -> {
+            if (songIsPlaying) {
+                spotifyRemote.pause();
+            } else {
+                spotifyRemote.resume();
+            }
+        });
 
         return view;
     }
@@ -613,13 +634,25 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
 
         @Override
         public void updateCurrentlyPlaying(String track, String album, String artist) {
-            textView.setText(artist);
+            artistName.setText(artist);
+            songName.setText(track);
+            albumName.setText(album);
 
         }
 
         @Override
         public void songStartedPlaying(boolean isPlaying) {
-            Log.e("MainFragment", isPlaying ? "User resumed song" : "User paused song");
+            if (isPlaying) {
+                Log.e("MainFragment", "User resumed song");
+                songIsPlaying = true;
+                playButton.setImageDrawable(requireContext().getResources().
+                        getDrawable(R.drawable.ic_pause_black_24dp));
+            } else {
+                Log.e("MainFragment", "User paused song");
+                songIsPlaying = false;
+                playButton.setImageDrawable(requireContext().getResources().
+                        getDrawable(R.drawable.ic_play_arrow_black_24dp));
+            }
         }
     }
 
