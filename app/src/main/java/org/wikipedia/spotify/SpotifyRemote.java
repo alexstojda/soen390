@@ -1,6 +1,6 @@
 package org.wikipedia.spotify;
 
-import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.util.Log;
 
 import com.spotify.android.appremote.api.ConnectionParams;
@@ -21,21 +21,20 @@ public class SpotifyRemote {
     private PlayerApi mPlayerApi;
 
 
-    public SpotifyRemote(Fragment fragment) {
+    public SpotifyRemote(Context context) {
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
                         .showAuthView(true)
                         .build();
 
-        SpotifyAppRemote.connect(fragment.getContext(), connectionParams,
+        SpotifyAppRemote.connect(context, connectionParams,
                 new Connector.ConnectionListener() {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         mSpotifyAppRemote = spotifyAppRemote;
                         mPlayerApi = mSpotifyAppRemote.getPlayerApi();
                         Log.d("SpotifyRemote", "Connected to Spotify!");
-                        playSong("spotify:track:3cfOd4CMv2snFaKAnMdnvK");
                     }
 
                     @Override
@@ -50,7 +49,7 @@ public class SpotifyRemote {
         Log.d("SpotifyRemote", "Song is playing");
     }
 
-    public void play() {
+    public void resume() {
         mPlayerApi.resume();
     }
 
