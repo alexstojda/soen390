@@ -3,7 +3,6 @@ package org.wikipedia.spotify;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /*
  *   The SpotifyReceiver class extends the Android BroadcastReceiver class, and is used
@@ -15,7 +14,9 @@ import android.util.Log;
 public class SpotifyReceiver extends BroadcastReceiver {
 
     public interface Callback {
-        void updateArtist(String artistName);
+        void updateCurrentlyPlaying(String track, String album, String artist);
+
+        void songStartedPlaying(boolean isPlaying);
     }
 
     static final class BroadcastTypes {
@@ -25,6 +26,9 @@ public class SpotifyReceiver extends BroadcastReceiver {
     }
 
     private Callback callback;
+
+    private String currentTrack;
+    private String currentAlbum;
     private String currentArtist;
 
     @Override
@@ -32,23 +36,18 @@ public class SpotifyReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         if (action.equals(BroadcastTypes.METADATA_CHANGED)) {
-            Log.d("SpotifyReceiver", "OnReceive, METADATA");
-            String artistName = intent.getStringExtra("artist");
-            //Leaving these here in case we need them
-            String trackId = intent.getStringExtra("id");
-            String albumName = intent.getStringExtra("album");
-            String trackName = intent.getStringExtra("track");
-            Log.d("SpotifyReceiver", "OnReceive: Update Artist");
-            currentArtist = artistName;
-            callback.updateArtist(artistName);
+            currentArtist = intent.getStringExtra("artist");
+            currentAlbum = intent.getStringExtra("album");
+            currentTrack = intent.getStringExtra("track");
+            callback.updateCurrentlyPlaying(currentTrack, currentAlbum, currentArtist);
 
         } else if (action.equals(BroadcastTypes.PLAYBACK_STATE_CHANGED)) {
-            Log.d("SpotifyReceiver", "OnReceive: PLAYBACK STATE CHANGED");
-            if (!intent.getBooleanExtra("playing", false)) {
-                Log.d("SpotifyReceiver", "OnReceive: Play");
-                callback.updateArtist("");
+            if (intent.getBooleanExtra("playing", false)) {
+                callback.songStartedPlaying(true);
+                callback.updateCurrentlyPlaying(currentTrack, currentAlbum, currentArtist);
             } else {
-                callback.updateArtist(currentArtist);
+                callback.songStartedPlaying(false);
+                callback.updateCurrentlyPlaying("", "", "");
             }
         }
     }

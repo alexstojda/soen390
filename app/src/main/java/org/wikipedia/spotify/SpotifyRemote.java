@@ -18,6 +18,7 @@ public class SpotifyRemote {
     private static final String CLIENT_ID = "89625714de2848f48e048a3f628968d5";
     private static final String REDIRECT_URI = "testtest://redirect";
     private SpotifyAppRemote mSpotifyAppRemote;
+    private PlayerApi mPlayerApi;
 
 
     public SpotifyRemote(Fragment fragment) {
@@ -32,6 +33,7 @@ public class SpotifyRemote {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         mSpotifyAppRemote = spotifyAppRemote;
+                        mPlayerApi = mSpotifyAppRemote.getPlayerApi();
                         Log.d("SpotifyRemote", "Connected to Spotify!");
                         playSong("spotify:track:3cfOd4CMv2snFaKAnMdnvK");
                     }
@@ -44,8 +46,23 @@ public class SpotifyRemote {
     }
 
     public void playSong(String uri) {
-        PlayerApi playerApi = mSpotifyAppRemote.getPlayerApi();
-        playerApi.play(uri);
+        mPlayerApi.play(uri);
         Log.d("SpotifyRemote", "Song is playing");
+    }
+
+    public void play() {
+        mPlayerApi.resume();
+    }
+
+    public void pause() {
+        mPlayerApi.pause();
+    }
+
+    public void skipNext() {
+        mPlayerApi.skipNext();
+    }
+
+    public void skipPrevious() {
+        mPlayerApi.skipPrevious();
     }
 }
