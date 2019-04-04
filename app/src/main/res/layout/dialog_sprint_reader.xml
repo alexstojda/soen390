@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:padding="8dp"
+    android:background="?attr/paper_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <!--TODO: localise text @string-->
+        <TextView
+            android:id="@+id/sprint_title"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:padding="10dp"
+            android:text="Sprint Reader" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_close_white_24dp"
+            app:tint="?attr/material_theme_secondary_color"
+            android:contentDescription="@string/dialog_close_description"/>
+    </RelativeLayout>
+
+        <!--TODO: localise text @string-->
+        <TextView
+            android:id="@+id/sprint_text"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:padding="30dp"
+            android:textSize="38dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:background="@color/black38"
+            android:textColor="@color/white70"
+            android:text="- start -" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <!--TODO: localise text @string-->
+            <TextView
+                android:id="@+id/start_sprint_button"
+                style="@style/App.Button.Blue"
+                android:layout_margin="0dp"
+                android:layout_gravity="left"
+                android:text="start" />
+
+            <!--TODO: localise text @string-->
+            <TextView
+                android:id="@+id/reset_sprint_button"
+                style="@style/App.Button.Blue"
+                android:layout_margin="0dp"
+                android:layout_gravity="center_horizontal"
+                android:text="reset" />
+
+            <!--TODO: localise text @string-->
+            <TextView
+                android:id="@+id/stop_sprint_button"
+                style="@style/App.Button.Blue"
+                android:layout_margin="0dp"
+                android:layout_gravity="center_horizontal"
+                android:text="stop" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
