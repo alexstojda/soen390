@@ -11,18 +11,18 @@ import org.wikipedia.page.NoDimBottomSheetDialog;
 
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
-    public static boolean is_running = false;
-    public static int place_holder = 0;
+    public static boolean isRunning = false;
+    public static int placeHolder = 0;
     View sprint_view = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
-    public TextView sprint_text = sprint_view.findViewById(R.id.sprint_text);
+    public TextView sprintText = sprint_view.findViewById(R.id.sprint_text);
     public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
 
-    private Runnable set_sprint_text = new Runnable() {
+    private Runnable set_sprintText = new Runnable() {
         public void run() {
-            if (is_running && place_holder < test.length) {
-                sprint_text.setText(test[place_holder]);
-                place_holder++;
-                sprint_text.postDelayed(this, 200);
+            if (isRunning && placeHolder < test.length) {
+                sprintText.setText(test[placeHolder]);
+                placeHolder++;
+                sprintText.postDelayed(this, 200);
             }
         }
     };
@@ -35,7 +35,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
         rootView.findViewById(R.id.close_button)
                 .setOnClickListener((v) -> {
-                    sprint_text.removeCallbacks(set_sprint_text);
+                    sprintText.removeCallbacks(set_sprintText);
                     resetSprint();
                     dismiss();
                 });
@@ -43,10 +43,10 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
         rootView.findViewById(R.id.start_sprint_button)
                 .setOnClickListener((v) -> {
 
-                    if (!is_running) {
+                    if (!isRunning) {
                         setIsRunning(true);
-                        sprint_text = findViewById(R.id.sprint_text);
-                        sprint_text.postDelayed(set_sprint_text, 0);
+                        sprintText = findViewById(R.id.sprint_text);
+                        sprintText.postDelayed(set_sprintText, 0);
                     }
                 });
 
@@ -62,25 +62,25 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                 });
     }
 
-    public void setIsRunning(boolean is_running) {
-        this.is_running = is_running;
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
     }
 
     public void resetSprint() {
-        this.place_holder = 0;
-        this.is_running = false;
-        sprint_text.setText("- start -");
+        this.placeHolder = 0;
+        this.isRunning = false;
+        sprintText.setText("- start -");
     }
 
     public boolean getIsRunning() {
-        return this.is_running;
+        return this.isRunning;
     }
 
     public int getPlaceHolder() {
-        return this.place_holder;
+        return this.placeHolder;
     }
 
     public String getSprintText() {
-        return this.sprint_text.getText().toString();
+        return this.sprintText.getText().toString();
     }
 }

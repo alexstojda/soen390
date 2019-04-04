@@ -117,9 +117,9 @@ public class ShareHandler {
         fragment.showBottomSheet(WiktionaryDialog.newInstance(title, text));
     }
 
-    public void showSprintReader(String text) {
+    private void showSprintReader(String text) {
         final String selectedText = StringUtil.sanitizeText(text);
-        fragment.showBottomSheet(new WikiSpeediDialog(fragment.getContext(), selectedText));
+        fragment.showBottomSheet(new WikiSpeediDialog(fragment.requireContext(), selectedText));
     }
 
     private void onSharePayload(@NonNull String text) {
