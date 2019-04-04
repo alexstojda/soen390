@@ -34,6 +34,7 @@ import org.wikipedia.util.ShareUtil;
 import org.wikipedia.util.StringUtil;
 import org.wikipedia.util.UriUtil;
 import org.wikipedia.util.log.L;
+import org.wikipedia.wikiSpeedi.WikiSpeediDialog;
 import org.wikipedia.wiktionary.WiktionaryDialog;
 
 import java.util.Arrays;
@@ -53,21 +54,18 @@ public class ShareHandler {
     private static final String PAYLOAD_PURPOSE_SHARE = "share";
     private static final String PAYLOAD_PURPOSE_DEFINE = "define";
     private static final String PAYLOAD_PURPOSE_EDIT_HERE = "edit_here";
+    private static final String PAYLOAD_PURPOSE_SPRINT = "sprint";
     private static final String PAYLOAD_TEXT_KEY = "text";
 
-    @NonNull private final PageFragment fragment;
-    @NonNull private final CommunicationBridge bridge;
-    @Nullable private ActionMode webViewActionMode;
-    @Nullable private ShareAFactFunnel funnel;
+    @NonNull
+    private final PageFragment fragment;
+    @NonNull
+    private final CommunicationBridge bridge;
+    @Nullable
+    private ActionMode webViewActionMode;
+    @Nullable
+    private ShareAFactFunnel funnel;
     private CompositeDisposable disposables = new CompositeDisposable();
-
-    private void createFunnel() {
-        WikipediaApp app = WikipediaApp.getInstance();
-        final Page page = fragment.getPage();
-        final PageProperties pageProperties = page.getPageProperties();
-        funnel = new ShareAFactFunnel(app, page.getTitle(), pageProperties.getPageId(),
-                pageProperties.getRevisionId());
-    }
 
     public ShareHandler(@NonNull PageFragment fragment, @NonNull CommunicationBridge bridge) {
         this.fragment = fragment;
@@ -86,10 +84,21 @@ public class ShareHandler {
                 case PAYLOAD_PURPOSE_EDIT_HERE:
                     onEditHerePayload(messagePayload.optInt("sectionID", 0), text);
                     break;
+                case PAYLOAD_PURPOSE_SPRINT:
+                    onSprintPayload(text);
+                    break;
                 default:
                     L.d("Unknown purpose=" + purpose);
             }
         });
+    }
+
+    private void createFunnel() {
+        WikipediaApp app = WikipediaApp.getInstance();
+        final Page page = fragment.getPage();
+        final PageProperties pageProperties = page.getPageProperties();
+        funnel = new ShareAFactFunnel(app, page.getTitle(), pageProperties.getPageId(),
+                pageProperties.getRevisionId());
     }
 
     public void dispose() {
@@ -108,6 +117,11 @@ public class ShareHandler {
         fragment.showBottomSheet(WiktionaryDialog.newInstance(title, text));
     }
 
+    private void showSprintReader(String text) {
+        final String selectedText = StringUtil.sanitizeText(text);
+        fragment.showBottomSheet(new WikiSpeediDialog(fragment.requireContext(), selectedText));
+    }
+
     private void onSharePayload(@NonNull String text) {
         if (funnel == null) {
             createFunnel();
@@ -124,6 +138,10 @@ public class ShareHandler {
         if (sectionID >= 0) {
             fragment.getEditHandler().startEditingSection(sectionID, text);
         }
+    }
+
+    private void onSprintPayload(String text) {
+        showSprintReader(text);
     }
 
     private void showCopySnackbar() {
@@ -198,6 +216,8 @@ public class ShareHandler {
         if (!fragment.getPage().isArticle()) {
             editItem.setVisible(false);
         }
+        MenuItem sprintItem = menu.findItem(R.id.menu_text_select_sprint);
+        sprintItem.setOnMenuItemClickListener(new RequestTextSelectOnMenuItemClickListener(PAYLOAD_PURPOSE_SPRINT));
 
         onHighlightText();
     }
@@ -242,21 +262,6 @@ public class ShareHandler {
 
     private void finishWebViewActionMode() {
         webViewActionMode.finish();
-    }
-
-    private class RequestTextSelectOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
-        @NonNull private final String purpose;
-
-        RequestTextSelectOnMenuItemClickListener(@NonNull String purpose) {
-            this.purpose = purpose;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            requestTextSelection(purpose);
-            leaveActionMode();
-            return true;
-        }
     }
 
     private void requestTextSelection(String purpose) {
@@ -325,6 +330,22 @@ public class ShareHandler {
 
         private static String constructShareText(String selectedText, String introText) {
             return selectedText + "\n\n" + introText;
+        }
+    }
+
+    private class RequestTextSelectOnMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
+        @NonNull
+        private final String purpose;
+
+        RequestTextSelectOnMenuItemClickListener(@NonNull String purpose) {
+            this.purpose = purpose;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            requestTextSelection(purpose);
+            leaveActionMode();
+            return true;
         }
     }
 }
