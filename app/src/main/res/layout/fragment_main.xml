@@ -15,48 +15,69 @@
             android:id="@+id/song_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="#282828"
             android:text="@string/song_name"
-            android:textSize="30sp" />
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:id="@+id/album_name"
-            android:layout_width="match_parent"
+            android:layout_width="match_parPent"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="#282828"
             android:text="@string/album_name"
-            android:textSize="30sp" />
+            android:textSize="12sp"
+            android:textColor="#737373"/>
 
         <TextView
             android:id="@+id/artist_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="#282828"
             android:text="@string/artist_name"
-            android:textSize="30sp" />
+            android:textSize="18sp"
+            android:textColor="#737373"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:background="#282828">
 
             <ImageButton
                 android:id="@+id/skip_previous"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:background="@drawable/ic_spotify_button_24dp"
                 app:srcCompat="@drawable/ic_skip_previous_black_24dp" />
 
             <ImageButton
                 android:id="@+id/play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/ic_play_arrow_black_24dp"/>
+                android:background="@drawable/ic_spotify_button_24dp"
+                app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
             <ImageButton
                 android:id="@+id/skip_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_spotify_button_24dp"
                 app:srcCompat="@drawable/ic_skip_next_black_24dp"/>
-            />
         </RelativeLayout>
 
         <FrameLayout
