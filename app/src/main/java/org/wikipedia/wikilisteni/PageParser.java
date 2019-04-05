@@ -6,6 +6,7 @@ import android.webkit.WebView;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.wikipedia.page.PageSection;
 
 import java.util.ArrayList;
@@ -38,6 +39,12 @@ public final class PageParser {
         ArrayList<PageSection> sections = new ArrayList<>();
         Document parsedPage = Jsoup.parse(pageHTML);
 
+
+        // Remove reference links
+        Elements refs = parsedPage.select("span[class*=mw-reflink-text]");
+        refs.remove();
+
+        // Handle title separately
         Element title = parsedPage.selectFirst("h1");
         Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
 
@@ -45,6 +52,7 @@ public final class PageParser {
         String firstParagraphStr = filterNewlines(firstParagraph.text());
         sections.add(new PageSection(titleStr, firstParagraphStr));
 
+        // Handle sections
         for (Element e : parsedPage.select("h2,h3,h4,h5,h6[class*=pagelib_edit_section_title]")) {
 
             int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
