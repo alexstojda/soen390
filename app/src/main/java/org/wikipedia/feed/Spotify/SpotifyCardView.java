@@ -3,25 +3,57 @@ package org.wikipedia.feed.Spotify;
 import org.wikipedia.R;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import org.wikipedia.feed.view.StaticCardView;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-public class SpotifyCardView extends StaticCardView<SpotifyCard> {
+import org.wikipedia.feed.model.Card;
+import org.wikipedia.feed.view.DefaultFeedCardView;
 
-    public SpotifyCardView(@NonNull Context context) {
+import org.wikipedia.spotify.SpotifyRemote;
+import org.wikipedia.views.ItemTouchHelperSwipeAdapter;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
+
+public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
+        implements ItemTouchHelperSwipeAdapter.SwipeableView {
+
+    @BindView(R.id.artist_name)
+    TextView artistName;
+    @BindView(R.id.album_name)
+    TextView albumName;
+    @BindView(R.id.song_name)
+    TextView songName;
+    @BindView(R.id.skip_previous)
+    ImageButton skipPrevious;
+    @BindView(R.id.skip_next)
+    ImageButton skipNext;
+    @BindView(R.id.play)
+    ImageButton playButton;
+
+    private boolean songIsPlaying = false;
+
+    public SpotifyCardView(Context context) {
         super(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setTransitionName(getString(R.string.transition_random_activity));
-        }
+
+        inflate(getContext(), R.layout.view_spotify_card, this);
+        ButterKnife.bind(this);
+
+        SpotifyRemote spotifyRemote = new SpotifyRemote(context);
+        skipNext.setOnClickListener(v -> {
+            spotifyRemote.skipNext();
+        });
+        skipPrevious.setOnClickListener(v -> spotifyRemote.skipPrevious());
+        playButton.setOnClickListener(v -> {
+            if (songIsPlaying) {
+                spotifyRemote.pause();
+                songIsPlaying = false;
+            } else {
+                spotifyRemote.resume();
+                songIsPlaying = true;
+            }
+        });
     }
 
-    @Override public void setCard(@NonNull SpotifyCard card) {
-        super.setCard(card);
-        setTitle("Spotify Artist");
-        setSubtitle("Get information on current artist");
-        setIcon(R.drawable.ic_casino_accent50_24dp);
-        setContainerBackground(R.color.green30);
-      //  setAction(R.drawable.ic_casino_accent50_24dp, R.string.view_random_card_action);
-    }
 }

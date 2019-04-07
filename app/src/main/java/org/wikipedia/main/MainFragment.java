@@ -637,7 +637,6 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
             artistName.setText(artist);
             songName.setText(track);
             albumName.setText(album);
-
         }
 
         @Override
