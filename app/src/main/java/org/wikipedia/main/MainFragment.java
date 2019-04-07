@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +60,6 @@ import org.wikipedia.readinglist.AddToReadingListDialog;
 import org.wikipedia.search.SearchFragment;
 import org.wikipedia.search.SearchInvokeSource;
 import org.wikipedia.settings.Prefs;
-import org.wikipedia.spotify.SpotifyReceiver;
-import org.wikipedia.spotify.SpotifyRemote;
 import org.wikipedia.util.ClipboardUtil;
 import org.wikipedia.util.FeedbackUtil;
 import org.wikipedia.util.PermissionUtil;
@@ -86,26 +83,11 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
     NavTabLayout tabLayout;
     @BindView(R.id.floating_queue_view)
     FloatingQueueView floatingQueueView;
-    @BindView(R.id.artist_name)
-    TextView artistName;
-    @BindView(R.id.album_name)
-    TextView albumName;
-    @BindView(R.id.song_name)
-    TextView songName;
-    @BindView(R.id.skip_previous)
-    ImageButton skipPrevious;
-    @BindView(R.id.skip_next)
-    ImageButton skipNext;
-    @BindView(R.id.play)
-    ImageButton playButton;
 
-    private boolean songIsPlaying = false;
     private Unbinder unbinder;
     private ExclusiveBottomSheetPresenter bottomSheetPresenter = new ExclusiveBottomSheetPresenter();
     private MediaDownloadReceiver downloadReceiver = new MediaDownloadReceiver();
     private MediaDownloadReceiverCallback downloadReceiverCallback = new MediaDownloadReceiverCallback();
-    private SpotifyReceiver spotifyReceiver = new SpotifyReceiver();
-    private SpotifyCallback spotifyCallback = new SpotifyCallback();
 
     // The permissions request API doesn't take a callback, so in the event we have to
     // ask for permission to download a featured image from the feed, we'll have to hold
@@ -154,17 +136,6 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
             handleIntent(requireActivity().getIntent());
         }
 
-        SpotifyRemote spotifyRemote = new SpotifyRemote(this.requireContext());
-        skipNext.setOnClickListener(v -> spotifyRemote.skipNext());
-        skipPrevious.setOnClickListener(v -> spotifyRemote.skipPrevious());
-        playButton.setOnClickListener(v -> {
-            if (songIsPlaying) {
-                spotifyRemote.pause();
-            } else {
-                spotifyRemote.resume();
-            }
-        });
-
         return view;
     }
 
@@ -182,11 +153,6 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         requireContext().registerReceiver(downloadReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         downloadReceiver.setCallback(downloadReceiverCallback);
-        IntentFilter spotifyIntentFilter = new IntentFilter();
-        spotifyIntentFilter.addAction("com.spotify.music.metadatachanged");
-        spotifyIntentFilter.addAction("com.spotify.music.playbackstatechanged");
-        requireContext().registerReceiver(spotifyReceiver, spotifyIntentFilter);
-        spotifyReceiver.setCallback(spotifyCallback);
         // reset the last-page-viewed timer
         Prefs.pageLastShown(0);
         // update after returning from PageActivity
@@ -627,31 +593,6 @@ public class MainFragment extends Fragment implements BackPressedHandler, FeedFr
         @Override
         public void onSuccess() {
             FeedbackUtil.showMessage(requireActivity(), R.string.gallery_save_success);
-        }
-    }
-
-    private class SpotifyCallback implements SpotifyReceiver.Callback {
-
-        @Override
-        public void updateCurrentlyPlaying(String track, String album, String artist) {
-            artistName.setText(artist);
-            songName.setText(track);
-            albumName.setText(album);
-        }
-
-        @Override
-        public void songStartedPlaying(boolean isPlaying) {
-            if (isPlaying) {
-                Log.e("MainFragment", "User resumed song");
-                songIsPlaying = true;
-                playButton.setImageDrawable(requireContext().getResources().
-                        getDrawable(R.drawable.ic_pause_black_24dp));
-            } else {
-                Log.e("MainFragment", "User paused song");
-                songIsPlaying = false;
-                playButton.setImageDrawable(requireContext().getResources().
-                        getDrawable(R.drawable.ic_play_arrow_black_24dp));
-            }
         }
     }
 

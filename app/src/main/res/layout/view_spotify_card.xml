@@ -46,7 +46,7 @@
             android:background="#282828"
             android:text="@string/artist_name"
             android:textSize="18sp"
-            android:textColor="#737373"/>
+            android:textColor="#FFFFFF"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
