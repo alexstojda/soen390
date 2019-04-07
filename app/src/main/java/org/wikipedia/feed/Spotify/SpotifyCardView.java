@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -85,13 +86,15 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         @Override
         public void songStartedPlaying(boolean isPlaying) {
             if (isPlaying) {
-                Log.e("MainFragment", "User resumed song");
+                Log.e("SpotifyCardView", "User resumed song");
                 songIsPlaying = true;
+                findViewById(R.id.currently_playing_layout).setVisibility(View.VISIBLE);
                 playButton.setImageDrawable(context.getResources().
                         getDrawable(R.drawable.ic_pause_black_24dp));
             } else {
-                Log.e("MainFragment", "User paused song");
+                Log.e("SpotifyCardView", "User paused song");
                 songIsPlaying = false;
+                findViewById(R.id.currently_playing_layout).setVisibility(View.GONE);
                 playButton.setImageDrawable(context.getResources().
                         getDrawable(R.drawable.ic_play_arrow_black_24dp));
             }
