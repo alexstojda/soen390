@@ -1,27 +1,31 @@
-package org.wikipedia.wikiSpeedi;
+package org.wikipedia.wikispeedi;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.support.annotation.NonNull;
 
 import org.wikipedia.R;
 import org.wikipedia.page.NoDimBottomSheetDialog;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
-    public static boolean isRunning = false;
-    public static int placeHolder = 0;
-    View sprint_view = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
-    public TextView sprintText = sprint_view.findViewById(R.id.sprint_text);
-    public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
+    private boolean isRunning = false;
+    private int index = 0;
+    private View sprintView = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
+    private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
 
-    private Runnable set_sprintText = new Runnable() {
+    private List<String> selectedText;
+
+    private Runnable sprintTextRunnable = new Runnable() {
         public void run() {
-            if (isRunning && placeHolder < test.length) {
-                sprintText.setText(test[placeHolder]);
-                placeHolder++;
+            if (isRunning && index < selectedText.size()) {
+                sprintText.setText(selectedText.get(index));
+                index++;
                 sprintText.postDelayed(this, 200);
             }
         }
@@ -33,9 +37,11 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
         View rootView = LayoutInflater.from(context).inflate(R.layout.dialog_sprint_reader, null);
         setContentView(rootView);
 
+        this.selectedText = Arrays.asList(selectedText.split("\\s"));
+
         rootView.findViewById(R.id.close_button)
                 .setOnClickListener((v) -> {
-                    sprintText.removeCallbacks(set_sprintText);
+                    sprintText.removeCallbacks(sprintTextRunnable);
                     resetSprint();
                     dismiss();
                 });
@@ -46,7 +52,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                     if (!isRunning) {
                         setIsRunning(true);
                         sprintText = findViewById(R.id.sprint_text);
-                        sprintText.postDelayed(set_sprintText, 0);
+                        sprintText.post(sprintTextRunnable);
                     }
                 });
 
@@ -62,25 +68,35 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                 });
     }
 
-    public void setIsRunning(boolean isRunning) {
+    void setIsRunning(boolean isRunning) {
         this.isRunning = isRunning;
     }
 
-    public void resetSprint() {
-        this.placeHolder = 0;
+    void resetSprint() {
+        this.index = 0;
         this.isRunning = false;
-        sprintText.setText("- start -");
+        sprintText.setText(R.string.speed_reader_start);
     }
 
-    public boolean getIsRunning() {
+    boolean getIsRunning() {
         return this.isRunning;
     }
 
-    public int getPlaceHolder() {
-        return this.placeHolder;
+    public List<String> getSelectedText() {
+        return selectedText;
     }
 
-    public String getSprintText() {
+    int getIndex() {
+        return this.index;
+    }
+
+    String getSprintText() {
         return this.sprintText.getText().toString();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        resetSprint();
     }
 }
