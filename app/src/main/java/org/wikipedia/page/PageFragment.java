@@ -18,6 +18,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -100,6 +101,8 @@ import org.wikipedia.util.log.L;
 import org.wikipedia.views.ObservableWebView;
 import org.wikipedia.views.SwipeRefreshLayoutWithScroll;
 import org.wikipedia.views.WikiPageErrorView;
+import org.wikipedia.wikilisteni.PageParser;
+import org.wikipedia.wikilisteni.TTSHelper;
 import org.wikipedia.wikiwalki.CameraPreview;
 
 import java.util.Date;
@@ -183,6 +186,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private boolean errorState = false;
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
+
+    private TextToSpeech tts;
+    private TTSHelper ttsHelper;
 
     @NonNull
     private TabFunnel tabFunnel = new TabFunnel();
@@ -322,6 +328,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         app = (WikipediaApp) requireActivity().getApplicationContext();
         model = new PageViewModel();
         pageFragmentLoadState = new PageFragmentLoadState();
+        tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) { }
+        });
+        ttsHelper = new TTSHelper(tts);
     }
 
     @Override
@@ -463,6 +474,25 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         builder.create().show();
 
         endGame();
+
+
+    }
+
+    public void startTTS() {
+        PageParser.getPageHTML(this.webView, (html) -> {
+            List<PageSection> sections = PageParser.getParsedPage(html);
+            ttsHelper.setPageSections(sections);
+            tts.setOnUtteranceProgressListener(ttsHelper.getProgressTracker());
+        });
+
+    }
+
+    public void skipSectionTTS() {
+
+    }
+
+    public void stopTTS() {
+
     }
 
     @Override
@@ -491,6 +521,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     public void onDestroy() {
         super.onDestroy();
         app.getRefWatcher().watch(this);
+        tts.shutdown();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
