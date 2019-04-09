@@ -7,10 +7,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.wikipedia.html.ParseException;
 import org.wikipedia.page.PageSection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public final class PageParser {
 
@@ -37,7 +39,9 @@ public final class PageParser {
     public static List<PageSection> getParsedPage(String pageHTML) {
 
         ArrayList<PageSection> sections = new ArrayList<>();
+        pageHTML = pageHTML.replace("\\&quot;", "");
         Document parsedPage = Jsoup.parse(pageHTML);
+
 
 
         // Remove reference links
@@ -45,8 +49,17 @@ public final class PageParser {
         refs.remove();
 
         // Handle title separately
+
         Element title = parsedPage.selectFirst("h1");
         Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
+
+        if (title == null) {
+            throw new ParseException("Missing main title.");
+        }
+
+        if (firstParagraph == null) {
+            throw new ParseException("Missing main content section.");
+        }
 
         String titleStr = filterNewlines(title.text());
         String firstParagraphStr = filterNewlines(firstParagraph.text());
@@ -58,7 +71,11 @@ public final class PageParser {
             int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
             String sectionTitle = filterNewlines(e.text());
 
-            Element paragraphElement = parsedPage.selectFirst("div[id*=content_block_" + sectionID + "]");
+            Element paragraphElement = parsedPage.selectFirst("div[id=content_block_" + sectionID + "]");
+            if (paragraphElement == null) {
+                throw new ParseException("Missing content section #" + Integer.toString(sectionID) + ".");
+            }
+
             String paragraph = filterNewlines(paragraphElement.text());
 
             sections.add(new PageSection(sectionTitle, paragraph));
@@ -72,7 +89,7 @@ public final class PageParser {
      * @return The clean string.
      */
     private static String filterNewlines(String str) {
-        return str.replace("\\n", "");
+        return str.replace("\\n", "").replace("\\\"", "\"");
     }
 
 }
