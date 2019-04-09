@@ -12,7 +12,6 @@ import org.wikipedia.page.PageSection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public final class PageParser {
 
