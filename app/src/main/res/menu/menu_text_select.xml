@@ -23,4 +23,10 @@
         android:icon="@drawable/ic_mode_edit_themed_24dp"
         app:showAsAction="ifRoom" />
 
+    <!--TODO: change icon-->
+    <item android:id="@+id/menu_text_select_sprint"
+        android:title="@string/menu_text_select_sprint"
+        android:icon="@drawable/ic_define_themed"
+        app:showAsAction="ifRoom" />
+
 </menu>
