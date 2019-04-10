@@ -1,31 +1,26 @@
 package org.wikipedia.wikilisteni;
 
-import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-
-import org.wikipedia.page.PageSection;
-
-import java.util.List;
 
 public class TTSProgressTracker extends UtteranceProgressListener {
 
-    TextToSpeech tts;
-    List<PageSection> pageSections;
-    int currentSectionIndex;
+    TTSHelper ttsHelper;
 
-    public TTSProgressTracker(List<PageSection> pageSections, TextToSpeech tts) {
-        this.pageSections = pageSections;
-        this.tts = tts;
-        currentSectionIndex = 0;
-    }
-
-    public void onSkipSection() {
-
+    public TTSProgressTracker(TTSHelper ttsHelper) {
+        this.ttsHelper = ttsHelper;
     }
 
     @Override
     public void onDone(String utteranceId) {
 
+        // This callback gets called every time an utterance is done.
+        // For each section, there are 4 utterances, pause, title, pause, content.
+        // The content will have the ID "sectionEnd", when this utterance is done,
+        // we want to start playing the next section.
+        // This callback does not fire when TextToSpeech::stop() is called.
+        if (TTSHelper.SECTION_END_TAG.equals(utteranceId)) {
+            this.ttsHelper.playNextSection();
+        }
     }
 
     @Override

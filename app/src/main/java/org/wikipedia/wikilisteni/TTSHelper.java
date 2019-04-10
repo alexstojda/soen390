@@ -1,39 +1,44 @@
 package org.wikipedia.wikilisteni;
 
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 
 import org.wikipedia.page.PageSection;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class TTSHelper {
 
+    public static final String SECTION_END_TAG = "sectionEnd";
+
     private TextToSpeech tts;
-    private List<PageSection> pageSections;
+    private Iterator<PageSection> pageSectionIterator;
 
     public TTSHelper(TextToSpeech tts) {
         this.tts = tts;
     }
 
-    public void setPageSections(List<PageSection> pageSections) {
-        this.pageSections = pageSections;
+    public void start(List<PageSection> pageSections) {
+        this.pageSectionIterator = pageSections.iterator();
+        tts.setOnUtteranceProgressListener(new TTSProgressTracker(this));
+        playNextSection();
     }
 
-    public void startTTS() {
+    public void playNextSection() {
+        tts.stop();
+        if (!pageSectionIterator.hasNext()) {
+            return;
+        }
+
+        PageSection sectionToPlay = pageSectionIterator.next();
+        tts.playSilentUtterance(500, TextToSpeech.QUEUE_FLUSH, "");
+        tts.speak(sectionToPlay.getTitle(), TextToSpeech.QUEUE_ADD, null, "");
+        tts.playSilentUtterance(500, TextToSpeech.QUEUE_ADD, "");
+        tts.speak(sectionToPlay.getContents(), TextToSpeech.QUEUE_ADD, null, SECTION_END_TAG);
 
     }
 
-    public void skipSectionTTS() {
-
+    public void stop() {
+        tts.stop();
     }
-
-    public void stopTTS() {
-
-    }
-
-    public UtteranceProgressListener getProgressTracker() {
-        return new TTSProgressTracker(pageSections, tts);
-    }
-
 }

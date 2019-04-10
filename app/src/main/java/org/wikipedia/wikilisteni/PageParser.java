@@ -41,14 +41,10 @@ public final class PageParser {
         pageHTML = pageHTML.replace("\\&quot;", "");
         Document parsedPage = Jsoup.parse(pageHTML);
 
-
-
         // Remove reference links
-        Elements refs = parsedPage.select("span[class*=mw-reflink-text]");
-        refs.remove();
+        parsedPage.select("span[class*=mw-reflink-text]").remove();
 
         // Handle title separately
-
         Element title = parsedPage.selectFirst("h1");
         Element firstParagraph = parsedPage.selectFirst("div[id*=content_block_0]");
 
@@ -60,6 +56,10 @@ public final class PageParser {
             throw new ParseException("Missing main content section.");
         }
 
+        // Remove tables, they are annoying...
+        Elements tables = firstParagraph.select("table");
+        tables.remove();
+
         String titleStr = filterNewlines(title.text());
         String firstParagraphStr = filterNewlines(firstParagraph.text());
         sections.add(new PageSection(titleStr, firstParagraphStr));
@@ -70,11 +70,12 @@ public final class PageParser {
             int sectionID = Integer.parseInt(e.attr("data-id").replace("\\\"", ""));
             String sectionTitle = filterNewlines(e.text());
 
-            Element paragraphElement = parsedPage.selectFirst("div[id=content_block_" + sectionID + "]");
+            Element paragraphElement = parsedPage.selectFirst("div[id*=content_block_" + sectionID + "]");
             if (paragraphElement == null) {
                 throw new ParseException("Missing content section #" + Integer.toString(sectionID) + ".");
             }
 
+            paragraphElement.select("table").remove();
             String paragraph = filterNewlines(paragraphElement.text());
 
             sections.add(new PageSection(sectionTitle, paragraph));
@@ -83,7 +84,7 @@ public final class PageParser {
     }
 
     /**
-     * Helper to remove annoying "\n"s found throughout the html page from WebViews.
+     * Helper to remove annoying "\n"s and \" found throughout the html page from WebViews.
      * @param str The string to clean.
      * @return The clean string.
      */
