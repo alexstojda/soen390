@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "699198209667",
+    "firebase_url": "https://wikipedia-5f981.firebaseio.com",
+    "project_id": "wikipedia-5f981",
+    "storage_bucket": "wikipedia-5f981.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699198209667:android:2cf39642a6c8a54f",
+        "android_client_info": {
+          "package_name": "org.wikipedia.alpha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqY8oen1iowF8hltvDofOLWTpTvFkR4ng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699198209667-prk0d6h9fnsnvsrvg904q6r4gaakhedf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
