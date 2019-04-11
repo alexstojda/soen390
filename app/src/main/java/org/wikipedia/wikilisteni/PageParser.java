@@ -15,11 +15,13 @@ import java.util.List;
 
 public final class PageParser {
 
-    private PageParser() { }
+    private PageParser() {
+    }
 
     /**
      * Gets the HTML from a WebView (You can get one from PageFragment)
-     * @param webView The WebView to get the HTML from.
+     *
+     * @param webView  The WebView to get the HTML from.
      * @param callback The callback that will handle receiving the HTML (This is an async action.)
      */
     public static void getPageHTML(WebView webView, ValueCallback<String> callback) {
@@ -32,6 +34,7 @@ public final class PageParser {
 
     /**
      * Extracts a list of PageSection objects from the HTML of a Wikipedia Page.
+     *
      * @param pageHTML The HTML of said Wikipedia page.
      * @return The extracted list of page sections.
      */
