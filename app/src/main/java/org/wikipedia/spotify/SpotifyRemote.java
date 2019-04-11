@@ -15,6 +15,11 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
  */
 public class SpotifyRemote {
 
+    public interface Callback{
+        void onSuccess();
+        void onFailure();
+    }
+
     private static final String CLIENT_ID = "89625714de2848f48e048a3f628968d5";
     private static final String REDIRECT_URI = "testtest://redirect";
     private SpotifyAppRemote mSpotifyAppRemote;
@@ -22,11 +27,12 @@ public class SpotifyRemote {
     private Context context;
 
 
+
     public SpotifyRemote(Context context) {
         this.context = context;
     }
 
-    public void connectToSpotify(){
+    public void connectToSpotify(Callback callback){
 
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID).setRedirectUri(REDIRECT_URI).
@@ -38,11 +44,13 @@ public class SpotifyRemote {
                         mSpotifyAppRemote = spotifyAppRemote;
                         mPlayerApi = mSpotifyAppRemote.getPlayerApi();
                         Log.d("SpotifyRemote", "Connected to Spotify!");
+                        callback.onSuccess();
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
                         Log.e("SpotifyRemote", throwable.getMessage(), throwable);
+                        callback.onFailure();
                     }
                 });
     }

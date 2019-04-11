@@ -22,10 +22,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="152dp"
+                android:layout_marginEnd="86dp"
                 android:text="@string/connect_to_spotify"
                 android:textColor="#000"
                 app:backgroundTint="#2ab759" />
+
+            <ProgressBar
+                android:id="@+id/spotify_loading_spinner"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
