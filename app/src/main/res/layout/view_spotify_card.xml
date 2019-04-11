@@ -17,6 +17,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/connect_to_spotify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="152dp"
+                android:text="@string/connect_to_spotify"
+                android:textColor="#000"
+                app:backgroundTint="#2ab759" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
