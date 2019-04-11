@@ -40,7 +40,8 @@
     <string name="menu_page_share">Share link</string>
     <string name="menu_page_open_a_new_tab">Open a new tab</string>
     <string name="menu_page_reading_lists">Reading lists</string>
-    <string name="menu_page_play_pause_button">Pause Or Play WikiListeny</string>
+    <string name="menu_page_play_stop_button">Play or Stop WikiListeny</string>
+    <string name="menu_page_skip_button">Skip section in WikiListeny</string>
     <string name="menu_page_recently_viewed">Recently viewed</string>
 
     <!-- Long press menu -->

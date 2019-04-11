@@ -12,21 +12,31 @@ public class TTSHelper {
     public static final String SECTION_END_TAG = "sectionEnd";
 
     private TextToSpeech tts;
+    private boolean isPlaying;
     private Iterator<PageSection> pageSectionIterator;
+    private TTSFinishedCallback callback;
 
     public TTSHelper(TextToSpeech tts) {
         this.tts = tts;
+        isPlaying = false;
+    }
+
+    public void setFinishCallback(TTSFinishedCallback callback) {
+        this.callback = callback;
     }
 
     public void start(List<PageSection> pageSections) {
         this.pageSectionIterator = pageSections.iterator();
         tts.setOnUtteranceProgressListener(new TTSProgressTracker(this));
         playNextSection();
+        isPlaying = true;
     }
 
     public void playNextSection() {
         tts.stop();
         if (!pageSectionIterator.hasNext()) {
+            callback.finished();
+            isPlaying = false;
             return;
         }
 
@@ -40,5 +50,10 @@ public class TTSHelper {
 
     public void stop() {
         tts.stop();
+        isPlaying = false;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 }
