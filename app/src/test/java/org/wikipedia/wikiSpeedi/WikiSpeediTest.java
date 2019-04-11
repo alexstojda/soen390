@@ -9,7 +9,7 @@ import org.robolectric.shadows.ShadowApplication;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class wikispeedi {
+public class WikiSpeediTest {
     String testString;
     WikiSpeediDialog wikiSpeedi;
     final ShadowApplication shadowApplication = ShadowApplication.getInstance();
