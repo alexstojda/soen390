@@ -11,11 +11,12 @@ import org.wikipedia.page.NoDimBottomSheetDialog;
 
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
-    public static boolean isRunning = false;
-    public static int placeHolder = 0;
-    View sprint_view = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
-    public TextView sprintText = sprint_view.findViewById(R.id.sprint_text);
-    public String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
+    private static boolean isRunning = false;
+    private static int placeHolder = 0;
+    private View sprintView = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
+    private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
+    private String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
+    private int delay = 200;
 
     private Runnable set_sprintText = new Runnable() {
         public void run() {

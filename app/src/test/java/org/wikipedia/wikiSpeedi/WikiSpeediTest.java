@@ -47,4 +47,10 @@ public class WikiSpeediTest {
         wikiSpeedi.setIsRunning(true);
         assertTrue(wikiSpeedi.getIsRunning());
     }
+
+    @Test
+    public void testSliderSpeed() {
+        wikiSpeedi.setIsRunning(true);
+        assertTrue(wikiSpeedi.getIsRunning());
+    }
 }
