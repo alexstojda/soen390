@@ -432,8 +432,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 getView().findViewById(R.id.game_footer_text), this));
     }
 
-
-
     // End game (surrender), simply restore UI to original state.
     public void endGame() {
         gameStartButton.show();
@@ -442,8 +440,6 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         Prefs.disableDistractionFreeMode();
         toggleDistractionFreeMode();
     }
-
-
 
     // End game (win), display win dialog, then restore UI to original state.
     public void endGame(int endScore) {
