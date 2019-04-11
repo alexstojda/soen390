@@ -1,10 +1,13 @@
 package org.wikipedia.wikiSpeedi;
 
+import android.widget.SeekBar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowApplication;
+import org.wikipedia.R;
 
 import static org.junit.Assert.*;
 
@@ -51,6 +54,10 @@ public class WikiSpeediTest {
     @Test
     public void testSliderSpeed() {
         wikiSpeedi.setIsRunning(true);
-        assertTrue(wikiSpeedi.getIsRunning());
+        SeekBar seekBar = wikiSpeedi.getSeekBar();
+        seekBar.setProgress(0);
+        assertEquals(seekBar.getMax() ,wikiSpeedi.getDelay());
+        seekBar.setProgress(25);
+        assertEquals(seekBar.getMax() - 25 ,wikiSpeedi.getDelay());
     }
 }
