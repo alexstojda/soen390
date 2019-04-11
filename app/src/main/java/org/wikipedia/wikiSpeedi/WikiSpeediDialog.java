@@ -3,6 +3,7 @@ package org.wikipedia.wikiSpeedi;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.support.annotation.NonNull;
 
@@ -24,7 +25,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
             if (isRunning && placeHolder < test.length) {
                 sprintText.setText(test[placeHolder]);
                 placeHolder++;
-                sprintText.postDelayed(this, 200);
+                sprintText.postDelayed(this, delay);
             }
         }
     };
@@ -62,6 +63,25 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                 .setOnClickListener((v) -> {
                     setIsRunning(false);
                 });
+
+        seekBar = rootView.findViewById(R.id.sprint_speed_bar);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                delay = seekBar.getMax()-progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void setIsRunning(boolean isRunning) {
