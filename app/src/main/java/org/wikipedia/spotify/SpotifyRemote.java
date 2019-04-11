@@ -19,17 +19,20 @@ public class SpotifyRemote {
     private static final String REDIRECT_URI = "testtest://redirect";
     private SpotifyAppRemote mSpotifyAppRemote;
     private PlayerApi mPlayerApi;
+    private Context context;
 
 
     public SpotifyRemote(Context context) {
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
+        this.context = context;
+    }
 
-        SpotifyAppRemote.connect(context, connectionParams,
-                new Connector.ConnectionListener() {
+    public void connectToSpotify(){
+
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID).setRedirectUri(REDIRECT_URI).
+                        showAuthView(true).build();
+
+        SpotifyAppRemote.connect(context, connectionParams, new Connector.ConnectionListener() {
                     @Override
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         mSpotifyAppRemote = spotifyAppRemote;

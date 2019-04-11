@@ -735,5 +735,6 @@
     <string name="song_name">Song Name</string>
     <string name="album_name">Album Name</string>
     <string name="view_artist_page">View\nArtist\nPage</string>
+    <string name="connect_to_spotify">Connect\nTo\nSpotify</string>
 
 </resources>

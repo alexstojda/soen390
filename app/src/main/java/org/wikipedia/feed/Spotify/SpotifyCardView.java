@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -34,6 +35,10 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     ImageButton skipNext;
     @BindView(R.id.play)
     ImageButton playButton;
+    @BindView(R.id.view_artist_button)
+    Button viewArtistButton;
+    @BindView(R.id.connect_to_spotify_button)
+    Button connectButton;
 
     private boolean songIsPlaying = false;
     private Context context;
@@ -41,9 +46,16 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     public SpotifyCardView(Context context) {
         super(context);
         this.context = context;
-
         inflate(context, R.layout.view_spotify_card, this);
         ButterKnife.bind(this);
+
+        artistName.setVisibility(GONE);
+        albumName.setVisibility(GONE);
+        songName.setVisibility(GONE);
+        skipNext.setVisibility(GONE);
+        skipPrevious.setVisibility(GONE);
+        playButton.setVisibility(GONE);
+        viewArtistButton.setVisibility(GONE);
 
         SpotifyRemote spotifyRemote = new SpotifyRemote(context);
         skipNext.setOnClickListener(v -> {
@@ -58,6 +70,20 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
                 spotifyRemote.resume();
                 songIsPlaying = true;
             }
+        });
+
+        connectButton.setOnClickListener(v -> {
+
+            spotifyRemote.connectToSpotify();
+
+            artistName.setVisibility(VISIBLE);
+          albumName.setVisibility(VISIBLE);
+          songName.setVisibility(VISIBLE);
+          skipNext.setVisibility(VISIBLE);
+          skipPrevious.setVisibility(VISIBLE);
+          playButton.setVisibility(VISIBLE);
+          viewArtistButton.setVisibility(VISIBLE);
+          connectButton.setVisibility(GONE);
         });
 
         SpotifyReceiver spotifyReceiver = new SpotifyReceiver();
