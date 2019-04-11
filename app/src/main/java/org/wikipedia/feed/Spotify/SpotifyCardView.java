@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.wikipedia.R;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 
 
 public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
-        implements ItemTouchHelperSwipeAdapter.SwipeableView {
+        implements ItemTouchHelperSwipeAdapter.SwipeableView, SpotifyRemote.Callback {
 
     @BindView(R.id.artist_name)
     TextView artistName;
@@ -39,9 +40,12 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     Button viewArtistButton;
     @BindView(R.id.connect_to_spotify_button)
     Button connectButton;
+    @BindView(R.id.spotify_loading_spinner)
+    ProgressBar loadingSpinner;
 
     private boolean songIsPlaying = false;
     private Context context;
+    private SpotifyRemote spotifyRemote;
 
     public SpotifyCardView(Context context) {
         super(context);
@@ -56,9 +60,11 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         skipPrevious.setVisibility(GONE);
         playButton.setVisibility(GONE);
         viewArtistButton.setVisibility(GONE);
+        loadingSpinner.setVisibility(GONE);
 
-        SpotifyRemote spotifyRemote = new SpotifyRemote(context);
+        spotifyRemote = new SpotifyRemote(context);
         skipNext.setOnClickListener(v -> {
+            loadingSpinner.setVisibility(VISIBLE);
             spotifyRemote.skipNext();
         });
         skipPrevious.setOnClickListener(v -> spotifyRemote.skipPrevious());
@@ -73,17 +79,9 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         });
 
         connectButton.setOnClickListener(v -> {
-
-            spotifyRemote.connectToSpotify();
-
-            artistName.setVisibility(VISIBLE);
-          albumName.setVisibility(VISIBLE);
-          songName.setVisibility(VISIBLE);
-          skipNext.setVisibility(VISIBLE);
-          skipPrevious.setVisibility(VISIBLE);
-          playButton.setVisibility(VISIBLE);
-          viewArtistButton.setVisibility(VISIBLE);
-          connectButton.setVisibility(GONE);
+            spotifyRemote.connectToSpotify(this);
+            connectButton.setVisibility(GONE);
+            loadingSpinner.setVisibility(VISIBLE);
         });
 
         SpotifyReceiver spotifyReceiver = new SpotifyReceiver();
@@ -98,6 +96,26 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         spotifyIntentFilter.addAction("com.spotify.music.metadatachanged");
         spotifyIntentFilter.addAction("com.spotify.music.playbackstatechanged");
         return spotifyIntentFilter;
+    }
+
+    @Override
+    public void onSuccess() {
+        artistName.setVisibility(VISIBLE);
+        albumName.setVisibility(VISIBLE);
+        songName.setVisibility(VISIBLE);
+        skipNext.setVisibility(VISIBLE);
+        skipPrevious.setVisibility(VISIBLE);
+        playButton.setVisibility(VISIBLE);
+        viewArtistButton.setVisibility(VISIBLE);
+        connectButton.setVisibility(GONE);
+        loadingSpinner.setVisibility(GONE);
+    }
+
+    @Override
+    public void onFailure() {
+        spotifyRemote = null;
+        connectButton.setVisibility(VISIBLE);
+        loadingSpinner.setVisibility(GONE);
     }
 
     private class SpotifyCallback implements SpotifyReceiver.Callback {
