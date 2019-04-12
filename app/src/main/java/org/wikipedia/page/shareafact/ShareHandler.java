@@ -34,7 +34,7 @@ import org.wikipedia.util.ShareUtil;
 import org.wikipedia.util.StringUtil;
 import org.wikipedia.util.UriUtil;
 import org.wikipedia.util.log.L;
-import org.wikipedia.wikiSpeedi.WikiSpeediDialog;
+import org.wikipedia.wikispeedi.WikiSpeediDialog;
 import org.wikipedia.wiktionary.WiktionaryDialog;
 
 import java.util.Arrays;
