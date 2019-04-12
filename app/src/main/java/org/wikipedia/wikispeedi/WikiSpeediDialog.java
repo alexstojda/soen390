@@ -12,6 +12,8 @@ import org.wikipedia.page.NoDimBottomSheetDialog;
 
 import java.util.List;
 
+import java.util.Arrays;
+
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
     private boolean isRunning = false;
@@ -20,7 +22,6 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
     private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
     private int delay = 200;
     private SeekBar seekBar;
-
     private List<String> selectedText;
 
     private Runnable sprintTextRunnable = new Runnable() {
@@ -38,6 +39,8 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.dialog_sprint_reader, null);
         setContentView(rootView);
+
+        this.selectedText = Arrays.asList(selectedText.split("\\s"));
 
         rootView.findViewById(R.id.close_button)
                 .setOnClickListener((v) -> {

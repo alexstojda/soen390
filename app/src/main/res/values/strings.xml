@@ -729,5 +729,6 @@
     <string name="game_start">Start</string>
     <string name="game_cancel">Cancel</string>
     <string name="camera_permission">Please enable camera permission in phone settings</string>
+    <string name="speed_reader_start">- start -</string>
 
 </resources>
