@@ -47,18 +47,38 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:contentDescription="@string/menu_page_font_and_theme"
-        android:padding="16dp"
+        android:padding="@dimen/bottom_toolbar_item_padding"
         android:tag="4"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintStart_toEndOf="@+id/article_menu_find_in_page"
         app:srcCompat="@drawable/ic_format_size_white_24dp" />
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/article_menu_play_stop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/menu_page_play_stop_button"
+        android:padding="@dimen/bottom_toolbar_item_padding"
+        android:tag="5"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toEndOf="@+id/article_menu_font_and_theme"
+        app:srcCompat="@drawable/ic_play_arrow_green_24dp"/>
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/article_menu_skip_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/menu_page_play_stop_button"
+        android:padding="@dimen/bottom_toolbar_item_padding"
+        android:tag="6"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toEndOf="@+id/article_menu_play_stop_button"
+        app:srcCompat="@drawable/ic_arrow_forward_accent50_24dp"/>
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/article_menu_show_toc"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:padding="@dimen/bottom_toolbar_item_padding"
         android:contentDescription="@string/menu_show_toc"
-        android:tag="5"
+        android:tag="7"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_list_white_24dp"/>
