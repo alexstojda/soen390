@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.wikipedia.R;
@@ -18,6 +19,9 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
     private int index = 0;
     private View sprintView = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
     private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
+    private int delay = 200;
+    private SeekBar seekBar;
+
 
     private List<String> selectedText;
 
@@ -26,7 +30,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
             if (isRunning && index < selectedText.size()) {
                 sprintText.setText(selectedText.get(index));
                 index++;
-                sprintText.postDelayed(this, 200);
+                sprintText.postDelayed(this, delay);
             }
         }
     };
@@ -66,6 +70,24 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                 .setOnClickListener((v) -> {
                     setIsRunning(false);
                 });
+
+        seekBar = rootView.findViewById(R.id.sprint_speed_bar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                delay = seekBar.getMax() - progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     void setIsRunning(boolean isRunning) {
@@ -92,6 +114,14 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
     String getSprintText() {
         return this.sprintText.getText().toString();
+    }
+
+    public SeekBar getSeekBar() {
+        return seekBar;
+    }
+
+    public int getDelay() {
+        return delay;
     }
 
     @Override
