@@ -15,8 +15,9 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
  */
 public class SpotifyRemote {
 
-    public interface Callback{
+    public interface Callback {
         void onSuccess();
+
         void onFailure();
     }
 
@@ -27,37 +28,31 @@ public class SpotifyRemote {
     private Context context;
 
 
-
-    public SpotifyRemote(Context context) {
+    public SpotifyRemote(Context context, Callback callback) {
         this.context = context;
+        connectToSpotify(callback, false);
     }
 
-    public void connectToSpotify(Callback callback){
+    public void connectToSpotify(Callback callback, boolean showAuthView) {
 
         ConnectionParams connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID).setRedirectUri(REDIRECT_URI).
-                        showAuthView(true).build();
+                        showAuthView(showAuthView).build();
 
         SpotifyAppRemote.connect(context, connectionParams, new Connector.ConnectionListener() {
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote = spotifyAppRemote;
-                        mPlayerApi = mSpotifyAppRemote.getPlayerApi();
-                        Log.d("SpotifyRemote", "Connected to Spotify!");
-                        callback.onSuccess();
-                    }
+            @Override
+            public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                mSpotifyAppRemote = spotifyAppRemote;
+                mPlayerApi = mSpotifyAppRemote.getPlayerApi();
+                Log.d("SpotifyRemote", "Connected to Spotify!");
+                callback.onSuccess();
+            }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e("SpotifyRemote", throwable.getMessage(), throwable);
-                        callback.onFailure();
-                    }
-                });
-    }
-
-    public void playSong(String uri) {
-        mPlayerApi.play(uri);
-        Log.d("SpotifyRemote", "Song is playing");
+            @Override
+            public void onFailure(Throwable throwable) {
+                callback.onFailure();
+            }
+        });
     }
 
     public void resume() {
