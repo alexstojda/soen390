@@ -102,7 +102,6 @@ import org.wikipedia.views.ObservableWebView;
 import org.wikipedia.views.SwipeRefreshLayoutWithScroll;
 import org.wikipedia.views.WikiPageErrorView;
 import org.wikipedia.wikilisteni.PageParser;
-import org.wikipedia.wikilisteni.TTSFinishedCallback;
 import org.wikipedia.wikilisteni.TTSHelper;
 import org.wikipedia.wikiwalki.CameraPreview;
 
@@ -329,7 +328,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         app = (WikipediaApp) requireActivity().getApplicationContext();
         model = new PageViewModel();
         pageFragmentLoadState = new PageFragmentLoadState();
-        tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+        tts = new TextToSpeech(requireContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) { }
         });
@@ -446,14 +445,13 @@ public class PageFragment extends Fragment implements BackPressedHandler {
             }
         });
 
-        ttsHelper.setFinishCallback(new TTSFinishedCallback() {
+        ttsHelper.setFinishCallback(new TTSHelper.TTSFinishedCallback() {
             @Override
             public void finished() {
                 playStopButton.setImageResource(R.drawable.ic_play_arrow_green_24dp);
                 skipButton.setVisibility(View.INVISIBLE);
             }
         });
-
 
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override

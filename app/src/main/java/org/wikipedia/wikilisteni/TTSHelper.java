@@ -56,4 +56,8 @@ public class TTSHelper {
     public boolean isPlaying() {
         return isPlaying;
     }
+
+    public interface TTSFinishedCallback {
+        void finished();
+    }
 }
