@@ -7,9 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowApplication;
-import org.wikipedia.R;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class WikiSpeediTest {
@@ -56,8 +57,8 @@ public class WikiSpeediTest {
         wikiSpeedi.setIsRunning(true);
         SeekBar seekBar = wikiSpeedi.getSeekBar();
         seekBar.setProgress(0);
-        assertEquals(seekBar.getMax() ,wikiSpeedi.getDelay());
+        assertEquals(seekBar.getMax(), wikiSpeedi.getDelay());
         seekBar.setProgress(25);
-        assertEquals(seekBar.getMax() - 25 ,wikiSpeedi.getDelay());
+        assertEquals(seekBar.getMax() - 25, wikiSpeedi.getDelay());
     }
 }

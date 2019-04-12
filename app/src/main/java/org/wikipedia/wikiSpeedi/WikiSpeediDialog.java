@@ -1,26 +1,26 @@
 package org.wikipedia.wikiSpeedi;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.support.annotation.NonNull;
 
 import org.wikipedia.R;
 import org.wikipedia.page.NoDimBottomSheetDialog;
 
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
-    private static boolean isRunning = false;
-    private static int placeHolder = 0;
+    private boolean isRunning = false;
+    private int placeHolder = 0;
     private View sprintView = getLayoutInflater().inflate(R.layout.dialog_sprint_reader, null);
     private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
     private String[] test = {"this", "is", "a", "super", "duper", "test", "that", "is", "fully", "functional.", "good", "job", "Siamak!"};
     private int delay = 200;
     private SeekBar seekBar;
 
-    private Runnable set_sprintText = new Runnable() {
+    private Runnable setSprintText = new Runnable() {
         public void run() {
             if (isRunning && placeHolder < test.length) {
                 sprintText.setText(test[placeHolder]);
@@ -38,7 +38,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
         rootView.findViewById(R.id.close_button)
                 .setOnClickListener((v) -> {
-                    sprintText.removeCallbacks(set_sprintText);
+                    sprintText.removeCallbacks(setSprintText);
                     resetSprint();
                     dismiss();
                 });
@@ -49,7 +49,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                     if (!isRunning) {
                         setIsRunning(true);
                         sprintText = findViewById(R.id.sprint_text);
-                        sprintText.postDelayed(set_sprintText, 0);
+                        sprintText.postDelayed(setSprintText, 0);
                     }
                 });
 
@@ -69,7 +69,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                delay = seekBar.getMax()-progress;
+                delay = seekBar.getMax() - progress;
             }
 
             @Override
@@ -106,7 +106,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
         return this.sprintText.getText().toString();
     }
 
-    public SeekBar getSeekBar(){
+    public SeekBar getSeekBar() {
         return seekBar;
     }
 
