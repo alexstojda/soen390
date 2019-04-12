@@ -10,9 +10,8 @@ import android.widget.TextView;
 import org.wikipedia.R;
 import org.wikipedia.page.NoDimBottomSheetDialog;
 
-import java.util.List;
-
 import java.util.Arrays;
+import java.util.List;
 
 public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
@@ -22,6 +21,8 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
     private TextView sprintText = sprintView.findViewById(R.id.sprint_text);
     private int delay = 200;
     private SeekBar seekBar;
+
+
     private List<String> selectedText;
 
     private Runnable sprintTextRunnable = new Runnable() {
@@ -29,7 +30,7 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
             if (isRunning && index < selectedText.size()) {
                 sprintText.setText(selectedText.get(index));
                 index++;
-                sprintText.postDelayed(this, 200);
+                sprintText.postDelayed(this, delay);
             }
         }
     };
@@ -71,7 +72,6 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
                 });
 
         seekBar = rootView.findViewById(R.id.sprint_speed_bar);
-
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -114,6 +114,14 @@ public class WikiSpeediDialog extends NoDimBottomSheetDialog {
 
     String getSprintText() {
         return this.sprintText.getText().toString();
+    }
+
+    public SeekBar getSeekBar() {
+        return seekBar;
+    }
+
+    public int getDelay() {
+        return delay;
     }
 
     @Override

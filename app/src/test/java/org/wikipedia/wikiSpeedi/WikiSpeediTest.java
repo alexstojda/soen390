@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-public class WikiSpeedi {
+public class WikiSpeediTest {
     private WikiSpeediDialog wikiSpeedi;
     private final ShadowApplication shadowApplication = ShadowApplication.getInstance();
     private String testString;
@@ -53,5 +53,15 @@ public class WikiSpeedi {
     public void testIsRunning() {
         wikiSpeedi.setIsRunning(true);
         assertTrue(wikiSpeedi.getIsRunning());
+    }
+
+    @Test
+    public void testSliderSpeed() {
+        wikiSpeedi.setIsRunning(true);
+        SeekBar seekBar = wikiSpeedi.getSeekBar();
+        seekBar.setProgress(0);
+        assertEquals(seekBar.getMax(), wikiSpeedi.getDelay());
+        seekBar.setProgress(25);
+        assertEquals(seekBar.getMax() - 25, wikiSpeedi.getDelay());
     }
 }
