@@ -20,7 +20,6 @@ import org.wikipedia.views.ItemTouchHelperSwipeAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         implements ItemTouchHelperSwipeAdapter.SwipeableView {
 
@@ -64,7 +63,7 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
             @Override
             public void onSuccess() {
                 spotifyControls.setVisibility(VISIBLE);
-                if(songIsPlaying) {
+                if (songIsPlaying) {
                     currentlyPlayingLayout.setVisibility(VISIBLE);
                 }
                 spotifyConnect.setVisibility(GONE);
