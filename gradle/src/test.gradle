@@ -20,7 +20,7 @@ android.productFlavors.all { flavor ->
 
 apply plugin: 'jacoco'
 
-task jacocoTestReport(type: JacocoReport, dependsOn: 'testDevDebugUnitTest') {
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testAlphaDebugUnitTest') {
 
     reports {
         xml.enabled = true
@@ -33,5 +33,5 @@ task jacocoTestReport(type: JacocoReport, dependsOn: 'testDevDebugUnitTest') {
 
     sourceDirectories = files([mainSrc])
     classDirectories = files([debugTree])
-    executionData = files("${buildDir}/jacoco/testDevDebugUnitTest.exec")
+    executionData = files("${buildDir}/jacoco/testAlphaDebugUnitTest.exec")
 }
