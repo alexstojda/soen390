@@ -4,9 +4,9 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
-    resource_class: medium+
+    resource_class: medium
     environment:
-      GRADLE_OPTS: -Dorg.gradle.daemon=false
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx2048m
     steps:
       - checkout
       - restore_cache:
