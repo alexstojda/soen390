@@ -266,8 +266,8 @@ bridge.registerListener( "getTextSelection", function( payload ) {
     if (text.length < 2 && payload.purpose === "share") {
         text = getLeadParagraph();
     }
-    if (text.length > 250) {
-        text = text.substring(0, 249);
+    if (text.length > 5000) {
+        text = text.substring(0, 5000);
     }
     if (payload.purpose === "edit_here") {
         var range = window.getSelection().getRangeAt(0);

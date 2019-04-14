@@ -18,6 +18,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -100,6 +101,8 @@ import org.wikipedia.util.log.L;
 import org.wikipedia.views.ObservableWebView;
 import org.wikipedia.views.SwipeRefreshLayoutWithScroll;
 import org.wikipedia.views.WikiPageErrorView;
+import org.wikipedia.wikilisteni.PageParser;
+import org.wikipedia.wikilisteni.TTSHelper;
 import org.wikipedia.wikiwalki.CameraPreview;
 
 import java.util.Date;
@@ -183,6 +186,9 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     private boolean errorState = false;
     private PageFragmentLoadState pageFragmentLoadState;
     private PageViewModel model;
+
+    private TextToSpeech tts;
+    private TTSHelper ttsHelper;
 
     @NonNull
     private TabFunnel tabFunnel = new TabFunnel();
@@ -322,6 +328,11 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         app = (WikipediaApp) requireActivity().getApplicationContext();
         model = new PageViewModel();
         pageFragmentLoadState = new PageFragmentLoadState();
+        tts = new TextToSpeech(requireContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) { }
+        });
+        ttsHelper = new TTSHelper(tts);
     }
 
     @Override
@@ -366,6 +377,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 CameraPreview cameraView = new CameraPreview(getContext(), camera);
                 cameraPreview.addView(cameraView);
             }
+
         }
 
         if (Prefs.isDistractionFreeModeEnabled()) {
@@ -415,6 +427,39 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 new PageActionToolbarHideHandler(rootView.findViewById(R.id.fragment_page_coordinator), null);
         snackbarHideHandler.setScrollView(webView);
 
+        ImageView playStopButton = rootView.findViewById(R.id.article_menu_play_stop_button);
+        ImageView skipButton = rootView.findViewById(R.id.article_menu_skip_button);
+        skipButton.setVisibility(View.INVISIBLE);
+        playStopButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                if (ttsHelper.isPlaying()) {
+                    playStopButton.setImageResource(R.drawable.ic_play_arrow_green_24dp);
+                    skipButton.setVisibility(View.INVISIBLE);
+                    stopTTS();
+                } else {
+                    playStopButton.setImageResource(R.drawable.ic_stop);
+                    skipButton.setVisibility(View.VISIBLE);
+                    startTTS();
+                }
+            }
+        });
+
+        ttsHelper.setFinishCallback(new TTSHelper.TTSFinishedCallback() {
+            @Override
+            public void finished() {
+                playStopButton.setImageResource(R.drawable.ic_play_arrow_green_24dp);
+                skipButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                skipSectionTTS();
+            }
+        });
+
         return rootView;
     }
 
@@ -461,6 +506,21 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         endGame();
     }
 
+    private void startTTS() {
+        PageParser.getPageHTML(this.webView, (html) -> {
+            List<PageSection> sections = PageParser.getParsedPage(html);
+            ttsHelper.start(sections);
+        });
+    }
+
+    private void skipSectionTTS() {
+        ttsHelper.playNextSection();
+    }
+
+    private void stopTTS() {
+        ttsHelper.stop();
+    }
+
     @Override
     public void onDestroyView() {
         if (avPlayer != null) {
@@ -480,6 +540,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
         webView.clearAllListeners();
         ((ViewGroup) webView.getParent()).removeView(webView);
         webView = null;
+        ttsHelper.stop();
         super.onDestroyView();
     }
 
@@ -487,6 +548,7 @@ public class PageFragment extends Fragment implements BackPressedHandler {
     public void onDestroy() {
         super.onDestroy();
         app.getRefWatcher().watch(this);
+        tts.shutdown();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -643,6 +705,8 @@ public class PageFragment extends Fragment implements BackPressedHandler {
                 ? System.currentTimeMillis()
                 : 0;
         Prefs.pageLastShown(time);
+
+        ttsHelper.stop();
     }
 
     @Override
