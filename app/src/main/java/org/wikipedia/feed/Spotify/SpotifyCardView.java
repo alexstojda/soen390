@@ -13,6 +13,10 @@ import android.widget.TextView;
 import org.wikipedia.R;
 import org.wikipedia.feed.model.Card;
 import org.wikipedia.feed.view.DefaultFeedCardView;
+import org.wikipedia.history.HistoryEntry;
+import org.wikipedia.page.PageActivity;
+import org.wikipedia.search.SearchHandler;
+import org.wikipedia.search.SearchResult;
 import org.wikipedia.spotify.SpotifyReceiver;
 import org.wikipedia.spotify.SpotifyRemote;
 import org.wikipedia.views.ItemTouchHelperSwipeAdapter;
@@ -21,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
-        implements ItemTouchHelperSwipeAdapter.SwipeableView {
+        implements ItemTouchHelperSwipeAdapter.SwipeableView, SearchHandler.Callback {
 
     @BindView(R.id.artist_name)
     TextView artistName;
@@ -50,6 +54,7 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     private Context context;
     private SpotifyRemote spotifyRemote;
     private SpotifyRemote.Callback connectionCallback;
+    private SearchHandler searchHandler = new SearchHandler(this);
 
     public SpotifyCardView(Context context) {
         super(context);
@@ -80,6 +85,10 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         spotifyRemote = new SpotifyRemote(context, connectionCallback);
 
         connectButton.setOnClickListener(v -> spotifyRemote.connectToSpotify(connectionCallback, true));
+
+        viewArtistButton.setOnClickListener(v -> {
+            searchHandler.searchForArtist(artistName.getText().toString());
+        });
 
         setupRemoteButtons();
         setUpReceiverCallback(context);
@@ -112,6 +121,13 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         spotifyIntentFilter.addAction("com.spotify.music.metadatachanged");
         spotifyIntentFilter.addAction("com.spotify.music.playbackstatechanged");
         return spotifyIntentFilter;
+    }
+
+    @Override
+    public void getArtist(SearchResult searchResult) {
+        HistoryEntry historyEntry = new HistoryEntry(searchResult.getPageTitle(), HistoryEntry.SOURCE_SEARCH);
+        context.startActivity(PageActivity.newIntentForNewTab(context, historyEntry,
+                searchResult.getPageTitle()));
     }
 
     private class ReceiverCallback implements SpotifyReceiver.Callback {
