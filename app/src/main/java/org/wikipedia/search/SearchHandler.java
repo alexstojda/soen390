@@ -42,7 +42,7 @@ public class SearchHandler {
         SearchResult value = null;
         for (SearchResult result : results.getResults()
         ) {
-            if (hasMusicDescription(result, term)) {
+            if (hasMusicDescription(result)) {
                 value = result;
                 break;
             }
@@ -50,37 +50,20 @@ public class SearchHandler {
         return value;
     }
 
-    private static boolean isContain(String source, String subItem) {
-        String pattern = "\\b" + subItem + "\\b";
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(source);
-        return m.find();
+    private boolean hasMusicDescription(SearchResult result) {
+        return result.getPageTitle().getDescription() != null && (
+                isContain(result.getPageTitle().getDescription(), "band", "artist", "rapper",
+                        "singer", "musician", "DJ", "group"));
     }
 
-    //works for bands that redirect such as K/DA -> League of legends
-    //but breaks bands such as KISS, since kiss redirects to kiss(disambiguation)
-    private static boolean isRedirect(SearchResult result, String term) {
-        return result.getRedirectFrom() != null && result.getRedirectFrom().contentEquals(term);
-    }
-    private  static boolean hasMusicDescription(SearchResult result, String term) {
-       return result.getPageTitle().getDescription() != null && (
-                (isContain(result.getPageTitle().getDescription(), "band")
-                        || isContain(result.getPageTitle().getDescription(), "artist")
-                        || isContain(result.getPageTitle().getDescription(), "rapper")
-                        || isContain(result.getPageTitle().getDescription(), "singer")
-                        || isContain(result.getPageTitle().getDescription(), "musician")
-                        || isContain(result.getPageTitle().getDescription(), "DJ")));
+    private static boolean isContain(String source, String... subItems) {
+        for (String subItem : subItems) {
+            Pattern p = Pattern.compile("\\b" + subItem + "\\b");
+            if (p.matcher(source).find()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    //can be used to check if the title is an exact match of the search criteria
-    //filterTerm is required since page titles use underscores '_' instead of spaces ' '
-
-    //breaks things such as kiss, but allows for people who aren't known as singers
-    //such as League of Legends and Dwayne "The rock" Johnson
-    private static boolean isNameExact(SearchResult result, String term) {
-        return result.getPageTitle().toString().contentEquals(filerTerm(term));
-    }
-    private static String filerTerm(String term) {
-        return term.replaceAll(" ", "_");
-    }
 }
