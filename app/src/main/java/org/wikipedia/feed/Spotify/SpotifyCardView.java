@@ -136,13 +136,12 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
             HistoryEntry historyEntry = new HistoryEntry(searchResult.getPageTitle(), HistoryEntry.SOURCE_SEARCH);
             context.startActivity(PageActivity.newIntentForNewTab(context, historyEntry,
                     searchResult.getPageTitle()));
-        }else if(!trigger){
+        } else if (!trigger) {
             trigger = true;
-            searchHandler.searchForArtist(artistName.getText().toString()+" band");
-        }
-        else {
+            searchHandler.searchForArtist(artistName.getText().toString() + " band");
+        } else {
             Toast toast = Toast.makeText(getContext(),
-                    ("No Wikipedia found for a musical artist by the name "+artistName.getText().toString()),
+                    ("No Wikipedia found for a musical artist by the name " + artistName.getText().toString()),
                     Toast.LENGTH_SHORT);
 
             toast.show();

@@ -42,7 +42,7 @@ public class SearchHandler {
         SearchResult value = null;
         for (SearchResult result : results.getResults()
         ) {
-            if (hasMusicDescription(result,term)) {
+            if (hasMusicDescription(result, term)) {
                 value = result;
                 break;
             }
@@ -59,17 +59,17 @@ public class SearchHandler {
 
     //works for bands that redirect such as K/DA -> League of legends
     //but breaks bands such as KISS, since kiss redirects to kiss(disambiguation)
-    private static boolean isRedirect(SearchResult result, String term){
+    private static boolean isRedirect(SearchResult result, String term) {
         return result.getRedirectFrom() != null && result.getRedirectFrom().contentEquals(term);
     }
-    private  static boolean hasMusicDescription(SearchResult result, String term){
+    private  static boolean hasMusicDescription(SearchResult result, String term) {
        return result.getPageTitle().getDescription() != null && (
-                (isContain(result.getPageTitle().getDescription(), "band") ||
-                        isContain(result.getPageTitle().getDescription(), "artist") ||
-                        isContain(result.getPageTitle().getDescription(), "rapper") ||
-                        isContain(result.getPageTitle().getDescription(), "singer") ||
-                        isContain(result.getPageTitle().getDescription(), "musician") ||
-                        isContain(result.getPageTitle().getDescription(), "DJ")));
+                (isContain(result.getPageTitle().getDescription(), "band")
+                        || isContain(result.getPageTitle().getDescription(), "artist")
+                        || isContain(result.getPageTitle().getDescription(), "rapper")
+                        || isContain(result.getPageTitle().getDescription(), "singer")
+                        || isContain(result.getPageTitle().getDescription(), "musician")
+                        || isContain(result.getPageTitle().getDescription(), "DJ")));
     }
 
     //can be used to check if the title is an exact match of the search criteria
@@ -80,7 +80,7 @@ public class SearchHandler {
     private static boolean isNameExact(SearchResult result, String term) {
         return result.getPageTitle().toString().contentEquals(filerTerm(term));
     }
-    private static String filerTerm(String term){
-        return term.replaceAll(" ","_");
+    private static String filerTerm(String term) {
+        return term.replaceAll(" ", "_");
     }
 }
