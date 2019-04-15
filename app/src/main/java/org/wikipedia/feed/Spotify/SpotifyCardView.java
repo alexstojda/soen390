@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.wikipedia.R;
 import org.wikipedia.feed.model.Card;
@@ -51,6 +52,8 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     RelativeLayout spotifyConnect;
 
     private boolean songIsPlaying = false;
+    private boolean artistfound = false;
+    private boolean trigger = false;
     private Context context;
     private SpotifyRemote spotifyRemote;
     private SpotifyRemote.Callback connectionCallback;
@@ -87,7 +90,10 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
         connectButton.setOnClickListener(v -> spotifyRemote.connectToSpotify(connectionCallback, true));
 
         viewArtistButton.setOnClickListener(v -> {
+            artistfound = false;
+            trigger = false;
             searchHandler.searchForArtist(artistName.getText().toString());
+
         });
 
         setupRemoteButtons();
@@ -124,10 +130,23 @@ public class SpotifyCardView<T extends Card> extends DefaultFeedCardView<T>
     }
 
     @Override
-    public void getArtist(SearchResult searchResult) {
-        HistoryEntry historyEntry = new HistoryEntry(searchResult.getPageTitle(), HistoryEntry.SOURCE_SEARCH);
-        context.startActivity(PageActivity.newIntentForNewTab(context, historyEntry,
-                searchResult.getPageTitle()));
+    public void getArtist(SearchResult searchResult, String term) {
+        if (searchResult != null) {
+            artistfound = true;
+            HistoryEntry historyEntry = new HistoryEntry(searchResult.getPageTitle(), HistoryEntry.SOURCE_SEARCH);
+            context.startActivity(PageActivity.newIntentForNewTab(context, historyEntry,
+                    searchResult.getPageTitle()));
+        }else if(!trigger){
+            trigger = true;
+            searchHandler.searchForArtist(artistName.getText().toString()+" band");
+        }
+        else {
+            Toast toast = Toast.makeText(getContext(),
+                    ("No Wikipedia found for a musical artist by the name "+artistName.getText().toString()),
+                    Toast.LENGTH_SHORT);
+
+            toast.show();
+        }
     }
 
     private class ReceiverCallback implements SpotifyReceiver.Callback {
