@@ -109,7 +109,8 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
         return R.layout.activity_main;
     }
 
-    @Override protected MainFragment createFragment() {
+    @Override
+    protected MainFragment createFragment() {
         return MainFragment.newInstance();
     }
 
@@ -247,7 +248,8 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
     }
 
     private class DrawerViewCallback implements MainDrawerView.Callback {
-        @Override public void loginLogoutClick() {
+        @Override
+        public void loginLogoutClick() {
             if (AccountUtil.isLoggedIn()) {
                 WikipediaApp.getInstance().logOut();
                 FeedbackUtil.showMessage(MainActivity.this, R.string.toast_logout_complete);
@@ -262,26 +264,30 @@ public class MainActivity extends SingleFragmentActivity<MainFragment>
             closeMainDrawer();
         }
 
-        @Override public void notificationsClick() {
+        @Override
+        public void notificationsClick() {
             if (AccountUtil.isLoggedIn()) {
                 startActivity(NotificationActivity.newIntent(MainActivity.this));
                 closeMainDrawer();
             }
         }
 
-        @Override public void settingsClick() {
+        @Override
+        public void settingsClick() {
             startActivityForResult(SettingsActivity.newIntent(MainActivity.this), Constants.ACTIVITY_REQUEST_SETTINGS);
             closeMainDrawer();
         }
 
-        @Override public void configureFeedClick() {
+        @Override
+        public void configureFeedClick() {
             if (getFragment().getCurrentFragment() instanceof FeedFragment) {
                 ((FeedFragment) getFragment().getCurrentFragment()).showConfigureActivity(-1);
             }
             closeMainDrawer();
         }
 
-        @Override public void aboutClick() {
+        @Override
+        public void aboutClick() {
             startActivity(new Intent(MainActivity.this, AboutActivity.class));
             closeMainDrawer();
         }
