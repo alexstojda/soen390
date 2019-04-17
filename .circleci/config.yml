@@ -31,6 +31,7 @@ jobs:
           path: app/build/reports
           destination: reports
       - run:
+          when: always
           name: Move checkstyle report
           command: cp app/build/reports/checkstyle/checkstyle.xml app/build/test-results
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
