@@ -26,7 +26,11 @@ jobs:
           command: ./gradlew clean jacocoTestReport
       - run:
           name: Check style
-          command: ./gradlew clean checkstyle --no-daemon
+          command: ./gradlew clean checkstyle --no-daemon 2>&1 | tee checkstyle.log
+      - run:
+          when: always
+          name: Check style summary
+          command: cat checkstyle.log || echo "No errors" | egrep -i '(error|warning|fail)'
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports
