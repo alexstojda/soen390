@@ -28,6 +28,7 @@ jobs:
           name: Check style
           command: ./gradlew clean checkstyle --no-daemon 2>&1 | tee app/build/reports/checkstyle.log
       - run:
+          when: always
           name: Check style summary
           command: cat app/build/reports/checkstyle.log | egrep -i '(error|warning|fail)'
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
