@@ -32,12 +32,12 @@ public class SearchHandler {
                     }
                     return new SearchResults();
                 }).subscribe(results -> {
-                    callback.getArtist(returnArtist(results, term), term);
+                    callback.getArtist(returnArtist(results), term);
                 })
         );
     }
 
-    public SearchResult returnArtist(SearchResults results, String term) {
+    public static SearchResult returnArtist(SearchResults results) {
         SearchResult value = null;
         for (SearchResult result : results.getResults()
         ) {
@@ -49,7 +49,7 @@ public class SearchHandler {
         return value;
     }
 
-    private boolean hasMusicDescription(SearchResult result) {
+    private static boolean hasMusicDescription(SearchResult result) {
         return result.getPageTitle().getDescription() != null && (
                 isContain(result.getPageTitle().getDescription(), "band", "artist", "rapper",
                         "singer", "musician", "DJ", "group"));
