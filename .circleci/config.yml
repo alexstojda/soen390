@@ -23,10 +23,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew clean jacocoTestReport
+          command: ./gradlew jacocoTestReport
       - run:
           name: Check style
-          command: ./gradlew clean checkstyle --no-daemon 2>&1 | tee checkstyle.log
+          command: ./gradlew checkstyle --no-daemon 2>&1 | tee checkstyle.log
       - run:
           when: always
           name: Check style summary
