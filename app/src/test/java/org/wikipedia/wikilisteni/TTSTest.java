@@ -20,6 +20,10 @@ public class TTSTest {
     public TTSTest() {
         tts = mock(TextToSpeech.class);
         ttsHelper = new TTSHelper(tts);
+        ttsHelper.setFinishCallback(new TTSHelper.TTSFinishedCallback() {
+            @Override
+            public void finished() { }
+        });
     }
 
     @Test
