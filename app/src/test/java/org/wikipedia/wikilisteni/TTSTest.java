@@ -27,7 +27,7 @@ public class TTSTest {
     }
 
     @Test
-    public void CheckDoesntPlayOnEmpty() {
+    public void checkDoesntPlayOnEmpty() {
         ttsHelper.start(new ArrayList<>());
         assertFalse(ttsHelper.isPlaying());
     }
