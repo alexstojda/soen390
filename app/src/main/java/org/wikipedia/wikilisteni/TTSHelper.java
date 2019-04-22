@@ -26,6 +26,11 @@ public class TTSHelper {
     }
 
     public void start(List<PageSection> pageSections) {
+
+        if (pageSections.isEmpty()) {
+            return;
+        }
+
         this.pageSectionIterator = pageSections.iterator();
         tts.setOnUtteranceProgressListener(new TTSProgressTracker(this));
         playNextSection();
