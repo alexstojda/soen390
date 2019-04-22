@@ -23,8 +23,28 @@ public class SpotifySearchTest extends MockRetrofitTest {
                 .assertValue(results -> SearchHandler.returnArtist(results).getPageTitle().getDisplayText().equals("kiss (band)"));
     }
 
+    @Test
+    public void testRequestNoDescriptionFound() throws Throwable {
+        enqueueFromFile("search_spotify_no_desc.json");
+        TestObserver<SearchResults> observer = new TestObserver<>();
+        getObservable().subscribe(observer);
+
+        observer.assertComplete().assertNoErrors()
+                .assertValue(results -> SearchHandler.returnArtist(results) == null);
+    }
+
+    @Test
+    public void testRequestNoResults() throws Throwable {
+        enqueueFromFile("prefix_search_results_empty.json");
+        TestObserver<SearchResults> observer = new TestObserver<>();
+        getObservable().subscribe(observer);
+
+        observer.assertComplete().assertNoErrors()
+                .assertValue(results -> SearchHandler.returnArtist(results) == null);
+    }
+
     private Observable<SearchResults> getObservable() {
-        return getApiService().prefixSearch("kiss", BATCH_SIZE, "kiss")
+        return getApiService().prefixSearch("foo", BATCH_SIZE, "foo")
                 .map(response -> {
                     if (response != null && response.success() && response.query().pages() != null) {
                         // noinspection ConstantConditions
