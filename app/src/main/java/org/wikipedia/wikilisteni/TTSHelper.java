@@ -27,8 +27,7 @@ public class TTSHelper {
 
     public void start(List<PageSection> pageSections) {
 
-        if (pageSections.isEmpty())
-        {
+        if (pageSections.isEmpty()) {
             return;
         }
 
