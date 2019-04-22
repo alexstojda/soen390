@@ -34,8 +34,8 @@ public class TTSTest {
     }
 
     @Test
-    public void CheckDoesntPlayNextOnEmpty() {
-        ArrayList<PageSection> textList =new ArrayList<PageSection>();
+    public void checkDoesntPlayNextOnEmpty() {
+        ArrayList<PageSection> textList = new ArrayList<PageSection>();
         textList.add(new PageSection("Hello", "Good day to you"));
         ttsHelper.start(textList);
         ttsHelper.playNextSection();
